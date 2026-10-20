@@ -1,0 +1,85 @@
+/* Extracted from https://1in8b.life/zh/ inline <style> on 2026-10-20 — layout/progress-bar/panel rules only,
+   for offline cross-checking of born-somewhere alignment.
+   Capture method: document.querySelectorAll('style') → filter blocks matching /\.prog|\.agebox|\.wrap\.life|\.panel|\.topbar|--paper/ → brace-split → keep selectors matching the want regex.
+   NOTE: colorScheme during capture = dark (system preference). */
+
+/* ---- topbar / agebox / progress bar ---- */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--paper); border-bottom: 1px solid var(--rule); }
+
+.topbar .wrap { display: flex; align-items: center; gap: 18px; padding-block: 10px; flex-wrap: wrap; }
+
+.brand { font-family: var(--f-display); font-weight: 700; font-size: 18px; letter-spacing: -.01em; white-space: nowrap; }
+
+.brand em { font-style: normal; color: var(--accent); }
+
+.agebox { display: flex; align-items: baseline; gap: 10px; flex: 1; min-width: 200px; }
+
+.agebox .age { font-family: var(--f-display); font-size: 40px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+
+.agebox .age small { font-size: 18px; font-weight: 500; margin-left: 2px; }
+
+.agebox .yr { display: flex; flex-direction: column; flex: 1; min-width: 0; gap: 4px; }
+
+.agebox .yr .t { font-size: 13px; color: var(--ink2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.prog { height: 4px; background: var(--rule2); border-radius: 2px; overflow: hidden; }
+
+.prog i { display: block; height: 100%; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: 0 50%; will-change: transform; }
+
+/* ---- speed controls ---- */
+.speed { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+
+.speed button { border: 1px solid var(--rule); background: var(--card); border-radius: 3px; padding: 6px 10px; font-size: 13px; font-family: var(--f-mono); min-width: 40px; }
+
+.speed button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+.speed .ff { font-family: var(--f-body); }
+
+.speed #pauseQ[aria-pressed="true"] { background: var(--card); color: inherit; border-color: var(--rule); }
+
+.speed #pauseQ[aria-pressed="false"] { color: var(--ink3); }
+
+.speed { position: relative; }
+
+.speed button.hl { box-shadow: 0 0 0 2px var(--accent); }
+
+.speed .ffsh { display: none; }
+
+.speed .more .mo { display: none; }
+
+.speed .more .vol { width: auto; margin: 0 12px 6px; }
+
+.musicbtn[aria-pressed="true"], .speed [data-music][aria-pressed="true"] { border-color: var(--stamp); color: var(--stamp); }
+
+.speed [data-music][aria-pressed="true"] { background: var(--stamp-soft); }
+
+/* ---- 3-column life layout ---- */
+/* grid-template-columns measured live: 320px minmax(0px, 1fr) 340px  */
+.col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+.panel { background: var(--card); border: 1px solid var(--rule); border-radius: 4px; padding: 16px; min-width: 0; }
+
+.panel > h3 { margin: 0 0 10px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+
+.panel > h3 .lbl { font-size: 11px; }
+
+.ml-in > .panel { margin: 0; padding: 0; border: 0; background: none; }
+
+.deadstack > .panel { margin: 0; }
+
+.deadstack > .panel, .after > .panel { content-visibility: auto; contain-intrinsic-size: auto 480px; }
+
+/* ---- misc ---- */
+.minibar { display: none; }
+
+.stathelp { margin: 6px 0 2px; font-size: 13px; color: var(--ink2); }
+
+.stathelp summary { cursor: pointer; color: var(--ink3); padding: 6px 0; min-height: 32px; }
+
+.stathelp ul { margin: 4px 0 6px; padding-left: 0; list-style: none; }
+
+.stathelp li { margin: 4px 0; line-height: 1.5; }
+
+.stathelp li b { color: var(--ink); margin-right: 6px; font-weight: 600; }
+
+.stathelp p { margin: 0 0 4px; color: var(--ink3); line-height: 1.5; }

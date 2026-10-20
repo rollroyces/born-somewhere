@@ -1941,39 +1941,41 @@ input, select, textarea { font: inherit; color: inherit; }
 }
 .meta-btn:hover { background: var(--bg); border-color: var(--accent); }
 
-/* v5.41：3 欄 panel 佈局（1in8b.life 風格） */
+/* v5.41：3 欄 panel 佈局（1in8b.life 風格）
+   v5.47：欄寬改為實測原版值 320px minmax(0,1fr) 340px；panel 圓角 4px、padding 16px、gap 16px
+   依據：evidence/1in8b.life-styles.css + evidence/1in8b.life-reference.json */
 .life-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-columns: 320px minmax(0px, 1fr) 340px;
   gap: 16px;
   align-items: start;
   max-width: 1320px;
   margin: 0 auto;
 }
-.life-col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-.life-col-a .life-stats,
-.life-col-a .life-family-detail { width: 100%; }
-.life-cert { grid-column: 1 / -1; margin: 0 auto 16px; width: 100%; max-width: 1320px; }
-/* 3 欄內的 panel 統一外觀 */
+.life-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+/* 3 欄內的 panel 統一外觀（對應原版 .panel） */
 .life-col > div {
   border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 12px 14px;
+  border-radius: 4px;
+  padding: 16px;
   background: var(--card, var(--bg-2));
   min-width: 0;
 }
 .life-col > div:empty { display: none; }
 .life-col h4, .life-col h3 {
-  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
-  margin: 0 0 8px; font-size: 15px; font-weight: 600;
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  margin: 0 0 10px; font-size: 15px; font-weight: 600;
 }
 .life-col .muted { font-size: 12px; font-weight: 400; }
+.life-cert { grid-column: 1 / -1; margin: 0 auto 16px; width: 100%; max-width: 1320px; }
 @media (max-width: 1080px) {
-  .life-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .life-grid { grid-template-columns: minmax(0, 320px) minmax(0px, 1fr); }
   .life-col-c { grid-column: 1 / -1; }
 }
 @media (max-width: 720px) {
   .life-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .life-col { gap: 12px; }
+  .life-col > div { padding: 12px; }
 }
 
 /* 主題：dark */

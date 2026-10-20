@@ -1,0 +1,87 @@
+{
+  "_meta": {
+    "purpose": "Authoritative capture of 1in8b.life (v0.7.89) computed styles/layout, taken via Chrome DevTools evaluate_script on the live site. Exists so the born-somewhere alignment claims can be cross-checked against a source artifact instead of worker assertion.",
+    "sourceUrl": "https://1in8b.life/zh/",
+    "capturedAt": "2026-10-20T15:26:06.847Z",
+    "captureMethod": "window.getComputedStyle + DOM query via chrome-devtools-mcp",
+    "colorSchemeDuringCapture": "dark (system preference)"
+  },
+
+  "themeTokens_activeDarkValues": {
+    "--paper": "#0D1316",
+    "--card": "#141D21",
+    "--card2": "#1A2428",
+    "--ink": "#E1E9E6",
+    "--ink2": "#A3B2AF",
+    "--ink3": "#8A9A96",
+    "--rule": "#2A383D",
+    "--rule2": "#1D282C",
+    "--accent": "#E2678A",
+    "--accent-ink": "#1B0910",
+    "--accent-soft": "#3A1C26",
+    "--stamp": "#4CC0AF",
+    "--stamp-soft": "#12302D",
+    "--gold": "#D9AF59",
+    "--shadow": "0 1px 0 rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.6)",
+    "--grid-lo": "#25283F",
+    "--grid-mid": "#2A8A80",
+    "--grid-hi": "#B8E8A8",
+    "--shelf": "#8C6A48",
+    "--shelf2": "#5E4630"
+  },
+
+  "supportsDarkByDefault": true,
+  "htmlHasDataThemeAttr": false,
+  "themeBtnExists": true,
+
+  "progressBar": {
+    "_note": "Confirms born-somewhere v5.37/v5.38 bar spec was read correctly from the original.",
+    "height": "4px",
+    "background": "rgb(29, 40, 44)",
+    "borderRadius": "2px",
+    "fillHeight": "100%",
+    "fillBg": "rgb(226, 103, 138)",
+    "fillWidth": "100%",
+    "fillTransform": "none",
+    "transformOrigin": "0px 50%",
+    "transition": "all"
+  },
+
+  "ageStyle": {
+    "html": "0<small>歲</small>",
+    "fontSize": "40px",
+    "fontFamily": "\"Noto Serif TC\", \"Noto Serif CJK TC\", \"Songti TC\", PMingLiU,",
+    "fontWeight": "700",
+    "smallSize": "18px"
+  },
+
+  "topbar": {
+    "position": "sticky",
+    "bg": "rgb(13, 19, 22)",
+    "borderBottom": "1px solid rgb(42, 56, 61)",
+    "childClasses": ["brand", "agebox", "speed"]
+  },
+
+  "lifeLayout": {
+    "_note": "Confirms the 3-column layout claim AND shows born-somewhere's column assignment differs: the original puts family in column C, not A.",
+    "display": "grid",
+    "gridTemplateColumns": "320px minmax(0px, 1fr) 340px",
+    "colCount": 3,
+    "colPanels": [
+      { "column": "A (320px)", "cols": ["panel idcard p-id", "panel p-stats"] },
+      { "column": "B (1fr)",   "cols": ["panel p-scene", "minibar", "panel p-focus", "panel p-feed"] },
+      { "column": "C (340px)", "cols": ["panel p-fam", "panel p-comps", "panel p-grid", "panel p-chart", "panel stats p-cty"] }
+    ]
+  },
+
+  "softToggle": {
+    "_note": "Confirms the 略過可怕的情節 toggle exists in the original with aria-pressed state.",
+    "id": "softBtn2",
+    "text": "略過可怕的情節",
+    "ariaPressed": "false"
+  },
+  "softTogglePresent": true,
+
+  "currencyButtons": ["新臺幣", "港幣", "澳門幣", "人民幣"],
+  "currencyVarsPresent": []
+}
