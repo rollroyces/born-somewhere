@@ -3779,19 +3779,11 @@ function wire() {
     setTheme(next);
     toast(LANG === 'en' ? `Theme: ${next.replace('theme-','')}` : `主題：${next.replace('theme-','')}`);
   });
-  // v5.39：略過可怕的情節（1in8b.life softBtn）
-  const softBtn = $('#btnSoftMode');
-  if (softBtn) {
-    softBtn.addEventListener('click', () => {
-      STATE.softMode = !STATE.softMode;
-      localStorage.setItem(STORAGE_KEY + ':soft', STATE.softMode ? '1' : '0');
-      renderSoftModeBtn();
-      renderAll();
-      toast(STATE.softMode
-        ? (LANG === 'en' ? 'Heavy events are hidden' : '已略過可怕的情節')
-        : (LANG === 'en' ? 'Heavy events are shown' : '會顯示全部情節'));
-    });
-  }
+  // v5.50：略過可怕的情節（1in8b.life softBtn / softBtn2）— topbar 與 intro 兩處共用
+  ['#btnSoftMode', '#softBtnIntro'].forEach(sel => {
+    const btn = $(sel);
+    if (btn) btn.addEventListener('click', toggleSoftMode);
+  });
   const pauseSave = $('#pauseSave');
   if (pauseSave) pauseSave.addEventListener('click', savePauseQuote);
   const pauseSkip = $('#pauseSkip');
@@ -4485,16 +4477,31 @@ function showLegalModal(id, title, html) {
   modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
 }
 
-/* v5.39：略過可怕的情節 — 按鈕狀態同步 */
+/* v5.39：略過可怕的情節 — 按鈕狀態同步（topbar + intro 兩處） */
 function renderSoftModeBtn() {
-  const b = $('#btnSoftMode');
-  if (b) {
-    b.setAttribute('aria-pressed', STATE.softMode ? 'true' : 'false');
-    b.classList.toggle('active', STATE.softMode);
-    b.title = STATE.softMode
-      ? (LANG === 'en' ? 'Heavy events are hidden — click to show them' : '已略過可怕的情節 — 點一下恢復')
-      : (LANG === 'en' ? 'Hide suicide, violence, drugs and abuse events' : '讓自殺、性暴力、藥物、暴力這類情節不會發生');
-  }
+  const on = STATE.softMode;
+  ['#btnSoftMode', '#softBtnIntro'].forEach(sel => {
+    const b = $(sel);
+    if (!b) return;
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.classList.toggle('active', on);
+    if (sel === '#btnSoftMode') {
+      b.title = on
+        ? (LANG === 'en' ? 'Heavy events are hidden — click to show them' : '已略過可怕的情節 — 點一下恢復')
+        : (LANG === 'en' ? 'Hide suicide, violence, drugs and abuse events' : '讓自殺、性暴力、藥物、暴力這類情節不會發生');
+    }
+  });
+}
+
+/* v5.50：切換「略過可怕的情節」的共用邏輯（topbar / intro 兩處呼叫） */
+function toggleSoftMode() {
+  STATE.softMode = !STATE.softMode;
+  localStorage.setItem(STORAGE_KEY + ':soft', STATE.softMode ? '1' : '0');
+  renderSoftModeBtn();
+  renderAll();
+  toast(STATE.softMode
+    ? (LANG === 'en' ? 'Heavy events are hidden' : '已略過可怕的情節')
+    : (LANG === 'en' ? 'Heavy events are shown' : '會顯示全部情節'));
 }
 
 // ==== Service Worker 註冊（PWA 離線快取）====

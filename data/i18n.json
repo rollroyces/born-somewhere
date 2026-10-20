@@ -425,7 +425,10 @@
     "cause.糖尿病": "糖尿病",
     "cause.戰爭/衝突": "戰爭／衝突",
     "cause.瘧疾": "瘧疾",
-    "cause.自然衰老": "自然衰老"
+    "cause.自然衰老": "自然衰老",
+    "intro.heavy": "死亡、暴力、自殺這類沉重的事，也會照實際統計發生。不會描寫畫面，並會一起告訴你可以求助的地方。",
+    "intro.softBtn": "略過可怕的情節",
+    "intro.ageGate": "15歲以上"
   },
   "zh-Hans": {
     "title": "选出生地 · 人生模拟",
@@ -853,7 +856,10 @@
     "cause.糖尿病": "糖尿病",
     "cause.戰爭/衝突": "战争／冲突",
     "cause.瘧疾": "疟疾",
-    "cause.自然衰老": "自然衰老"
+    "cause.自然衰老": "自然衰老",
+    "intro.heavy": "死亡、暴力、自杀这类沉重的事，也会照实际统计发生。不会描写画面，并会一起告诉你可以求助的地方。",
+    "intro.softBtn": "略过可怕的情节",
+    "intro.ageGate": "15岁以上"
   },
   "en": {
     "title": "Born Somewhere · Life Simulator",
@@ -1281,7 +1287,10 @@
     "cause.糖尿病": "Diabetes",
     "cause.戰爭/衝突": "War / conflict",
     "cause.瘧疾": "Malaria",
-    "cause.自然衰老": "Old age"
+    "cause.自然衰老": "Old age",
+    "intro.heavy": "Death, violence and suicide happen according to real statistics. Nothing is depicted graphically, and where to get help is shown alongside.",
+    "intro.softBtn": "Skip distressing events",
+    "intro.ageGate": "Ages 15+"
   },
   "ko": {
     "title": "태어난 곳 · 인생 시뮬레이션",
@@ -1721,7 +1730,10 @@
     "cause.糖尿病": "당뇨병",
     "cause.戰爭/衝突": "전쟁／충돌",
     "cause.瘧疾": "말라리아",
-    "cause.自然衰老": "노년"
+    "cause.自然衰老": "노년",
+    "intro.heavy": "사망·폭력·자살 같은 무거운 일은 실제 통계에 따라 발생합니다. 장면을 묘사하지 않으며, 도움을 받을 곳도 함께 알려드립니다.",
+    "intro.softBtn": "무거운 사건 건너뛰기",
+    "intro.ageGate": "15세 이상"
   },
   "ja": {
     "title": "出生地 · 人生シミュレーション",
@@ -2161,7 +2173,10 @@
     "cause.糖尿病": "糖尿病",
     "cause.戰爭/衝突": "戦争／衝突",
     "cause.瘧疾": "マラリア",
-    "cause.自然衰老": "老衰"
+    "cause.自然衰老": "老衰",
+    "intro.heavy": "死亡・暴力・自殺など重い出来事も実際の統計どおり起こります。場面は描写せず、助けを得られる先も併せてお知らせします。",
+    "intro.softBtn": "重い出来事をスキップ",
+    "intro.ageGate": "15歳以上"
   },
   "vi": {
     "title": "Nơi sinh · Mô phỏng cuộc đời",
@@ -2601,7 +2616,10 @@
     "cause.糖尿病": "Tiểu đường",
     "cause.戰爭/衝突": "Chiến tranh / xung đột",
     "cause.瘧疾": "Sốt rét",
-    "cause.自然衰老": "Tuổi già"
+    "cause.自然衰老": "Tuổi già",
+    "intro.heavy": "Cái chết, bạo lực và tự sát vẫn xảy ra theo thống kê thực tế. Không mô tả hình ảnh, và luôn kèm nơi để tìm trợ giúp.",
+    "intro.softBtn": "Bỏ qua sự kiện nặng lòng",
+    "intro.ageGate": "Từ 15 tuổi"
   },
   "fr": {
     "title": "Né quelque part · Simulateur de vie",
@@ -3041,7 +3059,10 @@
     "cause.糖尿病": "Diabète",
     "cause.戰爭/衝突": "Guerre / conflit",
     "cause.瘧疾": "Paludisme",
-    "cause.自然衰老": "Vieillesse"
+    "cause.自然衰老": "Vieillesse",
+    "intro.heavy": "La mort, la violence et le suicide surviennent selon les statistiques réelles. Rien n’est décrit graphiquement, et les sources d’aide sont indiquées.",
+    "intro.softBtn": "Passer les évènements lourds",
+    "intro.ageGate": "Dès 15 ans"
   },
   "th": {
     "title": "เกิดที่ไหน · จำลองชีวิต",
@@ -3481,7 +3502,10 @@
     "cause.糖尿病": "โรคเบาหวาน",
     "cause.戰爭/衝突": "สงคราม / ความขัดแย้ง",
     "cause.瘧疾": "มาลาเรีย",
-    "cause.自然衰老": "วัยชรา"
+    "cause.自然衰老": "วัยชรา",
+    "intro.heavy": "การเสียชีวิต ความรุนแรง และการฆ่าตัวตาย เกิดขึ้นตามสถิติจริง ไม่มีการบรรยายภาพ และจะแจ้งช่องทางขอความช่วยเหลือ",
+    "intro.softBtn": "ข้ามเหตุการณ์หนักใจ",
+    "intro.ageGate": "อายุ 15 ปีขึ้นไป"
   },
   "es": {
     "title": "Nacido en algún lugar · Simulador de vida",
@@ -3921,6 +3945,9 @@
     "cause.糖尿病": "Diabetes",
     "cause.戰爭/衝突": "Guerra / conflicto",
     "cause.瘧疾": "Malaria",
-    "cause.自然衰老": "Vejez"
+    "cause.自然衰老": "Vejez",
+    "intro.heavy": "La muerte, la violencia y el suicidio ocurren según las estadísticas reales. Nada se describe gráficamente y se indica dónde pedir ayuda.",
+    "intro.softBtn": "Omitir acontecimientos duros",
+    "intro.ageGate": "Mayores de 15 años"
   }
 }

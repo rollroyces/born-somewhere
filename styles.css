@@ -1951,6 +1951,22 @@ option { background: var(--bg-2); color: var(--ink); }
 input::placeholder, textarea::placeholder { color: var(--ink-3); opacity: 1; }
 input[type="checkbox"], input[type="radio"] { background: var(--bg-2); accent-color: var(--accent); }
 
+/* v5.50：intro 頁的沉重內容提示列（對齊原版 .warnline + .lnk） */
+.warnline {
+  margin: 12px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--ink-2);
+  display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline;
+}
+.warnline .lnk {
+  font: inherit; color: var(--accent); text-decoration: underline;
+  text-underline-offset: 2px; background: none; border: 0; cursor: pointer;
+  padding: 0;
+}
+.warnline .lnk:hover { color: var(--ink); }
+.warnline .lnk[aria-pressed="true"] {
+  color: var(--paper); background: var(--accent);
+  padding: 2px 8px; border-radius: 999px; text-decoration: none;
+}
+
 /* v5.41：3 欄 panel 佈局（1in8b.life 風格）
    v5.47：欄寬改為實測原版值 320px minmax(0,1fr) 340px；panel 圓角 4px、padding 16px、gap 16px
    依據：evidence/1in8b.life-styles.css + evidence/1in8b.life-reference.json */
