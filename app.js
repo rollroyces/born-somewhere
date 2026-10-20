@@ -1014,8 +1014,8 @@ function dieNow(forcedCause) {
   STATE.life.log.push({ age: STATE.life.age, kind: 'death', icon: '🕯️', text: t('log.died_of', cause) });
   savePastLife(STATE.life);
   stopTicker();
-  STATE.view = 'end';
-  renderAll();
+  // v5.43：用 setView() 才會真的切換 .view 面板的顯示（原本直接賦值 STATE.view 只更新資料、不換畫面）
+  setView('end');
 }
 /* v5.9 新增：解析暫停決策（自動套預設值） */
 function resolvePendingDecision() {
