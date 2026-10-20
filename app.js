@@ -2746,7 +2746,7 @@ function renderShelfWorldMap(lives) {
   });
   // 經度→x: (lng + 180) / 360 * W; 緯度→y: (90 - lat) / 180 * H
   const proj = (lng, lat) => [((lng + 180) / 360) * W, ((90 - lat) / 180) * H];
-  const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, class: 'world-map', style: 'max-width:100%;height:auto;background:#f5ead0;border-radius:8px;' });
+  const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, class: 'world-map', style: 'max-width:100%;height:auto;background:var(--bg-3);border-radius:8px;' });
   // 大陸輪廓（簡化用矩形網格代替）
   const grid = svgEl('rect', { x: 0, y: 0, width: W, height: H, fill: '#dde6e8' }, svg);
   // 為每個經歷國家繪製點
@@ -3057,7 +3057,7 @@ function renderActivePlayersMap() {
   const svg = svgEl('svg', {
     viewBox: `0 0 ${W} ${H}`,
     class: 'world-map',
-    style: 'max-width:100%;height:auto;background:#f5ead0;border-radius:8px;'
+    style: 'max-width:100%;height:auto;background:var(--bg-3);border-radius:8px;'
   });
   svgEl('rect', { x: 0, y: 0, width: W, height: H, fill: '#dde6e8' }, svg);
   // 已去過國家（過去 lives）淡化顯示

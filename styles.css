@@ -38,7 +38,11 @@ body {
   background-attachment: fixed;
 }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-input, select, textarea { font: inherit; color: inherit; }
+input, select, textarea { font: inherit; color: inherit; background: var(--bg-2); border-color: var(--line); }
+/* v5.48：日期/數字輸入框的原生白底 spinner 在深色模式也要收斂 */
+input[type="date"], input[type="number"], input[type="time"] { background: var(--bg-2); color: var(--ink); }
+input[type="date"]::-webkit-calendar-picker-indicator { filter: var(--cal-icon-filter, none); }
+body.theme-dark input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
 
 .topbar {
   position: sticky; top: 0; z-index: 30;
@@ -1093,7 +1097,7 @@ input, select, textarea { font: inherit; color: inherit; }
 .ty-body { font-size: 14px; }
 .ty-event {
   display: flex; align-items: center; gap: 10px;
-  background: white;
+  background: var(--bg-3);
   border-radius: 6px;
   padding: 8px 12px;
 }
@@ -1940,6 +1944,12 @@ input, select, textarea { font: inherit; color: inherit; }
   transition: all 0.15s;
 }
 .meta-btn:hover { background: var(--bg); border-color: var(--accent); }
+
+
+/* v5.48：表單控件與選單在兩種主題下都跟隨變數 */
+option { background: var(--bg-2); color: var(--ink); }
+input::placeholder, textarea::placeholder { color: var(--ink-3); opacity: 1; }
+input[type="checkbox"], input[type="radio"] { background: var(--bg-2); accent-color: var(--accent); }
 
 /* v5.41：3 欄 panel 佈局（1in8b.life 風格）
    v5.47：欄寬改為實測原版值 320px minmax(0,1fr) 340px；panel 圓角 4px、padding 16px、gap 16px
