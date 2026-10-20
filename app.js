@@ -1788,8 +1788,12 @@ function renderLife() {
   const isEn = LANG === 'en';
   $('#lifeFlag').textContent = c.flag;
   $('#lifeName').textContent = loc.name;
-  $('#lifeYear').textContent = STATE.life.year + STATE.life.yearOffset;
-  $('#lifeAge').textContent = STATE.life.age + ' ' + t('unit.years');
+  const yearTxt = STATE.life.year + STATE.life.yearOffset;
+  $('#lifeYear').textContent = yearTxt;
+  $('#lifeYear2') && ($('#lifeYear2').textContent = yearTxt);
+  // v5.37：年齡大字（40px serif）含 inline 歲小字
+  const ageEl = $('#lifeAge');
+  if (ageEl) ageEl.innerHTML = (STATE.life.age || 0) + '<small>' + t('unit.years') + '</small>';
   $('#lifeName2').textContent = (STATE.life.name.full || STATE.life.name.full_en) || '...';
   $('#lifeLe').textContent = c.le;
   $('#lifeSex').textContent = STATE.life.sex === 'M' ? t('sex.male') : t('sex.female');
@@ -1815,18 +1819,6 @@ function renderLife() {
   } else {
     $('#lifeKids').textContent = '0';
   }
-  // 進度條
-  const pct = Math.min(100, STATE.life.age / c.le * 100);
-  $('#lifeBar').style.width = pct + '%';
-  // v5.35：標記 + 百分比 + 起訖年齡
-  const marker = $('#lifeBarMarker');
-  if (marker) marker.style.left = pct + '%';
-  const pctEl = $('#lifeBarPct');
-  if (pctEl) pctEl.textContent = pct.toFixed(1) + '%';
-  const nowEl = $('#lifeBarNow');
-  if (nowEl) nowEl.textContent = (STATE.life.age || 0) + ' ' + t('unit.years');
-  const endEl = $('#lifeBarEnd');
-  if (endEl) endEl.textContent = c.le + ' ' + t('unit.years');
   // 角色簡介
   const portrait = $('#lifePortrait');
   if (portrait) {
@@ -2044,7 +2036,7 @@ function renderManualDecisions() {
     // 加快速度，讓玩家「放手看完」
     STATE.speed = 4;
     STATE.autoDecide = true;
-    $$('.speed-btn').forEach(b => b.classList.toggle('active', +b.dataset.speed === STATE.speed));
+    $$('.ltb-speed-btn').forEach(b => b.classList.toggle('active', +b.dataset.speed === STATE.speed));
     renderSpeedBtns && renderSpeedBtns();
   });
   // v5.19：「♪ 背景音樂」= 沒有音樂資源，顯示 toast
@@ -3442,7 +3434,7 @@ function findCommonAncestors(selfNodes, edges, allPeople) {
 }
 
 function renderSpeedBtns() {
-  $$('.speed-btn').forEach(b => {
+  $$('.ltb-speed-btn').forEach(b => {
     b.classList.toggle('active', +b.dataset.speed === STATE.speed);
   });
 }
@@ -3722,7 +3714,7 @@ function wire() {
     STATE.paused = !STATE.paused;
     pauseBtn.textContent = STATE.paused ? '▶' : '⏸';
   });
-  $$('.speed-btn').forEach(b => b.addEventListener('click', () => setSpeed(+b.dataset.speed)));
+  $$('.ltb-speed-btn').forEach(b => b.addEventListener('click', () => setSpeed(+b.dataset.speed)));
   // v5.9：自動抉擇模式
   const autoBtn = $('#btnAuto');
   if (autoBtn) autoBtn.addEventListener('click', () => {
@@ -3846,7 +3838,7 @@ function wire() {
     if (k === ' ') { if (STATE.view === 'life') $('#btnPause')?.click(); e.preventDefault(); return; }
     // 速度 1/2/4/8
     if (['1','2','4','8'].includes(k)) {
-      const btn = document.querySelector(`.speed-btn[data-speed="${k}"]`);
+      const btn = document.querySelector(`.ltb-speed-btn[data-speed="${k}"]`);
       if (btn) { btn.click(); e.preventDefault(); }
       return;
     }

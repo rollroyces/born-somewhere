@@ -176,30 +176,47 @@
 
 <!-- LIFE -->
 <section id="view-life" class="view">
+  <!-- v5.37：sticky topbar with age + bar + speed controls（1in8b.life 風格） -->
+  <header class="life-topbar">
+    <div class="ltb-inner">
+      <div class="ltb-brand">選出生地</div>
+      <div class="ltb-agebox">
+        <div class="ltb-age" id="lifeAge">0<small>歲</small></div>
+        <div class="ltb-yr">
+          <span class="ltb-yr-text" id="lifeYear">2024</span>
+          <div class="ltb-prog"><i id="lifeBar"></i></div>
+        </div>
+      </div>
+      <div class="ltb-speed">
+        <button class="ltb-pause" id="btnPause" aria-label="暫停">❚❚</button>
+        <button class="ltb-speed-btn" data-speed="1">1×</button>
+        <button class="ltb-speed-btn" data-speed="2">2×</button>
+        <button class="ltb-speed-btn" data-speed="4">4×</button>
+        <button class="ltb-speed-btn" data-speed="8">8×</button>
+        <button class="ltb-speed-btn" data-speed="12">12×</button>
+        <button class="ltb-speed-btn" data-speed="16">16×</button>
+        <button class="ltb-more" id="btnDieNow" title="End now" aria-label="結束">↺</button>
+        <button class="ltb-more" id="btnRebirth" title="Restart" aria-label="重生">🔄</button>
+        <button class="ltb-more" id="btnAuto" title="Auto-decide" aria-label="自動">▶</button>
+        <button class="ltb-more" id="btnThoughts" title="寫下想法" aria-label="寫想法">✎</button>
+        <button class="ltb-more" id="btnShareCard" title="分享出生卡" aria-label="分享">📤</button>
+        <button class="ltb-more" id="btnSkip" title="跳過抉擇" aria-label="跳過">⏭</button>
+      </div>
+    </div>
+  </header>
+
   <div class="life-cert" id="lifeCert">
     <div class="cert-band" id="lifeCertBand">
       <span class="cert-flag" id="lifeFlag">🇹🇼</span>
       <span class="cert-name" id="lifeName">—</span>
-      <span class="cert-year" id="lifeYear">2024</span>
+      <span class="cert-year" id="lifeYear2">2024</span>
     </div>
     <div class="cert-body">
       <div class="cert-figure" id="lifePortrait">👶</div>
       <h2 class="cert-name-main" id="lifeName2">—</h2>
       <div class="cert-age-row">
-        <div class="cert-age" id="lifeAge">0 歲</div>
         <div class="cert-le" data-t="life.expectancy">預期壽命</div>
         <div class="cert-le-val" id="lifeLe">80</div>
-      </div>
-      <div class="cert-bar-wrap">
-        <div class="cert-bar-track">
-          <div class="cert-bar-fill" id="lifeBar"></div>
-          <div class="cert-bar-marker" id="lifeBarMarker">▲</div>
-        </div>
-        <div class="cert-bar-labels">
-          <span class="cert-bar-now" id="lifeBarNow">0 歲</span>
-          <span class="cert-bar-pct" id="lifeBarPct">0%</span>
-          <span class="cert-bar-end" id="lifeBarEnd">80 歲</span>
-        </div>
       </div>
       <div class="cert-meta">
         <div class="meta-row"><span data-t="life.sex">性別</span><b id="lifeSex">—</b></div>
@@ -217,20 +234,21 @@
         </div>
         <button class="cert-family-go" id="certFamilyGo" data-t="life.familyGo">看族譜 →</button>
       </div>
-      <div class="cert-controls">
-        <button class="ctl" id="btnPause" title="Pause">⏸</button>
-        <button class="speed-btn" data-speed="1" title="1×">1×</button>
-        <button class="speed-btn" data-speed="2" title="2×">2×</button>
-        <button class="speed-btn" data-speed="4" title="4×">4×</button>
-        <button class="speed-btn" data-speed="8" title="8×">8×</button>
-        <button class="speed-btn" data-speed="12" title="12×">12×</button>
-        <button class="speed-btn" data-speed="16" title="16×">16×</button>
-        <button class="ctl ctl-danger" id="btnDieNow" title="End now">↺</button>
-        <button class="ctl" id="btnRebirth" title="Restart">🔄</button>
-        <button class="ctl" id="btnShareCard" title="Share birth card">📤</button>
-        <button class="ctl" id="btnSkip" title="Skip to next decision">⏭</button>
-        <button class="ctl" id="btnAuto" title="Auto-decide">▶ 自動</button>
-        <button class="ctl" id="btnThoughts" title="Write thoughts at pauses">✎</button>
+      <div class="cert-controls" hidden>
+        <!-- v5.37：按鈕已搬到上方 .life-topbar；保留隱藏殼以避免 renderLife 錯誤 -->
+        <button class="ctl" id="btnPause" title="Pause" hidden></button>
+        <button class="speed-btn" data-speed="1" title="1×" hidden></button>
+        <button class="speed-btn" data-speed="2" title="2×" hidden></button>
+        <button class="speed-btn" data-speed="4" title="4×" hidden></button>
+        <button class="speed-btn" data-speed="8" title="8×" hidden></button>
+        <button class="speed-btn" data-speed="12" title="12×" hidden></button>
+        <button class="speed-btn" data-speed="16" title="16×" hidden></button>
+        <button class="ctl ctl-danger" id="btnDieNow" title="End now" hidden></button>
+        <button class="ctl" id="btnRebirth" title="Restart" hidden></button>
+        <button class="ctl" id="btnShareCard" title="Share birth card" hidden></button>
+        <button class="ctl" id="btnSkip" title="Skip to next decision" hidden></button>
+        <button class="ctl" id="btnAuto" title="Auto-decide" hidden></button>
+        <button class="ctl" id="btnThoughts" title="Write thoughts at pauses" hidden></button>
       </div>
     </div>
 
@@ -508,7 +526,7 @@
     <a href="#" id="btnPrivacy" class="footer-link" data-t="footer.privacy">隱私權政策</a>
     <a href="#" id="btnTerms" class="footer-link" data-t="footer.terms">使用須知</a>
     <a href="mailto:contact@born-somewhere.app" id="btnContact" class="footer-link" data-t="footer.contact">聯絡我們</a>
-    <span class="footer-ver">v5.36 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
+    <span class="footer-ver">v5.37 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
   </div>
 </footer>
 
