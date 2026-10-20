@@ -37,7 +37,23 @@ const STATE = {
 function t(key, ...vals) {
   const dict = I18N[LANG] || I18N['zh-Hant'] || {};
   let s = dict[key] || key;
-  for (const v of vals) s = s.replace('{}', v);
+  // 支援 placeholder：
+  //  1) {}     — 依序替換（vals 是基本型別陣列）
+  //  2) {name} — 具名替換（從 vals[0] 物件讀 name 屬性）
+  //  3) {0} {1} — 索引替換（按 vals 陣列索引）
+  // 先把 {name} 與 {n} 換成對應 vals 值；再把剩餘 {} / {0} / {1} 依序套用
+  // 自動偵測：如果 vals[0] 是物件，視為 named dict；否則按位置
+  const first = vals[0];
+  const isNamedDict = first && typeof first === 'object' && !Array.isArray(first);
+  if (isNamedDict) {
+    s = s.replace(/\{(\w+)\}/g, (m, name) => (first[name] !== undefined ? String(first[name]) : m));
+  } else {
+    for (let i = 0; i < vals.length; i++) {
+      const v = vals[i];
+      // 嘗試替換 {i} 與 {} 兩種
+      s = s.replace(`{${i}}`, v).replace('{}', v);
+    }
+  }
   return s;
 }
 async function loadData() {
@@ -1787,7 +1803,7 @@ function renderLife() {
     const p = STATE.life.stats.partner;
     const pName = p.name?.full || p.name?.full_en || '';
     const pAge = p.age || ((STATE.life.year + STATE.life.yearOffset) - (p.birth?.year || 0));
-    $('#lifePartner').textContent = `${pName}（${pAge} ${LANG==='en'?'yo':'歲'}）`;
+    $('#lifePartner').textContent = `${pName}（${pAge} ${t('unit.years')}）`;
   } else {
     $('#lifePartner').textContent = t('partner.no');
   }
@@ -1808,9 +1824,9 @@ function renderLife() {
   const pctEl = $('#lifeBarPct');
   if (pctEl) pctEl.textContent = pct.toFixed(1) + '%';
   const nowEl = $('#lifeBarNow');
-  if (nowEl) nowEl.textContent = (STATE.life.age || 0) + ' ' + (LANG==='en'?'yo':'歲');
+  if (nowEl) nowEl.textContent = (STATE.life.age || 0) + ' ' + t('unit.years');
   const endEl = $('#lifeBarEnd');
-  if (endEl) endEl.textContent = c.le + ' ' + (LANG==='en'?'yo':'歲');
+  if (endEl) endEl.textContent = c.le + ' ' + t('unit.years');
   // 角色簡介
   const portrait = $('#lifePortrait');
   if (portrait) {
@@ -2423,7 +2439,7 @@ function renderEnd() {
   $('#endCause').textContent = life.cause;
   $('#endName').textContent = life.name.full || life.name.full_en || '—';
   $('#endPortrait').innerHTML = pixelPortraitSVG(life.countryData, life.age, life.sex);
-  $('#endLe').textContent = t('end.le', c.le, life.deathAge);
+  $('#endLe').textContent = t('end.lifespan_le', { age: life.deathAge, le: c.le });
   const past = loadPastLives();
   $('#endPastCount').textContent = past.length;
   // 證書（guilloche）

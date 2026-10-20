@@ -1652,7 +1652,8 @@
     "end.pastNote": "Your most recent N lives. Press replay to reopen the death record and share card. Records stay only in this browser.",
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
-    "end.deleteAll": "Delete all"
+    "end.deleteAll": "Delete all",
+    "end.lifespan_le": "享년 {age}（현지 평균 수명 {le}）"
   },
   "ja": {
     "title": "出生地 · 人生シミュレーション",
@@ -2074,7 +2075,8 @@
     "end.pastNote": "Your most recent N lives. Press replay to reopen the death record and share card. Records stay only in this browser.",
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
-    "end.deleteAll": "Delete all"
+    "end.deleteAll": "Delete all",
+    "end.lifespan_le": "享年 {age}歳（現地平均寿命 {le}歳）"
   },
   "vi": {
     "title": "Nơi sinh · Mô phỏng cuộc đời",
@@ -2496,7 +2498,8 @@
     "end.pastNote": "Your most recent N lives. Press replay to reopen the death record and share card. Records stay only in this browser.",
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
-    "end.deleteAll": "Delete all"
+    "end.deleteAll": "Delete all",
+    "end.lifespan_le": "Hưởng thọ {age} (tuổi thọ trung bình địa phương {le})"
   },
   "fr": {
     "title": "Né quelque part · Simulateur de vie",
@@ -2918,7 +2921,8 @@
     "end.pastNote": "Your most recent N lives. Press replay to reopen the death record and share card. Records stay only in this browser.",
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
-    "end.deleteAll": "Delete all"
+    "end.deleteAll": "Delete all",
+    "end.lifespan_le": "A vécu {age} ans (espérance de vie locale {le})"
   },
   "th": {
     "title": "เกิดที่ไหน · จำลองชีวิต",
@@ -3340,7 +3344,8 @@
     "end.pastNote": "Your most recent N lives. Press replay to reopen the death record and share card. Records stay only in this browser.",
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
-    "end.deleteAll": "Delete all"
+    "end.deleteAll": "Delete all",
+    "end.lifespan_le": "อายุ {age} (อายุขัยเฉลี่ยท้องถิ่น {le})"
   },
   "es": {
     "title": "Nacido en algún lugar · Simulador de vida",
@@ -3762,6 +3767,7 @@
     "end.pastNote": "Your most recent N lives. Press replay to reopen the death record and share card. Records stay only in this browser.",
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
-    "end.deleteAll": "Delete all"
+    "end.deleteAll": "Delete all",
+    "end.lifespan_le": "Vivió {age} años (esperanza de vida local {le})"
   }
 }
