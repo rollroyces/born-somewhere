@@ -12,6 +12,14 @@
   --gold: #9C7020;
   --good: #2B7A4E;
   --bad: #B0362B;
+  /* v5.45：語意色 soft 變數 — 取代寫死的淺色底，避免深色模式漏光 */
+  --gold-soft: #fff8d8;
+  --gold-ink: #7a5a00;
+  --gold-line: #d6b95a;
+  --good-soft: #d8efd8;
+  --bad-soft: #fef0f0;
+  --warn-soft: #fff3e0;
+  --stamp-soft: #DCEDEA;
   --shadow: 0 1px 0 rgba(0,0,0,.04), 0 4px 12px rgba(0,0,0,.08);
   --serif: "Cormorant Garamond", "Source Han Serif TC", "Noto Serif TC", "Times New Roman", serif;
   --sans: -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", "Helvetica Neue", sans-serif;
@@ -746,8 +754,8 @@ input, select, textarea { font: inherit; color: inherit; }
 .pd-name .pd-deceased { color: #a04040; margin-left: 4px; }
 .pd-relation { margin-bottom: 4px; }
 .pd-relation .badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--bg); color: var(--ink); }
-.badge-adopt { background: #d8efd8; color: var(--accent-2); }
-.badge-foster { background: #f3dbe6; color: var(--accent); }
+.badge-adopt { background: var(--good-soft, #d8efd8); color: var(--good); }
+.badge-foster { background: var(--accent-soft); color: var(--accent); }
 .pd-life { font-size: 12px; color: var(--ink-3); }
 .pd-country { font-size: 11px; color: var(--ink-3); }
 .pd-close {
@@ -805,11 +813,11 @@ input, select, textarea { font: inherit; color: inherit; }
 .lm-title { margin: 0 0 8px; font-size: 20px; color: var(--accent); }
 .lm-meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 13px; color: var(--ink-2); margin-bottom: 14px; }
 .life-tree { background: var(--bg); border-radius: 8px; padding: 10px; overflow-x: auto; }
-.panorama-common { padding: 10px; background: #fef0f0; border: 1px solid #a04040; border-radius: 6px; font-size: 13px; margin-bottom: 12px; }
+.panorama-common { padding: 10px; background: var(--bad-soft, #fef0f0); border: 1px solid var(--bad); border-radius: 6px; font-size: 13px; margin-bottom: 12px; }
 
 /* Lab family stats grid */
 .fam-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-top: 8px; }
-.fam-stats-grid .lab-stat { padding: 10px 8px; background: #fbf6ea; }
+.fam-stats-grid .lab-stat { padding: 10px 8px; background: var(--bg-2); }
 
 /* Caste markers in tree */
 .caste-marker { font-size: 10px; padding: 1px 6px; border-radius: 4px; display: inline-block; margin-top: 2px; }
@@ -1312,9 +1320,9 @@ input, select, textarea { font: inherit; color: inherit; }
 /* ==== v5.19: Educational mode badge ==== */
 .kit {
   position: absolute; top: 14px; left: 14px;
-  background: #fff8d8; color: #7a5a00;
+  background: var(--gold-soft, #fff8d8); color: var(--gold-ink, #7a5a00);
   font-size: 11px; padding: 2px 8px; border-radius: 999px;
-  border: 1px solid #d6b95a; z-index: 2;
+  border: 1px solid var(--gold-line, #d6b95a); z-index: 2;
 }
 .kit-pulse { animation: kitPulse 1.6s ease-in-out infinite; }
 @keyframes kitPulse {
@@ -1327,9 +1335,9 @@ input, select, textarea { font: inherit; color: inherit; }
   font-size: 12px;
   padding: 4px 12px;
   border-radius: 999px;
-  background: #fff8d8;
-  color: #7a5a00;
-  border: 1px solid #d6b95a;
+  background: var(--gold-soft, #fff8d8);
+  color: var(--gold-ink, #7a5a00);
+  border: 1px solid var(--gold-line, #d6b95a);
   letter-spacing: 0.06em;
   font-weight: 600;
 }
@@ -1391,7 +1399,7 @@ input, select, textarea { font: inherit; color: inherit; }
 .legal-body p { font-size: 14px; line-height: 1.65; margin: 10px 0; color: var(--ink-2); }
 .legal-body ul { padding-left: 20px; font-size: 13px; line-height: 1.65; }
 .legal-body li { margin: 4px 0; color: var(--ink-2); }
-.legal-helpline { margin-top: 12px; padding: 10px 12px; background: #f3dbe6; border-radius: 6px; font-size: 12px; color: var(--accent); }
+.legal-helpline { margin-top: 12px; padding: 10px 12px; background: var(--accent-soft); border-radius: 6px; font-size: 12px; color: var(--accent); }
 
 .install-card {
   display: flex; align-items: center; gap: 12px;
@@ -1690,17 +1698,17 @@ input, select, textarea { font: inherit; color: inherit; }
   background: var(--bg-2);
 }
 .shared-action-btn.heart:hover {
-  background: #fce4ec;
-  color: #c2185b;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 .shared-action-btn.report:hover {
-  background: #fff3e0;
-  color: #b0362b;
+  background: var(--warn-soft, #fff3e0);
+  color: var(--bad);
 }
 .shared-action-btn.active {
-  background: #fce4ec;
-  color: #c2185b;
-  border-color: #f8bbd0;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 .shared-expand-btn {
   margin-left: auto;
@@ -1879,13 +1887,13 @@ input, select, textarea { font: inherit; color: inherit; }
   grid-template-columns: 1fr auto;
   gap: 4px 12px;
   padding: 10px;
-  background: #fff8e1;
-  border: 1px solid #ffaa00;
+  background: var(--gold-soft, #fff8e1);
+  border: 1px solid var(--gold-line, #ffaa00);
   border-radius: 6px;
   font-size: 13px;
 }
 .fin-cost strong { grid-column: 1; }
-.fin-cost .fin-effect { grid-column: 1; font-size: 11px; color: #8a5a00; }
+.fin-cost .fin-effect { grid-column: 1; font-size: 11px; color: var(--gold-ink, #8a5a00); }
 .fin-cost .fin-price { grid-column: 2; grid-row: 1 / 3; font-weight: 700; color: #8C1D3C; align-self: center; }
 .fin-grid {
   display: grid;
@@ -1911,7 +1919,7 @@ input, select, textarea { font: inherit; color: inherit; }
 .fin-icon { grid-row: 1 / 3; font-size: 18px; align-self: center; }
 .fin-name { font-weight: 600; color: var(--ink); }
 .fin-desc { grid-column: 2; font-size: 10px; color: var(--ink-3); }
-.fin-info { font-size: 11px; line-height: 1.5; margin-top: 10px; padding: 8px; background: #f5f5f5; border-radius: 6px; }
+.fin-info { font-size: 11px; line-height: 1.5; margin-top: 10px; padding: 8px; background: var(--bg-3); border-radius: 6px; }
 .fin-auto { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); }
 .fin-auto button { background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; }
 .fin-auto button.active { background: #0F6E68; }
@@ -1982,6 +1990,13 @@ body.theme-dark {
   --gold: #D9AF59;
   --good: #5CC38B;
   --bad: #F07B6B;
+  /* v5.45：深色模式對應的 soft 值 */
+  --gold-soft: #3A2E10;
+  --gold-ink: #E2C070;
+  --gold-line: #6B551A;
+  --good-soft: #17301F;
+  --bad-soft: #3A1A16;
+  --warn-soft: #3A2A12;
   --paper: #0D1316;
   --card: #141D21;
   --card2: #1A2428;

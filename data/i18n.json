@@ -73,7 +73,7 @@
     "end.died": "逝世",
     "end.cause": "原因",
     "end.lifespan": "享年",
-    "end.lifespan_le": "享年 {age}（當地平均壽命 {le}）",
+    "end.lifespan_le": "{age} 歲（當地平均壽命 {le} 歲）",
     "end.past_count": "你活過幾段人生",
     "end.again": "再活一次",
     "end.new_country": "換個出生地",
@@ -485,7 +485,7 @@
     "end.died": "逝世",
     "end.cause": "原因",
     "end.lifespan": "享年",
-    "end.lifespan_le": "享年 {age}（当地平均寿命 {le}）",
+    "end.lifespan_le": "{age} 岁（当地平均寿命 {le} 岁）",
     "end.past_count": "你活过几段人生",
     "end.again": "再活一次",
     "end.new_country": "换个出生地",
@@ -897,7 +897,7 @@
     "end.died": "Died",
     "end.cause": "Cause",
     "end.lifespan": "Lifespan",
-    "end.lifespan_le": "Lived {age} (local average life expectancy {le})",
+    "end.lifespan_le": "{age} yrs (local average life expectancy {le} yrs)",
     "end.past_count": "Lives lived",
     "end.again": "Live again",
     "end.new_country": "New birthplace",
@@ -1305,11 +1305,11 @@
     "end.cert_title": "이 인생이 끝났습니다.",
     "end.heading": "부고",
     "end.summary": "이것은 {name}의 인생입니다.",
-    "end.born": "출생",
-    "end.died": "사망",
+    "end.born": "태어난 해",
+    "end.died": "사망 나이",
     "end.cause": "사인",
-    "end.lifespan": "享년",
-    "end.past_count": "살아온 인생",
+    "end.lifespan": "수명",
+    "end.past_count": "지나온 삶",
     "end.again": "다시 살기",
     "end.new_country": "다른 출생지",
     "end.to_shelf": "책장 보기",
@@ -1656,8 +1656,8 @@
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
     "end.deleteAll": "Delete all",
-    "end.lifespan_le": "享년 {age}（현지 평균 수명 {le}）",
-    "end.country": "국가"
+    "end.lifespan_le": "{age}세（현지 평균 수명 {le}세）",
+    "end.country": "출생 국가"
   },
   "ja": {
     "title": "出生地 · 人生シミュレーション",
@@ -2080,7 +2080,7 @@
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
     "end.deleteAll": "Delete all",
-    "end.lifespan_le": "享年 {age}歳（現地平均寿命 {le}歳）",
+    "end.lifespan_le": "{age}歳（現地平均寿命 {le}歳）",
     "end.country": "国"
   },
   "vi": {
@@ -2504,7 +2504,7 @@
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
     "end.deleteAll": "Delete all",
-    "end.lifespan_le": "Hưởng thọ {age} (tuổi thọ trung bình địa phương {le})",
+    "end.lifespan_le": "{age} tuổi (tuổi thọ trung bình địa phương {le})",
     "end.country": "Quê quốc"
   },
   "fr": {
@@ -2928,7 +2928,7 @@
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
     "end.deleteAll": "Delete all",
-    "end.lifespan_le": "A vécu {age} ans (espérance de vie locale {le})",
+    "end.lifespan_le": "{age} ans (espérance de vie locale {le} ans)",
     "end.country": "Pays"
   },
   "th": {
@@ -3352,7 +3352,7 @@
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
     "end.deleteAll": "Delete all",
-    "end.lifespan_le": "อายุ {age} (อายุขัยเฉลี่ยท้องถิ่น {le})",
+    "end.lifespan_le": "{age} ปี (อายุขัยเฉลี่ยท้องถิ่น {le} ปี)",
     "end.country": "ประเทศ"
   },
   "es": {
@@ -3776,7 +3776,7 @@
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
     "end.deleteAll": "Delete all",
-    "end.lifespan_le": "Vivió {age} años (esperanza de vida local {le})",
+    "end.lifespan_le": "{age} años (esperanza de vida local {le} años)",
     "end.country": "País"
   }
 }
