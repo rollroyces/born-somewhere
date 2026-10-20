@@ -1819,6 +1819,10 @@ function renderLife() {
   } else {
     $('#lifeKids').textContent = '0';
   }
+  // v5.37：進度條（4px scaleX，位於 sticky topbar 內）
+  const pct = Math.min(100, STATE.life.age / c.le * 100);
+  const bar = $('#lifeBar');
+  if (bar) bar.style.transform = `scaleX(${(pct / 100).toFixed(4)})`;
   // 角色簡介
   const portrait = $('#lifePortrait');
   if (portrait) {
