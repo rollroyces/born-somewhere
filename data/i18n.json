@@ -72,9 +72,9 @@
     "end.born": "出生",
     "end.died": "逝世",
     "end.cause": "原因",
-    "end.lifespan": "享年 {0}（當地平均 {1}）",
+    "end.lifespan": "享年",
     "end.lifespan_le": "享年 {age}（當地平均壽命 {le}）",
-    "end.past_count": "你活過 {n} 段人生",
+    "end.past_count": "你活過幾段人生",
     "end.again": "再活一次",
     "end.new_country": "換個出生地",
     "end.to_shelf": "到書架看看",
@@ -408,7 +408,8 @@
     "end.pastNote": "最近的 N 段人生，按下「再看一次」就能重新打開死亡紀錄和分享卡。紀錄只會留在這個瀏覽器。",
     "end.viewShelf": "看看我的前世展示架",
     "end.organize": "整理紀錄",
-    "end.deleteAll": "全部刪除"
+    "end.deleteAll": "全部刪除",
+    "end.country": "國家"
   },
   "zh-Hans": {
     "title": "选出生地 · 人生模拟",
@@ -483,9 +484,9 @@
     "end.born": "出生",
     "end.died": "逝世",
     "end.cause": "原因",
-    "end.lifespan": "享年 {age}（当地平均寿命 {le}）",
+    "end.lifespan": "享年",
     "end.lifespan_le": "享年 {age}（当地平均寿命 {le}）",
-    "end.past_count": "你活过 {n} 段人生",
+    "end.past_count": "你活过几段人生",
     "end.again": "再活一次",
     "end.new_country": "换个出生地",
     "end.to_shelf": "到书架看看",
@@ -819,7 +820,8 @@
     "end.pastNote": "Your most recent N lives. Press replay to reopen the death record and share card. Records stay only in this browser.",
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
-    "end.deleteAll": "Delete all"
+    "end.deleteAll": "Delete all",
+    "end.country": "国家"
   },
   "en": {
     "title": "Born Somewhere · Life Simulator",
@@ -894,9 +896,9 @@
     "end.born": "Born",
     "end.died": "Died",
     "end.cause": "Cause",
-    "end.lifespan": "Lived {age} (local average {le})",
+    "end.lifespan": "Lifespan",
     "end.lifespan_le": "Lived {age} (local average life expectancy {le})",
-    "end.past_count": "You've lived {n} lives",
+    "end.past_count": "Lives lived",
     "end.again": "Live again",
     "end.new_country": "New birthplace",
     "end.to_shelf": "See the shelf",
@@ -1230,7 +1232,8 @@
     "end.pastNote": "Your most recent N lives. Press replay to reopen the death record and share card. Records stay only in this browser.",
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
-    "end.deleteAll": "Delete all"
+    "end.deleteAll": "Delete all",
+    "end.country": "Country"
   },
   "ko": {
     "title": "태어난 곳 · 인생 시뮬레이션",
@@ -1305,8 +1308,8 @@
     "end.born": "출생",
     "end.died": "사망",
     "end.cause": "사인",
-    "end.lifespan": "{age}세로 삶을 마침 (현지 평균 {le}세)",
-    "end.past_count": "{n}개의 인생을 살았음",
+    "end.lifespan": "享년",
+    "end.past_count": "살아온 인생",
     "end.again": "다시 살기",
     "end.new_country": "다른 출생지",
     "end.to_shelf": "책장 보기",
@@ -1653,7 +1656,8 @@
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
     "end.deleteAll": "Delete all",
-    "end.lifespan_le": "享년 {age}（현지 평균 수명 {le}）"
+    "end.lifespan_le": "享년 {age}（현지 평균 수명 {le}）",
+    "end.country": "국가"
   },
   "ja": {
     "title": "出生地 · 人生シミュレーション",
@@ -1728,8 +1732,8 @@
     "end.born": "出生",
     "end.died": "死去",
     "end.cause": "死因",
-    "end.lifespan": "{age}歳で生涯を閉じた（当地平均寿命 {le}）",
-    "end.past_count": "{n} 回の人生を経験",
+    "end.lifespan": "享年",
+    "end.past_count": "生きた人生",
     "end.again": "もう一度",
     "end.new_country": "出生地を変える",
     "end.to_shelf": "本棚を見る",
@@ -2076,7 +2080,8 @@
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
     "end.deleteAll": "Delete all",
-    "end.lifespan_le": "享年 {age}歳（現地平均寿命 {le}歳）"
+    "end.lifespan_le": "享年 {age}歳（現地平均寿命 {le}歳）",
+    "end.country": "国"
   },
   "vi": {
     "title": "Nơi sinh · Mô phỏng cuộc đời",
@@ -2148,11 +2153,11 @@
     "end.cert_title": "Đời này đã hết.",
     "end.heading": "Phúng điếu",
     "end.summary": "Đây là cuộc đời của {name}.",
-    "end.born": "Sinh",
+    "end.born": "Sinh năm",
     "end.died": "Mất",
     "end.cause": "Nguyên nhân",
-    "end.lifespan": "{age} tuổi (trung bình địa phương {le})",
-    "end.past_count": "Bạn đã sống {n} cuộc đời",
+    "end.lifespan": "Tuổi thọ",
+    "end.past_count": "Số kiếp đã sống",
     "end.again": "Sống lại",
     "end.new_country": "Đổi nơi sinh",
     "end.to_shelf": "Xem kệ sách",
@@ -2499,7 +2504,8 @@
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
     "end.deleteAll": "Delete all",
-    "end.lifespan_le": "Hưởng thọ {age} (tuổi thọ trung bình địa phương {le})"
+    "end.lifespan_le": "Hưởng thọ {age} (tuổi thọ trung bình địa phương {le})",
+    "end.country": "Quê quốc"
   },
   "fr": {
     "title": "Né quelque part · Simulateur de vie",
@@ -2571,11 +2577,11 @@
     "end.cert_title": "Cette vie est terminée.",
     "end.heading": "Faire-part",
     "end.summary": "C'est la vie de {name}.",
-    "end.born": "Né",
+    "end.born": "Né(e)",
     "end.died": "Mort",
     "end.cause": "Cause",
-    "end.lifespan": "{age} ans (moyenne locale {le})",
-    "end.past_count": "Vous avez vécu {n} vies",
+    "end.lifespan": "Espérance de vie",
+    "end.past_count": "Vies vécues",
     "end.again": "Vivre à nouveau",
     "end.new_country": "Autre lieu de naissance",
     "end.to_shelf": "Voir l'étagère",
@@ -2922,7 +2928,8 @@
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
     "end.deleteAll": "Delete all",
-    "end.lifespan_le": "A vécu {age} ans (espérance de vie locale {le})"
+    "end.lifespan_le": "A vécu {age} ans (espérance de vie locale {le})",
+    "end.country": "Pays"
   },
   "th": {
     "title": "เกิดที่ไหน · จำลองชีวิต",
@@ -2994,11 +3001,11 @@
     "end.cert_title": "ชีวิตนี้จบลงแล้ว",
     "end.heading": "แจ้งอายุ",
     "end.summary": "นี่คือชีวิตของ {name}",
-    "end.born": "เกิด",
+    "end.born": "ปีที่เกิด",
     "end.died": "ตาย",
     "end.cause": "สาเหตุ",
-    "end.lifespan": "อายุ {age} (เฉลี่ยท้องถิ่น {le})",
-    "end.past_count": "คุณมีชีวิตมาแล้ว {n} ชีวิต",
+    "end.lifespan": "อายุขัย",
+    "end.past_count": "จำนวนชีวิตที่ผ่านมา",
     "end.again": "มีชีวิตอีกครั้ง",
     "end.new_country": "เปลี่ยนที่เกิด",
     "end.to_shelf": "ดูชั้นหนังสือ",
@@ -3345,7 +3352,8 @@
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
     "end.deleteAll": "Delete all",
-    "end.lifespan_le": "อายุ {age} (อายุขัยเฉลี่ยท้องถิ่น {le})"
+    "end.lifespan_le": "อายุ {age} (อายุขัยเฉลี่ยท้องถิ่น {le})",
+    "end.country": "ประเทศ"
   },
   "es": {
     "title": "Nacido en algún lugar · Simulador de vida",
@@ -3417,11 +3425,11 @@
     "end.cert_title": "Esta vida ha terminado.",
     "end.heading": "Esquela",
     "end.summary": "Esta es la vida de {name}.",
-    "end.born": "Nacido",
+    "end.born": "Nacimiento",
     "end.died": "Fallecido",
     "end.cause": "Causa",
-    "end.lifespan": "Vivió {age} años (media local {le})",
-    "end.past_count": "Has vivido {n} vidas",
+    "end.lifespan": "Esperanza de vida",
+    "end.past_count": "Vidas vividas",
     "end.again": "Vivir de nuevo",
     "end.new_country": "Cambiar país",
     "end.to_shelf": "Ver el estante",
@@ -3768,6 +3776,7 @@
     "end.viewShelf": "View my past life gallery",
     "end.organize": "Manage records",
     "end.deleteAll": "Delete all",
-    "end.lifespan_le": "Vivió {age} años (esperanza de vida local {le})"
+    "end.lifespan_le": "Vivió {age} años (esperanza de vida local {le})",
+    "end.country": "País"
   }
 }

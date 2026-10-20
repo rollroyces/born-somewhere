@@ -542,7 +542,7 @@ input, select, textarea { font: inherit; color: inherit; }
 #certCanvas { position: absolute; inset: 0; pointer-events: none; }
 .end-cert .cert-band { position: relative; }
 .end-cert .cert-body { padding: 32px; }
-.cert-id { display: grid; grid-template-columns: 1fr; gap: 4px 16px; max-width: 480px; margin: 0 auto; padding: 16px; background: rgba(255,255,255,0.5); border: 1px solid var(--line); border-radius: 6px; }
+.cert-id { display: grid; grid-template-columns: 1fr; gap: 4px 16px; max-width: 480px; margin: 0 auto; padding: 16px; background: var(--card2, var(--bg-2)); border: 1px solid var(--line); border-radius: 6px; }
 .id-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed var(--line); }
 .id-row:last-child { border-bottom: 0; }
 .id-row span { color: var(--ink-3); font-size: 13px; }
