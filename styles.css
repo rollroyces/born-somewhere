@@ -1933,21 +1933,65 @@ input, select, textarea { font: inherit; color: inherit; }
 }
 .meta-btn:hover { background: var(--bg); border-color: var(--accent); }
 
-/* 主題：dark */
-body.theme-dark { background: #1a1a1a; color: #e5e5e5; }
+/* v5.39：主題 dark — 改用 CSS 變數重映射（1in8b.life 風格），讓所有元件（含 .life-topbar）自動變暗 */
+body.theme-dark {
+  --bg: #0D1316;
+  --bg-2: #141D21;
+  --bg-3: #1A2428;
+  --ink: #E1E9E6;
+  --ink-2: #A3B2AF;
+  --ink-3: #8A9A96;
+  --line: #2A383D;
+  --accent: #E2678A;
+  --accent-2: #C4517A;
+  --gold: #D9AF59;
+  --good: #5CC38B;
+  --bad: #F07B6B;
+  --paper: #0D1316;
+  --card: #141D21;
+  --card2: #1A2428;
+  --accent-ink: #1B0910;
+  --accent-soft: #3A1C26;
+  --stamp: #4CC0AF;
+  --stamp-soft: #12302D;
+  --shadow: 0 1px 0 rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.6);
+  background: var(--bg);
+  color: var(--ink);
+  background-image: radial-gradient(circle at 25% 25%, rgba(226,103,138,.05), transparent 50%);
+}
+/* dark 下仍需硬色覆寫的元素（原本用 #faf7f0 / #fff 的地方） */
+body.theme-dark .topbar { background: rgba(13,19,22,.95); }
+body.theme-dark .life-topbar { background: var(--paper); border-bottom-color: var(--rule, #2A383D); }
+body.theme-dark .cert-band { background: var(--accent); }
+body.theme-dark .cert-body,
 body.theme-dark .paper, body.theme-dark .meta-btn, body.theme-dark .life-stats, body.theme-dark .life-country-stats,
-body.theme-dark .life-family-detail, body.theme-dark .life-this-year, body.theme-dark .life-survival-curve, body.theme-dark .life-trajectory, body.theme-dark .life-identity-record, body.theme-dark .life-manual-decisions {
-  background: #2a2a2a; color: #e5e5e5; border-color: #444;
+body.theme-dark .life-family-detail, body.theme-dark .life-this-year, body.theme-dark .life-survival-curve,
+body.theme-dark .life-trajectory, body.theme-dark .life-identity-record, body.theme-dark .life-manual-decisions {
+  background: var(--card); color: var(--ink); border-color: var(--line);
 }
-body.theme-dark .cs-table td, body.theme-dark .cs-table tr { border-color: #444; }
-body.theme-dark .muted { color: #888; }
+body.theme-dark .cs-table td, body.theme-dark .cs-table tr { border-color: var(--line); }
+body.theme-dark .muted { color: var(--ink-3); }
 body.theme-dark #focusBody .focus-btn, body.theme-dark #financeBody .finance-btn, body.theme-dark #treeCanvas svg {
-  background: #2a2a2a; color: #e5e5e5;
+  background: var(--card); color: var(--ink);
 }
-body.theme-dark .cs-k { color: #999; }
+body.theme-dark .cs-k { color: var(--ink-3); }
+body.theme-dark .ltb-speed-btn, body.theme-dark .ltb-pause, body.theme-dark .ltb-more {
+  background: var(--card); color: var(--ink); border-color: var(--line);
+}
+body.theme-dark .ltb-speed-btn[aria-pressed="true"], body.theme-dark .ltb-pause[aria-pressed="true"] {
+  background: var(--ink); color: var(--paper); border-color: var(--ink);
+}
+body.theme-dark .ltb-age { color: var(--ink); }
+body.theme-dark .ltb-age small { color: var(--ink-3); }
+body.theme-dark .ltb-yr-text { color: var(--ink-2); }
+body.theme-dark .cert-figure, body.theme-dark .cert-name-main { color: var(--ink); }
+body.theme-dark input, body.theme-dark select, body.theme-dark textarea {
+  background: var(--bg-3); color: var(--ink); border-color: var(--line);
+}
+body.theme-dark .modal-card { background: var(--card); color: var(--ink); }
 
 /* 主題：sepia */
-body.theme-sepia { background: #f4ecd8; color: #5b4636; }
+body.theme-sepia { --bg: #f4ecd8; --bg-2: #fbf6ea; --bg-3: #ebe1cc; --ink: #5b4636; --ink-2: #7a6350; --ink-3: #8b7355; --line: #b8a585; background: #f4ecd8; color: #5b4636; }
 body.theme-sepia .paper, body.theme-sepia .meta-btn, body.theme-sepia .life-stats, body.theme-sepia .life-country-stats,
 body.theme-sepia .life-family-detail, body.theme-sepia .life-this-year, body.theme-sepia .life-survival-curve, body.theme-sepia .life-trajectory, body.theme-sepia .life-identity-record, body.theme-sepia .life-manual-decisions {
   background: #ebe1cc; color: #5b4636; border-color: #b8a585;

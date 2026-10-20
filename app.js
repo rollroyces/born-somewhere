@@ -31,6 +31,7 @@ const STATE = {
   pastLives: [],
   modal: null,
   eduMode: false,      // v5.19：教學版（?edu=1）— 過濾沉重事件、隱藏訃聞/書架
+  softMode: false,     // v5.39：略過可怕的情節（1in8b.life 的 softBtn）— 可即時切換並記住
 };
 
 // ==== i18n ====
@@ -350,6 +351,16 @@ function causeWeights(c, age, sex) {
   else if (age < 70) bucket = 'older';
   else bucket = 'elderly';
   const w = { ...CAUSE_BASE[bucket] };
+  // v5.39：略過可怕的情節 — 把自殺/他殺機率併入其他死因（不改變總死亡率）
+  if (STATE.softMode) {
+    let heavy = 0;
+    for (const k of ['自殺', '他殺']) {
+      if (w[k]) { heavy += w[k]; delete w[k]; }
+    }
+    if (heavy > 0) {
+      w['其他'] = (w['其他'] || 0) + heavy;
+    }
+  }
   // 國家加成
   if (c.hom > 5 && w['他殺']) w['他殺'] *= c.hom / 5;
   else if (w['他殺'] && c.hom < 1) w['他殺'] *= 0.5;
@@ -778,7 +789,7 @@ function milestoneEvents(life, newAge) {
         death: chance((life.countryData.im || 5) / 1000 * 0.3) ? { year: childBirth.year + Math.floor(Math.random() * 5) } : null
       };
       life.family.kids.push(childNode);
-      if (childNode.death && !STATE.eduMode) events.push({ age: newAge, kind: 'heavy', icon: '🕯️', text: LANG === 'en' ? `${childNode.name} died as an infant.` : `${childNode.name} 在嬰幼兒時期夭折了。` });
+      if (childNode.death && !STATE.eduMode && !STATE.softMode) events.push({ age: newAge, kind: 'heavy', icon: '🕯️', text: LANG === 'en' ? `${childNode.name} died as an infant.` : `${childNode.name} 在嬰幼兒時期夭折了。` });
     }
     events.push({ age: newAge, kind: 'milestone', icon: '👶', text: t('event.baby', life.stats.kids.length) });
   }
@@ -787,7 +798,7 @@ function milestoneEvents(life, newAge) {
     events.push({ age: 60, kind: 'milestone', icon: '🏖️', text: t('event.retirement') });
   }
   // 偶發事件（教學版過濾掉疾病）
-  if (!STATE.eduMode && newAge >= 18 && newAge <= 65 && chance(0.04)) {
+  if (!STATE.eduMode && !STATE.softMode && newAge >= 18 && newAge <= 65 && chance(0.04)) {
     const cond = pick(['cancer', 'heart', 'stroke', 'diabetes']);
     life.conditions[cond === 'cancer' ? 'cancer' : cond === 'heart' ? 'heart' : cond === 'stroke' ? 'heart' : 'diabetes'] = true;
     events.push({ age: newAge, kind: 'illness', icon: '💊', text: t('event.illness.' + cond) });
@@ -805,7 +816,7 @@ function milestoneEvents(life, newAge) {
   }
   // 戰爭/衝突（教學版過濾掉）
   const wh = life.countryData?.wh || 0;
-  if (!STATE.eduMode && wh > 0.1 && newAge >= 1 && chance(wh * 0.1)) {
+  if (!STATE.eduMode && !STATE.softMode && wh > 0.1 && newAge >= 1 && chance(wh * 0.1)) {
     const warEvt = pick([
       LANG === 'en' ? 'Air raid sirens. The family shelters in the basement.' : '空襲警報響起，全家躲進防空洞。',
       LANG === 'en' ? 'A neighbor dies in the fighting. You witness the scene.' : '鄰居在衝突中喪生，你目睹了場面。',
@@ -816,7 +827,7 @@ function milestoneEvents(life, newAge) {
     events.push({ age: newAge, kind: 'heavy', icon: '⚔️', text: warEvt });
   }
   // 寄養（美/英/紐/澳/韓/日）— 教學版不觸發
-  if (!STATE.eduMode && ['USA','GBR','NZL','AUS','KOR','JPN'].includes(life.country) && newAge === 0) {
+  if (!STATE.eduMode && !STATE.softMode && ['USA','GBR','NZL','AUS','KOR','JPN'].includes(life.country) && newAge === 0) {
     if (chance(0.04)) {
       life.fc = { in: 1, system: 'state', type: 'foster' };
       life.family = generateFamily(life.country, life.sex, { type: 'foster' });
@@ -1567,6 +1578,7 @@ function renderAll() {
   else if (STATE.view === 'lab') renderLab();
   else if (STATE.view === 'tree') renderTree();
   renderSpeedBtns();
+  renderSoftModeBtn();
   updateLangSwitcher();
 }
 
@@ -3759,6 +3771,19 @@ function wire() {
     setTheme(next);
     toast(LANG === 'en' ? `Theme: ${next.replace('theme-','')}` : `主題：${next.replace('theme-','')}`);
   });
+  // v5.39：略過可怕的情節（1in8b.life softBtn）
+  const softBtn = $('#btnSoftMode');
+  if (softBtn) {
+    softBtn.addEventListener('click', () => {
+      STATE.softMode = !STATE.softMode;
+      localStorage.setItem(STORAGE_KEY + ':soft', STATE.softMode ? '1' : '0');
+      renderSoftModeBtn();
+      renderAll();
+      toast(STATE.softMode
+        ? (LANG === 'en' ? 'Heavy events are hidden' : '已略過可怕的情節')
+        : (LANG === 'en' ? 'Heavy events are shown' : '會顯示全部情節'));
+    });
+  }
   const pauseSave = $('#pauseSave');
   if (pauseSave) pauseSave.addEventListener('click', savePauseQuote);
   const pauseSkip = $('#pauseSkip');
@@ -4168,7 +4193,8 @@ function buildFamilyAround(selfP, parsed) {
 async function init() {
   await loadData();
   document.documentElement.lang = LANG;
-  const savedTheme = localStorage.getItem('born-somewhere-v2:theme') || 'theme-light';
+  // v5.39：預設跟隨系統（1in8b.life 行為）；沒存過就用 auto
+  const savedTheme = localStorage.getItem('born-somewhere-v2:theme') || 'auto';
   setTheme(savedTheme);  // v5.22：套用保存的主題
   checkEduMode();      // v5.19: 教學版旗標 (?edu=1)
   wire();
@@ -4279,6 +4305,9 @@ const CHANGELOG = [
 function checkEduMode() {
   const params = new URLSearchParams(location.search);
   STATE.eduMode = params.get('edu') === '1';
+  // v5.39：略過可怕的情節 — 從 localStorage 還原；教學版一律開啟
+  STATE.softMode = STATE.eduMode || localStorage.getItem(STORAGE_KEY + ':soft') === '1';
+  if (STATE.softMode) localStorage.setItem(STORAGE_KEY + ':soft', '1');
   if (STATE.eduMode) {
     document.documentElement.classList.add('edu-mode');
     // 預設自動抉擇
@@ -4446,6 +4475,18 @@ function showLegalModal(id, title, html) {
   document.body.appendChild(wrap.firstElementChild);
   const modal = document.querySelector('#' + id);
   modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+/* v5.39：略過可怕的情節 — 按鈕狀態同步 */
+function renderSoftModeBtn() {
+  const b = $('#btnSoftMode');
+  if (b) {
+    b.setAttribute('aria-pressed', STATE.softMode ? 'true' : 'false');
+    b.classList.toggle('active', STATE.softMode);
+    b.title = STATE.softMode
+      ? (LANG === 'en' ? 'Heavy events are hidden — click to show them' : '已略過可怕的情節 — 點一下恢復')
+      : (LANG === 'en' ? 'Hide suicide, violence, drugs and abuse events' : '讓自殺、性暴力、藥物、暴力這類情節不會發生');
+  }
 }
 
 // ==== Service Worker 註冊（PWA 離線快取）====
@@ -4826,7 +4867,7 @@ function computeCrossLifeEvents(p) {
   if (p.death?.year) {
     const myAge = selfAgeAt(p.death.year);
     if (myAge >= 0 && myAge <= self.age) {
-      if (!STATE.eduMode) {
+      if (!STATE.eduMode && !STATE.softMode) {
         events.push({
           icon: '🕯️',
           text: LANG === 'en' ? `${p.name} passed away when you were ${myAge}.` : `${p.name} 過世時，你 ${myAge} 歲。`,
