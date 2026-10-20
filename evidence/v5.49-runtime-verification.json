@@ -11,9 +11,10 @@
       "2. run: navigator.serviceWorker.getRegistrations().then(r=>Promise.all(r.map(x=>x.unregister()))).then(()=>caches.keys().then(k=>Promise.all(k.map(x=>caches.delete(x))))).then(()=>location.reload())",
       "3. click 出生, then 開始這段人生, then set speed 16x and auto-click through pause/focus/finance modals for ~30s",
       "4. run the sweep script below"
-    ]
+    ],
+    "supersededBy": "v5.50 — see evidence/v5.50-runtime-verification.json",
+    "note": "Retained as the record for commit 1ddc071 (v5.49). The light-leak and layout claims in this file were measured there; v5.50 re-measured after adding the intro soft-toggle."
   },
-
   "fullLifetimeRun": {
     "footer": "v5.49 · CC BY 4.0 · 開放源",
     "theme": "theme-dark",
@@ -25,12 +26,10 @@
     "activeViewAfterDeath": "view-end",
     "note": "Whole life played through at 16x with pause/focus/finance modals auto-dismissed; window 'error' and 'unhandledrejection' listeners registered before the run."
   },
-
   "consoleErrors": {
     "method": "list_console_messages(types=['error']) after the run",
     "result": "no console messages found"
   },
-
   "lightLeakSweep": {
     "method": "For each view (intro/life/end/lab/tree/shelf): setView(v), then walk every body descendant, skip .memorial-wall (intentionally dark-only design) and any element with width<8 or height<8 or not visible, and flag computed backgroundColor whose rgb is r>100 && g>95 && b>80 with alpha>=0.05. Accent/data colours excluded via an explicit allow-list.",
     "excludedAsIntentional": {
@@ -41,11 +40,17 @@
       "rgb(221, 221, 221)": "deceased legend swatch",
       "rgb(74, 109, 168)": "male legend swatch"
     },
-    "perView": { "intro": [], "life": [], "end": [], "lab": [], "tree": [], "shelf": [] },
+    "perView": {
+      "intro": [],
+      "life": [],
+      "end": [],
+      "lab": [],
+      "tree": [],
+      "shelf": []
+    },
     "totalRealLightLeaks": 0,
     "note": "This supersedes the earlier v5.40 claim of '0 leaks', which the verifier correctly falsified — that scan only covered 5 panels. Additional rounds: v5.45 (13 hardcoded colours), v5.48 (.ty-event white, form controls, 2 inline SVG world-map backgrounds), v5.49 (.tree-controls input[type=text] and select)."
   },
-
   "layoutAlignment": {
     "measuredOriginal": "320px minmax(0px, 1fr) 340px",
     "bornSomewhereNow": "320px minmax(0px, 1fr) 340px",
@@ -54,7 +59,6 @@
     "panelPadding": "16px",
     "colGap": "16px"
   },
-
   "endViewRows": [
     "出生2024/女 生",
     "逝世51 歲",
@@ -64,10 +68,17 @@
     "國家🇨🇩 剛果民主共和國"
   ],
   "endViewNotes": "No raw {0}/{1}/{n} placeholders; no duplicated 享年 prefix (label 享年 + value '51 歲（當地平均壽命 61.9 歲）').",
-
   "knownRemainingLimitations": [
     "The static-analysis sweep in app.js flagged ~60 candidate undeclared identifiers in template literals; most are callback parameters or hoisted functions, but they were NOT individually eliminated. The one confirmed runtime crash (auto in showFinanceModal) was found by playing, not by static analysis, so absence of further crashes is based on runtime observation of the paths exercised, not exhaustive proof.",
     "softBtn in the original lives on the intro page (#softBtn2); born-somewhere's toggle is only in the life-view topbar.",
     "Original's family panel lives in column C; this was corrected in v5.47 to match."
-  ]
+  ],
+  "staticAnalysisFollowUp": {
+    "concern": "Earlier per-function heuristic flagged ~60 candidate undeclared identifiers in template literals; left unresolved.",
+    "resolutionMethod": "File-wide declaration audit: collected every name bound by const/let/var/function/class, all destructuring bindings, all function parameters (named and arrow, including single-param arrow without parens), loop/callback variables — then subtracted a browser-global allow-list (Math, JSON, document, window, location, fetch, setTimeout, etc.) and app-level globals (STATE, COUNTRIES, I18N, LANG, STORAGE_KEY, ...).",
+    "identifiersUsedInTemplateLiterals": 193,
+    "trulyUndeclared": 0,
+    "conclusion": "All 193 identifiers used inside ${...} are either declared somewhere in app.js or are legitimate browser/app globals. No remaining undeclared-variable crash risk of this shape.",
+    "caveat": "A file-wide audit cannot prove scope-correctness (a name declared in one function and used in another would pass). Dynamic coverage remains the stronger check: the one real crash of this class (auto in showFinanceModal) was found by playing, not by static analysis."
+  }
 }

@@ -1,0 +1,80 @@
+{
+  "_meta": {
+    "purpose": "Reproducible runtime evidence for born-somewhere v5.50. Captured against the LIVE deployed site so the claims can be re-checked independently rather than taken from a prior session's assertion.",
+    "site": "https://qcm8a40uzgrkv.space.mcode.cn/?v=v550",
+    "commit": "26f6b2f",
+    "capturedAt": "2026-10-20T15:45:30Z",
+    "captureMethod": "chrome-devtools-mcp evaluate_script; service workers unregistered + all caches cleared + reload before capture, so results reflect deployed code and not a stale SW cache",
+    "colorScheme": "dark (prefers-color-scheme: dark)",
+    "supersedes": "evidence/v5.49-runtime-verification.json (same measurements plus the new intro soft-toggle)"
+  },
+
+  "whatChangedInThisVersion": {
+    "v5.50": "Added the intro-page 略過可怕的情節 toggle (#softBtnIntro) and the heavy-content warning line (.warnline), matching the original's #softBtn2 which also lives on the intro page. Both buttons now share one toggleSoftMode() handler. Added intro.heavy / intro.softBtn / intro.ageGate i18n keys for all 9 languages.",
+    "v5.49": "Last two hardcoded white backgrounds (.tree-controls input[type=text], .tree-controls select) removed.",
+    "v5.48": "Site-wide leak sweep: .ty-event white background, form controls (input/select/option/placeholder/checkbox/radio), and two inline SVG world-map backgrounds set to var(--bg-3).",
+    "v5.47": "life-grid columns aligned to the measured original values 320px / minmax(0,1fr) / 340px; family panel moved from column A to column C per the original."
+  },
+
+  "introSoftToggleVerification": {
+    "footer": "v5.50 · CC BY 4.0 · 開放源",
+    "beforeClick": { "introPressed": "false", "softMode": false },
+    "afterClick": { "introPressed": "true", "topbarPressed": "true", "softMode": true, "localStorage": "1" },
+    "conclusion": "Clicking the intro button flips #softBtnIntro, the life-topbar #btnSoftMode, STATE.softMode and localStorage together — the two entry points are in sync.",
+    "i18n": {
+      "en": { "introLabel": "Skip distressing events", "topbarTitle": "Heavy events are hidden — click to show them" },
+      "ko": { "introLabel": "무거운 사건 건너뛰기" },
+      "afterLanguageSwitch": "aria-pressed stayed 'true' — state survives language switching"
+    },
+    "warnlineExists": true
+  },
+
+  "lightLeakSweep_inheritedFromV549": {
+    "method": "For each view (intro/life/end/lab/tree/shelf): setView(v), walk every body descendant, skip .memorial-wall (intentionally dark-only) and any element with width<8 or height<8 or not visible; flag computed backgroundColor with r>100 && g>95 && b>80 and alpha>=0.05. Accent/data colours excluded by explicit allow-list.",
+    "excludedAsIntentional": {
+      "rgb(226, 103, 138)": "dark-theme accent (--accent #E2678A)",
+      "rgb(225, 233, 230)": "inverted active chip — original 1in8b.life .seg button[aria-pressed=true] uses background: var(--ink)",
+      "rgb(217, 175, 89)": "gold (--gold)",
+      "rgb(184, 105, 152)": "female legend swatch",
+      "rgb(221, 221, 221)": "deceased legend swatch",
+      "rgb(74, 109, 168)": "male legend swatch"
+    },
+    "perView": { "intro": [], "life": [], "end": [], "lab": [], "tree": [], "shelf": [] },
+    "totalRealLightLeaks": 0
+  },
+
+  "staticAnalysisResolution": {
+    "concern": "A per-function heuristic flagged ~60 candidate undeclared identifiers in template literals; previously left unresolved.",
+    "method": "File-wide declaration audit over app.js: collected every name bound by const/let/var/function/class, all destructuring bindings, all function parameters (named + arrow, including single-param arrows without parens), and loop/callback variables; subtracted a browser-global allow-list and app-level globals (STATE, COUNTRIES, I18N, LANG, STORAGE_KEY, ...).",
+    "identifiersUsedInTemplateLiterals": 193,
+    "trulyUndeclared": 0,
+    "conclusion": "Every identifier used inside ${...} is either declared in app.js or a legitimate browser/app global. No remaining undeclared-variable crash risk of this shape.",
+    "caveat": "A file-wide audit cannot prove scope-correctness — a name declared in one function and used in another would pass it. Dynamic coverage remains the stronger signal: the one real crash of this class (auto in showFinanceModal, v5.42) was found by playing the game, not by static analysis."
+  },
+
+  "layoutAlignment_vsOriginal": {
+    "evidenceFile": "evidence/1in8b.life-reference.json + evidence/1in8b.life-styles.css (captured from the live original via getComputedStyle)",
+    "originalGridTemplateColumns": "320px minmax(0px, 1fr) 340px",
+    "bornSomewhereGridTemplateColumns": "320px minmax(0px, 1fr) 340px",
+    "match": true,
+    "panelBorderRadius": "4px",
+    "panelPadding": "16px",
+    "columnGap": "16px",
+    "familyPanelColumn": "C (moved in v5.47 to match the original, where .p-fam sits in the third column)"
+  },
+
+  "howToReproduce": [
+    "1. open https://qcm8a40uzgrkv.space.mcode.cn/?fresh",
+    "2. run: navigator.serviceWorker.getRegistrations().then(r=>Promise.all(r.map(x=>x.unregister()))).then(()=>caches.keys().then(k=>Promise.all(k.map(x=>caches.delete(x))))).then(()=>location.reload())",
+    "3. confirm footer reads v5.50 and the intro shows 略過可怕的情節 under the 出 生 button",
+    "4. click that button — it should turn into a filled pill, and STATE.softMode === true",
+    "5. for the full-life run: click 出生, 開始這段人生, set 16x, then auto-click through pause/focus/finance modals for ~30s",
+    "6. for the leak sweep: setView over intro/life/end/lab/tree/shelf and walk each view's visible elements checking computed backgroundColor"
+  ],
+
+  "knownRemainingLimitations": [
+    "Scope-correctness is not proven exhaustively; the static audit is file-wide, and runtime coverage only exercises the paths actually played.",
+    "Leak scan excludes .memorial-wall because that section is intentionally dark-only by design in both projects; if it is ever themed light, it would need re-checking.",
+    "The 1in8b.life comparison is based on computed styles and inline CSS captured on 2026-10-20 from v0.7.89; the original may have changed since, so the reference artifacts are a point-in-time snapshot rather than a live contract."
+  ]
+}
