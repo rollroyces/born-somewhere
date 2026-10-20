@@ -1933,7 +1933,42 @@ input, select, textarea { font: inherit; color: inherit; }
 }
 .meta-btn:hover { background: var(--bg); border-color: var(--accent); }
 
-/* v5.39：主題 dark — 改用 CSS 變數重映射（1in8b.life 風格），讓所有元件（含 .life-topbar）自動變暗 */
+/* v5.41：3 欄 panel 佈局（1in8b.life 風格） */
+.life-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+.life-col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.life-col-a .life-stats,
+.life-col-a .life-family-detail { width: 100%; }
+.life-cert { grid-column: 1 / -1; margin: 0 auto 16px; width: 100%; max-width: 1320px; }
+/* 3 欄內的 panel 統一外觀 */
+.life-col > div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: var(--card, var(--bg-2));
+  min-width: 0;
+}
+.life-col > div:empty { display: none; }
+.life-col h4, .life-col h3 {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  margin: 0 0 8px; font-size: 15px; font-weight: 600;
+}
+.life-col .muted { font-size: 12px; font-weight: 400; }
+@media (max-width: 1080px) {
+  .life-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .life-col-c { grid-column: 1 / -1; }
+}
+@media (max-width: 720px) {
+  .life-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+}
+
+/* 主題：dark */
 body.theme-dark {
   --bg: #0D1316;
   --bg-2: #141D21;

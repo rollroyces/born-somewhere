@@ -253,6 +253,9 @@
       </div>
     </div>
 
+  <!-- v5.41：3 欄 panel 佈局（1in8b.life 風格）— 左：身分證/狀態/家人 · 中：場景/重心/紀錄 · 右：同伴/地圖/曲線/統計 -->
+  <div class="life-grid">
+    <div class="life-col life-col-a">
     <!-- v5.8 新增：4 個狀態條 + 淨資產 + 家庭背景 + 同伴 -->
     <div class="life-stats" id="lifeStats">
       <h4>
@@ -289,13 +292,9 @@
     </div>
 
     <div class="life-family-detail" id="lifeFamilyDetail"></div>
+    </div><!-- /.life-col-a -->
 
-    <div class="life-companions" id="lifeCompanions"></div>
-
-    <div class="life-country-stats" id="lifeCountryStats"></div>
-
-    <div class="life-survival-curve" id="lifeSurvivalCurve"></div>
-
+    <div class="life-col life-col-b">
     <div class="life-meta-controls">
       <button id="currencyToggle" class="meta-btn">💱 <span id="currencyLabel">NT$</span></button>
       <button id="themeToggle" class="meta-btn">◐ 主題</button>
@@ -315,13 +314,21 @@
       <h4>📜 <span data-t="life.feed">人生紀錄</span> <span class="muted">（最新的在前）</span></h4>
     </div>
 
-    <div class="life-trajectory" id="lifeTrajectory"></div>
-
     <div class="life-manual-decisions" id="lifeManualDecisions"></div>
+    </div><!-- /.life-col-b -->
 
-    <div class="life-identity-record" id="lifeIdentityRecord"></div>
+    <div class="life-col life-col-c">
+    <div class="life-companions" id="lifeCompanions"></div>
 
     <div class="life-map" id="lifeMap"></div>
+
+    <div class="life-survival-curve" id="lifeSurvivalCurve"></div>
+
+    <div class="life-country-stats" id="lifeCountryStats"></div>
+
+    <div class="life-trajectory" id="lifeTrajectory"></div>
+
+    <div class="life-identity-record" id="lifeIdentityRecord"></div>
 
     <div class="life-cause-this-year" id="lifeCauseThisYear"></div>
 
@@ -329,7 +336,8 @@
       <h4 data-t="life.events">事件記錄</h4>
       <div class="cert-log" id="lifeLog"></div>
     </div>
-  </div>
+    </div><!-- /.life-col-c -->
+  </div><!-- /.life-grid -->
 </section>
 
 <!-- END -->
@@ -527,7 +535,7 @@
     <a href="#" id="btnPrivacy" class="footer-link" data-t="footer.privacy">隱私權政策</a>
     <a href="#" id="btnTerms" class="footer-link" data-t="footer.terms">使用須知</a>
     <a href="mailto:contact@born-somewhere.app" id="btnContact" class="footer-link" data-t="footer.contact">聯絡我們</a>
-    <span class="footer-ver">v5.40 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
+    <span class="footer-ver">v5.41 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
   </div>
 </footer>
 
