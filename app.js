@@ -1135,6 +1135,8 @@ function showFinanceModal(forceOpt) {
   const currency = life.currency || 'NT$';
   const netAssets = Math.round(s.netAssets || 0);
   const currentInvest = life.investChoice || 'global';
+  // v5.42：修掉 ReferenceError — `auto` 未宣告，應讀 life.autoInvest
+  const auto = life.autoInvest ? 'active' : '';
   const annualCost = Math.round(netAssets * 0.03);  // 假設生活方式成本 3%
   const q = $('#financeQuestion');
   if (q) q.textContent = isEn ? `Net Worth: ${currency || 'US$'}${netAssets.toLocaleString()}` : `積蓄：${currency || 'NT$'}${netAssets.toLocaleString()}`;
