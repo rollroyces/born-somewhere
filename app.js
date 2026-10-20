@@ -57,6 +57,12 @@ function t(key, ...vals) {
   }
   return s;
 }
+/* v5.46：死因 i18n — 死因在資料層以中文儲存，顯示時翻譯 */
+function causeLabel(cause) {
+  if (!cause) return '';
+  return t('cause.' + cause);
+}
+
 async function loadData() {
   if (!CACHE.countries) {
     const r1 = await fetch('data/countries.json');
@@ -2446,7 +2452,7 @@ function renderEnd() {
   $('#endCountry').textContent = c.flag + ' ' + loc.name;
   $('#endBorn').textContent = life.year + '/' + t('event.born_in2', life.sex === 'M' ? t('sex.male') : t('sex.female'));
   $('#endAge').textContent = life.deathAge + ' ' + t('unit.years');
-  $('#endCause').textContent = life.cause;
+  $('#endCause').textContent = causeLabel(life.cause);
   $('#endName').textContent = life.name.full || life.name.full_en || '—';
   $('#endPortrait').innerHTML = pixelPortraitSVG(life.countryData, life.age, life.sex);
   $('#endLe').textContent = t('end.lifespan_le', { age: life.deathAge, le: c.le });
@@ -2626,7 +2632,7 @@ function renderShelf() {
         </div>
       </div>
     `;
-    book.title = `${life.name} · ${life.cause}`;
+    book.title = `${life.name} · ${causeLabel(life.cause)}`;
     book.addEventListener('click', () => showLifeModal(life));
     shelf.appendChild(book);
     // v5.22：右鍵 / long-press 觸發「繼續這段人生」選單（雙擊 = 從當年齡接續）
@@ -3254,7 +3260,7 @@ function showLifeModal(life) {
         <span>·</span>
         <span>${life.age} ${t('unit.years')}</span>
         <span>·</span>
-        <span>${escapeHtml(life.cause || '')}</span>
+        <span>${escapeHtml(causeLabel(life.cause))}</span>
         ${life.family?.fosterCare ? `<span class="badge badge-foster">🏠 ${t('tree.noteFoster')}</span>` : ''}
         ${life.family?.adoptedFrom ? `<span class="badge badge-adopt">🧩 ${t('tree.noteAdoptive')}</span>` : ''}
       </div>
