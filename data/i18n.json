@@ -428,7 +428,14 @@
     "cause.自然衰老": "自然衰老",
     "intro.heavy": "死亡、暴力、自殺這類沉重的事，也會照實際統計發生。不會描寫畫面，並會一起告訴你可以求助的地方。",
     "intro.softBtn": "略過可怕的情節",
-    "intro.ageGate": "15歲以上"
+    "intro.ageGate": "15歲以上",
+    "event.birth": "出生",
+    "lab.avg_age": "平均壽命",
+    "lab.median_age": "壽命中位數",
+    "lab.top_cause": "最常見死因",
+    "lab.distribution": "壽命分布",
+    "lab.run": "執 行",
+    "legend.m": "已故"
   },
   "zh-Hans": {
     "title": "选出生地 · 人生模拟",
@@ -859,7 +866,14 @@
     "cause.自然衰老": "自然衰老",
     "intro.heavy": "死亡、暴力、自杀这类沉重的事，也会照实际统计发生。不会描写画面，并会一起告诉你可以求助的地方。",
     "intro.softBtn": "略过可怕的情节",
-    "intro.ageGate": "15岁以上"
+    "intro.ageGate": "15岁以上",
+    "event.birth": "出生",
+    "lab.avg_age": "平均寿命",
+    "lab.median_age": "寿命中位数",
+    "lab.top_cause": "最常见死因",
+    "lab.distribution": "寿命分布",
+    "lab.run": "执 行",
+    "legend.m": "已故"
   },
   "en": {
     "title": "Born Somewhere · Life Simulator",
@@ -1290,7 +1304,14 @@
     "cause.自然衰老": "Old age",
     "intro.heavy": "Death, violence and suicide happen according to real statistics. Nothing is depicted graphically, and where to get help is shown alongside.",
     "intro.softBtn": "Skip distressing events",
-    "intro.ageGate": "Ages 15+"
+    "intro.ageGate": "Ages 15+",
+    "event.birth": "Born",
+    "lab.avg_age": "Average lifespan",
+    "lab.median_age": "Median lifespan",
+    "lab.top_cause": "Most common cause",
+    "lab.distribution": "Lifespan distribution",
+    "lab.run": "Run",
+    "legend.m": "Deceased"
   },
   "ko": {
     "title": "태어난 곳 · 인생 시뮬레이션",
@@ -1401,9 +1422,9 @@
     "lab.sex": "성별",
     "lab.results": "결과",
     "lab.avg_age": "평균 수명",
-    "lab.median_age": "중앙 수명",
-    "lab.top_cause": "주요 사인",
-    "lab.distribution": "사망 연령 분포",
+    "lab.median_age": "수명 중앙값",
+    "lab.top_cause": "가장 흔한 사인",
+    "lab.distribution": "수명 분포",
     "lab.compare": "국가 비교",
     "lab.this": "이번",
     "lab.run": "실행",
@@ -1733,7 +1754,9 @@
     "cause.自然衰老": "노년",
     "intro.heavy": "사망·폭력·자살 같은 무거운 일은 실제 통계에 따라 발생합니다. 장면을 묘사하지 않으며, 도움을 받을 곳도 함께 알려드립니다.",
     "intro.softBtn": "무거운 사건 건너뛰기",
-    "intro.ageGate": "15세 이상"
+    "intro.ageGate": "15세 이상",
+    "event.birth": "탄생",
+    "legend.m": "사망"
   },
   "ja": {
     "title": "出生地 · 人生シミュレーション",
@@ -1844,9 +1867,9 @@
     "lab.sex": "性別",
     "lab.results": "結果",
     "lab.avg_age": "平均寿命",
-    "lab.median_age": "中央寿命",
-    "lab.top_cause": "主因",
-    "lab.distribution": "死亡年齢分布",
+    "lab.median_age": "寿命の中央値",
+    "lab.top_cause": "最も多い死因",
+    "lab.distribution": "寿命の分布",
     "lab.compare": "国比較",
     "lab.this": "今回",
     "lab.run": "実行",
@@ -2176,7 +2199,9 @@
     "cause.自然衰老": "老衰",
     "intro.heavy": "死亡・暴力・自殺など重い出来事も実際の統計どおり起こります。場面は描写せず、助けを得られる先も併せてお知らせします。",
     "intro.softBtn": "重い出来事をスキップ",
-    "intro.ageGate": "15歳以上"
+    "intro.ageGate": "15歳以上",
+    "event.birth": "誕生",
+    "legend.m": "故人"
   },
   "vi": {
     "title": "Nơi sinh · Mô phỏng cuộc đời",
@@ -2286,10 +2311,10 @@
     "lab.era": "Thời đại",
     "lab.sex": "Giới tính",
     "lab.results": "Kết quả",
-    "lab.avg_age": "Tuổi thọ TB",
-    "lab.median_age": "Tuổi thọ TT",
-    "lab.top_cause": "Nguyên nhân chính",
-    "lab.distribution": "Phân bố tuổi tử vong",
+    "lab.avg_age": "Tuổi thọ trung bình",
+    "lab.median_age": "Tuổi thọ trung vị",
+    "lab.top_cause": "Nguyên nhân phổ biến nhất",
+    "lab.distribution": "Phân phối tuổi thọ",
     "lab.compare": "So sánh quốc gia",
     "lab.this": "Lần này",
     "lab.run": "Chạy",
@@ -2619,7 +2644,9 @@
     "cause.自然衰老": "Tuổi già",
     "intro.heavy": "Cái chết, bạo lực và tự sát vẫn xảy ra theo thống kê thực tế. Không mô tả hình ảnh, và luôn kèm nơi để tìm trợ giúp.",
     "intro.softBtn": "Bỏ qua sự kiện nặng lòng",
-    "intro.ageGate": "Từ 15 tuổi"
+    "intro.ageGate": "Từ 15 tuổi",
+    "event.birth": "Ra đời",
+    "legend.m": "Đã mất"
   },
   "fr": {
     "title": "Né quelque part · Simulateur de vie",
@@ -2729,10 +2756,10 @@
     "lab.era": "Ère",
     "lab.sex": "Sexe",
     "lab.results": "Résultats",
-    "lab.avg_age": "Âge moyen",
-    "lab.median_age": "Âge médian",
-    "lab.top_cause": "Cause principale",
-    "lab.distribution": "Distribution des décès",
+    "lab.avg_age": "Espérance de vie moyenne",
+    "lab.median_age": "Espérance médiane",
+    "lab.top_cause": "Cause la plus fréquente",
+    "lab.distribution": "Répartition des âges",
     "lab.compare": "Comparer pays",
     "lab.this": "Celui-ci",
     "lab.run": "Lancer",
@@ -3062,7 +3089,9 @@
     "cause.自然衰老": "Vieillesse",
     "intro.heavy": "La mort, la violence et le suicide surviennent selon les statistiques réelles. Rien n’est décrit graphiquement, et les sources d’aide sont indiquées.",
     "intro.softBtn": "Passer les évènements lourds",
-    "intro.ageGate": "Dès 15 ans"
+    "intro.ageGate": "Dès 15 ans",
+    "event.birth": "Naissance",
+    "legend.m": "Décédé"
   },
   "th": {
     "title": "เกิดที่ไหน · จำลองชีวิต",
@@ -3172,13 +3201,13 @@
     "lab.era": "ยุค",
     "lab.sex": "เพศ",
     "lab.results": "ผลลัพธ์",
-    "lab.avg_age": "อายุเฉลี่ย",
-    "lab.median_age": "อายุมัธยฐาน",
-    "lab.top_cause": "สาเหตุหลัก",
-    "lab.distribution": "การกระจายอายุตาย",
+    "lab.avg_age": "อายุขัยเฉลี่ย",
+    "lab.median_age": "อายุขัยมัธยฐาน",
+    "lab.top_cause": "สาเหตุที่พบบ่อยที่สุด",
+    "lab.distribution": "การกระจายอายุขัย",
     "lab.compare": "เปรียบเทียบประเทศ",
     "lab.this": "ครั้งนี้",
-    "lab.run": "รัน",
+    "lab.run": "เริ่ม",
     "nav.tree": "Tree",
     "tree.title": "Family Tree",
     "tree.hint": "The family you were born into. Generated from real stats & cultural context.",
@@ -3505,7 +3534,9 @@
     "cause.自然衰老": "วัยชรา",
     "intro.heavy": "การเสียชีวิต ความรุนแรง และการฆ่าตัวตาย เกิดขึ้นตามสถิติจริง ไม่มีการบรรยายภาพ และจะแจ้งช่องทางขอความช่วยเหลือ",
     "intro.softBtn": "ข้ามเหตุการณ์หนักใจ",
-    "intro.ageGate": "อายุ 15 ปีขึ้นไป"
+    "intro.ageGate": "อายุ 15 ปีขึ้นไป",
+    "event.birth": "เกิด",
+    "legend.m": "เสียชีวิต"
   },
   "es": {
     "title": "Nacido en algún lugar · Simulador de vida",
@@ -3615,10 +3646,10 @@
     "lab.era": "Época",
     "lab.sex": "Sexo",
     "lab.results": "Resultados",
-    "lab.avg_age": "Edad media",
-    "lab.median_age": "Edad mediana",
-    "lab.top_cause": "Causa principal",
-    "lab.distribution": "Distribución de muertes",
+    "lab.avg_age": "Esperanza de vida media",
+    "lab.median_age": "Esperanza mediana",
+    "lab.top_cause": "Causa más común",
+    "lab.distribution": "Distribución de edades",
     "lab.compare": "Comparar países",
     "lab.this": "Esta",
     "lab.run": "Ejecutar",
@@ -3948,6 +3979,8 @@
     "cause.自然衰老": "Vejez",
     "intro.heavy": "La muerte, la violencia y el suicidio ocurren según las estadísticas reales. Nada se describe gráficamente y se indica dónde pedir ayuda.",
     "intro.softBtn": "Omitir acontecimientos duros",
-    "intro.ageGate": "Mayores de 15 años"
+    "intro.ageGate": "Mayores de 15 años",
+    "event.birth": "Nacimiento",
+    "legend.m": "Fallecido"
   }
 }
