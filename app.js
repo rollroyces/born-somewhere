@@ -34,6 +34,23 @@ const STATE = {
   softMode: false,     // v5.39：略過可怕的情節（1in8b.life 的 softBtn）— 可即時切換並記住
 };
 
+/* ==== v5.51：統一關閉 modal — 一定要解除暫停 ====
+   過去每個 modal 各自在「選項點擊」時設 STATE.paused = false，但若使用者按 ×、
+   點背景、或按空白鍵關閉，就沒有人把 paused 設回 false，tick() 便永久卡住，
+   人生會停在該年不動。所有關閉路徑一律經過 closeModal()。 */
+const PAUSING_MODALS = ['focusModal', 'financeModal', 'spendModal', 'pauseModal'];
+function closeModal(id) {
+  const el = id ? document.getElementById(id) : null;
+  if (el) el.setAttribute('hidden', '');
+  else PAUSING_MODALS.forEach(i => document.getElementById(i)?.setAttribute('hidden', ''));
+  if (STATE.paused) {
+    STATE.paused = false;
+    const p = $('#btnPause');
+    if (p) p.textContent = '❚❚';
+  }
+  return el;
+}
+
 // ==== i18n ====
 function t(key, ...vals) {
   const dict = I18N[LANG] || I18N['zh-Hant'] || {};
@@ -1053,6 +1070,8 @@ function showPauseQuestion() {
 /* v5.13：年度焦點選擇（每年 6+ 歲彈出） */
 function showFocusChoice() {
   if (!STATE.life) return;
+  const _fm = $('#focusModal');
+  if (_fm && !_fm.hasAttribute('hidden')) return; // 已在開啟中，避免重複掛 listener
   STATE.paused = true;
   const age = STATE.life.age;
   const isEn = LANG === 'en';
@@ -1102,8 +1121,7 @@ function showFocusChoice() {
       STATE.life.log.push({ age, kind:'focus', icon: opt?.icon || '·', text: `${isEn?'Focus':'重心'}：${opt?(isEn?opt.en:opt.zh):focus}` });
       logLife(isEn ? `Focus: ${opt?.en}` : `這一年焦點：${opt?.zh}`);
       applyFocusEffects(focus);
-      modal.setAttribute('hidden', '');
-      STATE.paused = false;
+      closeModal('focusModal');
     });
   });
   modal.removeAttribute('hidden');
@@ -1132,6 +1150,8 @@ const INVEST_OPTIONS = [
 
 function showFinanceModal(forceOpt) {
   if (!STATE.life) return;
+  const _fm = $('#financeModal');
+  if (_fm && !_fm.hasAttribute('hidden')) return; // 已在開啟中，避免重複掛 listener
   STATE.paused = true;
   const life = STATE.life;
   const s = life.stats;
@@ -1183,16 +1203,14 @@ function showFinanceModal(forceOpt) {
           // apply current return rate
           toast(isEn ? `Investment set to ${opt.en}` : `投資已設為 ${opt.zh}`);
         }
-        modal.setAttribute('hidden', '');
-        STATE.paused = false;
+        closeModal('financeModal');
       });
     });
     $('#finAutoBtn')?.addEventListener('click', () => {
       life.autoInvest = !life.autoInvest;
       $('#finAutoBtn')?.classList.toggle('active', life.autoInvest);
       toast(isEn ? (life.autoInvest ? 'Auto-invest enabled' : 'Auto-invest disabled') : (life.autoInvest ? '已開啟自動投資' : '已關閉自動投資'));
-      modal.setAttribute('hidden', '');
-      STATE.paused = false;
+      closeModal('financeModal');
     });
   }
   modal.removeAttribute('hidden');
@@ -1228,6 +1246,8 @@ function applyInvestmentReturn() {
 /* v5.13：財務決策（18/25/35/50 歲彈出） */
 function showFinancialChoice() {
   if (!STATE.life) return;
+  const _fm = $('#financeModal');
+  if (_fm && !_fm.hasAttribute('hidden')) return; // 已在開啟中，避免重複掛 listener
   STATE.paused = true;
   const age = STATE.life.age;
   const isEn = LANG === 'en';
@@ -1288,14 +1308,12 @@ function showFinancialChoice() {
     btn.addEventListener('click', () => {
       const idx = +btn.dataset.idx;
       applyFinanceChoice(choices, idx, isEn);
-      modal.setAttribute('hidden', '');
-      STATE.paused = false;
+      closeModal('financeModal');
     });
   });
   $('#btnFinanceAuto')?.addEventListener('click', () => {
     applyFinanceChoice(choices, cheapestIdx, isEn);
-    modal.setAttribute('hidden', '');
-    STATE.paused = false;
+    closeModal('financeModal');
     toast(isEn ? '⚡ Auto-picked cheapest option' : '⚡ 已自動選最便宜的選項');
   });
   modal.removeAttribute('hidden');
@@ -1304,6 +1322,8 @@ function showFinancialChoice() {
 /* v5.25：花錢 modal — 4 種隨機社交支出選項 */
 function showSpendModal() {
   if (!STATE.life) return;
+  const _sm = $('#spendModal');
+  if (_sm && !_sm.hasAttribute('hidden')) return; // 已在開啟中，避免重複掛 listener
   STATE.paused = true;
   const modal = $('#spendModal');
   if (!modal) return;
@@ -1315,8 +1335,7 @@ function showSpendModal() {
       const cost = Math.max(50, Math.round((s.netAssets || 1000) * 0.03));
       if ((s.netAssets || 0) < cost) {
         toast(LANG === 'en' ? 'Not enough money' : '錢不夠');
-        modal.setAttribute('hidden', '');
-        STATE.paused = false;
+        closeModal('spendModal');
         return;
       }
       s.netAssets -= cost;
@@ -1327,8 +1346,7 @@ function showSpendModal() {
       STATE.life.log.push({ age: STATE.life.age, kind: 'finance', icon: '💰', text: `${act} -${cost}` });
       renderLifeStats();
       toast(LANG === 'en' ? `Spent ${cost}` : `支出 ${cost}`);
-      modal.setAttribute('hidden', '');
-      STATE.paused = false;
+      closeModal('spendModal');
     });
   });
 }
@@ -3678,6 +3696,19 @@ function renderCauseList(causes) {
 
 // ==== 事件 ====
 function wire() {
+  // v5.51：任何關閉 modal 的方式（× / 點背景 / 空白鍵）都必須恢復計時
+  $$('[data-close-modal]').forEach(btn => {
+    btn.addEventListener('click', () => closeModal(btn.dataset.closeModal));
+  });
+  $$('.modal').forEach(m => {
+    m.addEventListener('mousedown', e => { if (e.target === m) closeModal(m.id); });
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    const open = PAUSING_MODALS.map(i => document.getElementById(i))
+      .filter(el => el && !el.hasAttribute('hidden'));
+    if (open.length) { closeModal(open[0].id); e.preventDefault(); }
+  });
   // 導覽
   $$('.navbtn').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
   // 語言
@@ -3789,7 +3820,7 @@ function wire() {
   const pauseSkip = $('#pauseSkip');
   if (pauseSkip) pauseSkip.addEventListener('click', () => {
     resolvePendingDecision();
-    $('#pauseModal')?.setAttribute('hidden', '');
+    closeModal('pauseModal');
   });
   // 死亡
   const dieBtn = $('#btnDieNow');
