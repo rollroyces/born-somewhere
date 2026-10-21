@@ -2197,3 +2197,43 @@ body.theme-sepia .muted { color: #8b7355; }
 .end-past-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
 .end-past-actions button { font-size: 12px; padding: 5px 10px; }
 .end-past-actions .danger { color: #a04040; border-color: #a04040; }
+
+/* v5.55 通用決策 modal（重大/小型/家人共決三種版型共用） */
+.dec-card { max-width: 560px; padding: 22px 24px 18px; }
+.dec-kind {
+  display: inline-block; font-size: 11px; font-weight: 600;
+  color: var(--accent); letter-spacing: 0.06em; text-transform: uppercase;
+  margin-bottom: 6px; padding: 2px 8px;
+  border: 1px solid var(--accent); border-radius: 999px;
+}
+.dec-card .modal-q { margin: 4px 0 6px; font-size: 18px; line-height: 1.4; }
+.dec-card .modal-help { font-size: 13.5px; }
+.dec-card .modal-help.muted { color: var(--ink-2); }
+.dec-card .fact {
+  margin: 8px 0; padding: 8px 12px;
+  background: var(--bg); border-left: 3px solid var(--stamp);
+  border-radius: 4px; font-size: 12.5px; color: var(--ink-2);
+}
+.dec-choices { display: grid; gap: 10px; margin: 14px 0 6px; }
+.dec-c {
+  display: flex; flex-direction: column; gap: 4px; align-items: flex-start;
+  padding: 12px 14px; background: var(--paper);
+  border: 1px solid var(--line); border-radius: 6px;
+  cursor: pointer; font-size: 14px; color: var(--ink);
+  text-align: left; transition: all 0.15s; width: 100%;
+}
+.dec-c:hover, .dec-c:focus-visible { border-color: var(--accent); background: var(--bg); transform: translateY(-1px); outline: none; }
+.dec-c .dec-c-k { font-weight: 600; }
+.dec-c .dec-c-sub { font-size: 12px; color: var(--ink-3); }
+.dec-c.is-locked { opacity: 0.45; cursor: not-allowed; }
+.dec-note-wrap { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; font-size: 12.5px; color: var(--ink-2); }
+.dec-note-wrap textarea {
+  width: 100%; box-sizing: border-box; padding: 6px 8px; resize: vertical;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 4px;
+  font-family: inherit; font-size: 13px; color: var(--ink);
+}
+/* 暗色模式 token */
+body.theme-dark .dec-card .modal-help.muted { color: var(--ink-2); }
+body.theme-dark .dec-c { background: var(--paper); }
+body.theme-dark .dec-c:hover { background: var(--bg); }
+body.theme-dark .dec-card .fact { background: var(--bg); }

@@ -38,7 +38,7 @@ const STATE = {
    過去每個 modal 各自在「選項點擊」時設 STATE.paused = false，但若使用者按 ×、
    點背景、或按空白鍵關閉，就沒有人把 paused 設回 false，tick() 便永久卡住，
    人生會停在該年不動。所有關閉路徑一律經過 closeModal()。 */
-const PAUSING_MODALS = ['focusModal', 'financeModal', 'spendModal', 'pauseModal'];
+const PAUSING_MODALS = ['focusModal', 'financeModal', 'spendModal', 'pauseModal', 'decisionModal'];
 function closeModal(id) {
   const el = id ? document.getElementById(id) : null;
   if (el) el.setAttribute('hidden', '');
@@ -50,6 +50,382 @@ function closeModal(id) {
   }
   return el;
 }
+
+/* ==== v5.55：通用決策 modal（重大決定 / 小選擇 / 家人共決 三種版型共用） ====
+   設計：showDecision() 一次塞入內容、綁定選項點擊，每個選項帶 apply(life, ctx)
+        函式處理效果；關 modal 一律走 closeModal('decisionModal') 確保 tick 恢復。
+   state 結構：
+     STATE.pendingDecision = { kind: 'decision', id: 'de_xxx', age, choices: [...] }
+     STATE.life.decisions  = [ { id, age, key } ]   // 已答過的決策避免重複 */
+let _decisionBound = false;
+function showDecision({ id, kind, age, title, body, fact, hint, choices, hasNote }) {
+  const modal = $('#decisionModal');
+  if (!modal) return false;
+  // 防止重複觸發（避免連續年度同 ID 觸發兩次）
+  if (modal && !modal.hasAttribute('hidden')) return false;
+  if (!choices || choices.length === 0) return false;
+  STATE.pendingDecision = { kind: 'decision', id, age, options: choices.length };
+  STATE.paused = true;
+
+  const kindLabel = { big: t('dec.kind.big'), small: t('dec.kind.small'), family: t('dec.kind.family'), pause: t('dec.kind.pause') }[kind] || t('dec.kind.big');
+  $('#decisionKind').textContent = kindLabel + ' · ' + age + t('unit.years') + ' · ' + (STATE.life.year + STATE.life.yearOffset);
+  $('#decisionTitle').textContent = title;
+  $('#decisionBody').textContent = body || '';
+  if (fact) { $('#decisionFact').textContent = fact; $('#decisionFact').hidden = false; }
+  else { $('#decisionFact').hidden = true; }
+  if (hint) { $('#decisionHint').textContent = hint; $('#decisionHint').hidden = false; }
+  else { $('#decisionHint').hidden = true; }
+
+  const noteWrap = $('#decisionNoteWrap');
+  const note = $('#decisionNote');
+  if (hasNote) {
+    noteWrap.hidden = false;
+    note.value = '';
+    note.placeholder = t('dec.note.placeholder');
+  } else {
+    noteWrap.hidden = true;
+  }
+
+  const bodyEl = $('#decisionChoices');
+  bodyEl.innerHTML = choices.map((c, i) => `
+    <button type="button" class="dec-c" data-k="${escAttr(c.k)}" data-i="${i}">
+      <span class="dec-c-k">${esc(c.label)}</span>
+      ${c.sub ? `<span class="dec-c-sub">${esc(c.sub)}</span>` : ''}
+    </button>`).join('');
+
+  bodyEl.querySelectorAll('.dec-c').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const k = btn.dataset.k;
+      const i = +btn.dataset.i;
+      const choice = choices[i];
+      const noteText = hasNote ? (note.value || '').trim() : '';
+      // 套用效果
+      try { choice.apply && choice.apply(STATE.life, { note: noteText }); } catch (e) { console.warn('decision apply failed', id, k, e); }
+      // 記錄
+      STATE.life.decisions = STATE.life.decisions || [];
+      STATE.life.decisions.push({ id, age, key: k, note: noteText });
+      // 寫進 log（讓使用者往後看得到）
+      STATE.life.log.push({ age, kind: 'decision', icon: choice.icon || '✦', text: title + ' → ' + choice.label });
+      logLife(t('dec.log', choice.label));
+      // 若使用者停用了 autoDecide，pendingDecision 在 closeModal 後會被忽略；
+      // 不影響 ticker 因為 pause 已解除
+      closeModal('decisionModal');
+    });
+  });
+
+  // v5.55：自動抉擇模式 — 立即套用第一個選項並關閉，不打斷 ticker
+  if (STATE.autoDecide) {
+    STATE.pendingDecision = null;
+    const first = choices[0];
+    STATE.life.decisions = STATE.life.decisions || [];
+    STATE.life.decisions.push({ id, age, key: first.k, note: '（自動抉擇）' });
+    try { first.apply && first.apply(STATE.life, { note: '' }); } catch (e) { console.warn('auto-decide apply failed', id, e); }
+    STATE.life.log.push({ age, kind: 'decision', icon: first.icon || '✦', text: title + ' → ' + first.label + '（自動）' });
+    modal.setAttribute('hidden', '');
+    return true;
+  }
+
+  modal.removeAttribute('hidden');
+  // 焦點移到第一個選擇（鍵盤友好）
+  setTimeout(() => bodyEl.querySelector('.dec-c')?.focus(), 50);
+  return true;
+}
+
+/* 內容裡需要把 title、body 之類的字串塞進 innerHTML — 統一用這個轉義 */
+function esc(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[m]);
+}
+function escAttr(s) { return esc(s); }
+
+/* ==== v5.55：通用決策事件表 ====
+   每個事件是一個物件：{ id, kind, chance(life), show(life) }，
+     - chance(life) 是每年 tick 進入時的觸發機率（純粹年齡／狀態機率）
+     - show(life) 才真正塞內容到 modal
+   每個 choice = { k, label, sub, apply(life, ctx) }
+   apply 不會 throw；失敗也要關 modal、不卡 tick。 */
+const DECISIONS = [
+  // 1. 失業：要不要接受一份外地工作？
+  {
+    id: 'de_relocate', kind: 'big',
+    chance: (life) => life.age >= 25 && life.age <= 50 &&
+                     life.stats.employment === 'employed' &&
+                     Math.random() < 0.06,
+    show: (life) => ({
+      title: t('de.relocate.title'),
+      body: t('de.relocate.body', life.countryData?.ko || ''),
+      fact: t('de.relocate.fact'),
+      choices: [
+        { k: 'go', icon: '✈️',
+          label: t('de.relocate.go'),
+          sub: t('de.relocate.go.sub'),
+          apply: (life) => { life.stats.netAssets += 8000; life.stats.happiness -= 4; life.stats.social -= 3; logLife(t('de.relocate.go.log')); } },
+        { k: 'stay', icon: '🏠',
+          label: t('de.relocate.stay'),
+          sub: t('de.relocate.stay.sub'),
+          apply: () => { logLife(t('de.relocate.stay.log')); } },
+      ],
+    }),
+  },
+
+  // 2. 中年身心健康：戒菸 / 戒酒 vs. 維持
+  {
+    id: 'de_health_warning', kind: 'big',
+    chance: (life) => life.age >= 30 && life.age <= 55 &&
+                     (Math.random() < 0.05),
+    show: (life) => ({
+      title: t('de.health.title'),
+      body: t('de.health.body'),
+      fact: t('de.health.fact'),
+      choices: [
+        { k: 'quit', icon: '🧘',
+          label: t('de.health.quit'),
+          sub: t('de.health.quit.sub'),
+          apply: (life) => { life.stats.health += 8; life.stats.happiness -= 2; logLife(t('de.health.quit.log')); } },
+        { k: 'keep', icon: '🚬',
+          label: t('de.health.keep'),
+          sub: t('de.health.keep.sub'),
+          apply: () => { logLife(t('de.health.keep.log')); } },
+      ],
+      hasNote: true,
+    }),
+  },
+
+  // 3. 通膨惡化：把錢換成美元/黃金 vs. 留現金
+  {
+    id: 'de_inflation', kind: 'big',
+    chance: (life) => life.age >= 40 && life.age <= 70 &&
+                     Math.random() < 0.05,
+    show: (life) => ({
+      title: t('de.inflation.title'),
+      body: t('de.inflation.body'),
+      fact: t('de.inflation.fact'),
+      choices: [
+        { k: 'dollar', icon: '💵',
+          label: t('de.inflation.dollar'),
+          sub: t('de.inflation.dollar.sub'),
+          apply: (life) => { life.stats.netAssets *= 1.15; life.stats.happiness -= 1; logLife(t('de.inflation.dollar.log')); } },
+        { k: 'hold', icon: '🏦',
+          label: t('de.inflation.hold'),
+          sub: t('de.inflation.hold.sub'),
+          apply: (life) => { life.stats.netAssets *= 0.85; logLife(t('de.inflation.hold.log')); } },
+      ],
+    }),
+  },
+
+  // 4. 重病：治療 6 個月 vs. 撐著
+  {
+    id: 'de_illness_treat', kind: 'big',
+    chance: (life) => !STATE.eduMode && !STATE.softMode &&
+                     life.age >= 38 && life.age <= 70 &&
+                     Math.random() < 0.04,
+    show: (life) => ({
+      title: t('de.illness.title'),
+      body: t('de.illness.body'),
+      fact: t('de.illness.fact'),
+      choices: [
+        { k: 'treat', icon: '💊',
+          label: t('de.illness.treat'),
+          sub: t('de.illness.treat.sub'),
+          apply: (life) => { life.stats.health += 5; life.stats.netAssets -= 4000; logLife(t('de.illness.treat.log')); } },
+        { k: 'wait', icon: '⏳',
+          label: t('de.illness.wait'),
+          sub: t('de.illness.wait.sub'),
+          apply: (life) => { life.stats.health -= 3; logLife(t('de.illness.wait.log')); } },
+      ],
+    }),
+  },
+
+  // 5. 父母行動不便：接過來同住 vs. 找看護 vs. 讓親戚照顧
+  {
+    id: 'de_parents_care', kind: 'big',
+    chance: (life) => life.age >= 45 && life.age <= 75 &&
+                     life.family && life.family.parents && life.family.parents.some(p => p.alive) &&
+                     Math.random() < 0.06,
+    show: (life) => ({
+      title: t('de.parents.title'),
+      body: t('de.parents.body'),
+      fact: t('de.parents.fact'),
+      choices: [
+        { k: 'home', icon: '🏡',
+          label: t('de.parents.home'),
+          sub: t('de.parents.home.sub'),
+          apply: (life) => { life.stats.happiness += 5; life.stats.netAssets -= 6000; logLife(t('de.parents.home.log')); } },
+        { k: 'nurse', icon: '🏥',
+          label: t('de.parents.nurse'),
+          sub: t('de.parents.nurse.sub'),
+          apply: (life) => { life.stats.netAssets -= 8000; life.stats.happiness -= 1; logLife(t('de.parents.nurse.log')); } },
+        { k: 'kin', icon: '👪',
+          label: t('de.parents.kin'),
+          sub: t('de.parents.kin.sub'),
+          apply: () => { logLife(t('de.parents.kin.log')); } },
+      ],
+    }),
+  },
+
+  // 6. 婚姻觸礁：為了孩子撐著 vs. 分居 vs. 離婚
+  {
+    id: 'de_divorce', kind: 'big',
+    chance: (life) => life.stats && life.stats.married &&
+                     life.age >= 32 && life.age <= 55 &&
+                     Math.random() < 0.05,
+    show: (life) => ({
+      title: t('de.divorce.title'),
+      body: t('de.divorce.body'),
+      fact: t('de.divorce.fact'),
+      choices: [
+        { k: 'stay', icon: '🤝',
+          label: t('de.divorce.stay'),
+          sub: t('de.divorce.stay.sub'),
+          apply: (life) => { life.stats.happiness -= 6; logLife(t('de.divorce.stay.log')); } },
+        { k: 'separate', icon: '🛏️',
+          label: t('de.divorce.separate'),
+          sub: t('de.divorce.separate.sub'),
+          apply: (life) => { life.stats.netAssets *= 0.6; life.stats.happiness += 2; logLife(t('de.divorce.separate.log')); } },
+        { k: 'final', icon: '📜',
+          label: t('de.divorce.final'),
+          sub: t('de.divorce.final.sub'),
+          apply: (life) => { life.stats.married = false; life.stats.partner = null; life.stats.netAssets *= 0.5; life.stats.happiness += 4; logLife(t('de.divorce.final.log')); } },
+      ],
+      hasNote: true,
+    }),
+  },
+
+  // 7. 換工作：現職 vs. 朋友介紹的高風險高報酬
+  {
+    id: 'de_job_change', kind: 'big',
+    chance: (life) => life.stats.employment === 'employed' &&
+                     life.age >= 28 && life.age <= 50 &&
+                     Math.random() < 0.05,
+    show: (life) => ({
+      title: t('de.job.title'),
+      body: t('de.job.body'),
+      fact: t('de.job.fact'),
+      choices: [
+        { k: 'stay', icon: '💼',
+          label: t('de.job.stay'),
+          sub: t('de.job.stay.sub'),
+          apply: () => { logLife(t('de.job.stay.log')); } },
+        { k: 'jump', icon: '🚀',
+          label: t('de.job.jump'),
+          sub: t('de.job.jump.sub'),
+          apply: (life) => { life.stats.netAssets *= (Math.random() < 0.5 ? 1.4 : 0.7); life.stats.happiness += (Math.random() < 0.5 ? 4 : -4); logLife(t('de.job.jump.log')); } },
+      ],
+    }),
+  },
+
+  // 8. 兵役/徵召：自願 vs. 抽籤 vs. 良心拒服
+  {
+    id: 'de_conscription', kind: 'big',
+    chance: (life) => life.age >= 18 && life.age <= 25 &&
+                     life.stats.sex === 'M' &&
+                     ['KOR','TWN','ISR','SGP','CHN','RUS'].includes(life.country) &&
+                     Math.random() < 0.10,
+    show: (life) => ({
+      title: t('de.conscript.title'),
+      body: t('de.conscript.body'),
+      fact: t('de.conscript.fact'),
+      choices: [
+        { k: 'volunteer', icon: '🪖',
+          label: t('de.conscript.volunteer'),
+          sub: t('de.conscript.volunteer.sub'),
+          apply: (life) => { life.stats.netAssets += 2000; life.stats.happiness += 1; life.stats.health -= 2; logLife(t('de.conscript.volunteer.log')); } },
+        { k: 'lottery', icon: '🎲',
+          label: t('de.conscript.lottery'),
+          sub: t('de.conscript.lottery.sub'),
+          apply: (life) => {
+            if (Math.random() < 0.5) { life.stats.netAssets += 2000; life.stats.health -= 2; logLife(t('de.conscript.lottery.go')); }
+            else { logLife(t('de.conscript.lottery.skip')); }
+          } },
+        { k: 'object', icon: '✋',
+          label: t('de.conscript.object'),
+          sub: t('de.conscript.object.sub'),
+          apply: (life) => { life.stats.happiness += 3; logLife(t('de.conscript.object.log')); } },
+      ],
+    }),
+  },
+
+  // 9. 小選擇：要不要把一筆意外之財分給家人
+  {
+    id: 'de_lottery', kind: 'small',
+    chance: (life) => life.age >= 25 && life.age <= 65 &&
+                     Math.random() < 0.03,
+    show: (life) => ({
+      title: t('de.lottery.title'),
+      body: t('de.lottery.body'),
+      fact: t('de.lottery.fact'),
+      choices: [
+        { k: 'keep', icon: '💰',
+          label: t('de.lottery.keep'),
+          sub: t('de.lottery.keep.sub'),
+          apply: (life) => { life.stats.netAssets += 5000; life.stats.happiness += 3; logLife(t('de.lottery.keep.log')); } },
+        { k: 'share', icon: '🎁',
+          label: t('de.lottery.share'),
+          sub: t('de.lottery.share.sub'),
+          apply: (life) => { life.stats.netAssets += 2000; life.stats.social += 5; life.stats.happiness += 5; logLife(t('de.lottery.share.log')); } },
+        { k: 'donate', icon: '❤️',
+          label: t('de.lottery.donate'),
+          sub: t('de.lottery.donate.sub'),
+          apply: (life) => { life.stats.netAssets += 1000; life.stats.happiness += 8; logLife(t('de.lottery.donate.log')); } },
+      ],
+      hasNote: true,
+    }),
+  },
+
+  // 10. 心理健康：找諮商 vs. 撐著
+  {
+    id: 'de_mental_health', kind: 'big',
+    chance: (life) => !STATE.eduMode &&
+                     life.age >= 25 && life.age <= 70 &&
+                     life.stats.happiness < 40 &&
+                     Math.random() < 0.04,
+    show: (life) => ({
+      title: t('de.mental.title'),
+      body: t('de.mental.body'),
+      fact: t('de.mental.fact'),
+      choices: [
+        { k: 'therapy', icon: '🛋️',
+          label: t('de.mental.therapy'),
+          sub: t('de.mental.therapy.sub'),
+          apply: (life) => { life.stats.happiness += 12; life.stats.netAssets -= 1500; logLife(t('de.mental.therapy.log')); } },
+        { k: 'tough', icon: '💪',
+          label: t('de.mental.tough'),
+          sub: t('de.mental.tough.sub'),
+          apply: () => { logLife(t('de.mental.tough.log')); } },
+      ],
+      hasNote: true,
+    }),
+  },
+];
+
+/* 每年 tick 走到 newAge 時呼叫 — 試著觸發一個通用決策 */
+function tryTriggerDecision(life, newAge) {
+  if (!life) return false;
+  // 已經有 modal 在開就不要觸發
+  const decM = document.getElementById('decisionModal');
+  if (decM && !decM.hasAttribute('hidden')) return false;
+  // 已記錄過的 id 不要重來
+  const done = new Set((life.decisions || []).map(d => d.id));
+  // 每年只嘗試最多一個
+  for (const dec of DECISIONS) {
+    if (done.has(dec.id)) continue;
+    if (dec.chance(life)) {
+      try {
+        const payload = dec.show(life);
+        if (payload) {
+          const ok = showDecision({
+            id: dec.id, kind: dec.kind, age: newAge,
+            ...payload,
+          });
+          if (ok) return true;
+        }
+      } catch (e) { console.warn('decision show failed', dec.id, e); }
+    }
+  }
+  return false;
+}
+
+
 
 // ==== i18n ====
 function t(key, ...vals) {
@@ -1027,6 +1403,8 @@ function tick() {
     STATE.life.financeModalShown.push(STATE.life.age);
     setTimeout(() => showFinanceModal(), 100);
   }
+  // v5.55：通用決策 — 在每年 tick 末尾試一個未觸發過的事件
+  setTimeout(() => tryTriggerDecision(STATE.life, STATE.life.age), 120);
 }
 function dieNow(forcedCause) {
   const c = STATE.life.countryData;

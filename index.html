@@ -551,7 +551,7 @@
     <a href="#" id="btnPrivacy" class="footer-link" data-t="footer.privacy">隱私權政策</a>
     <a href="#" id="btnTerms" class="footer-link" data-t="footer.terms">使用須知</a>
     <a href="mailto:contact@born-somewhere.app" id="btnContact" class="footer-link" data-t="footer.contact">聯絡我們</a>
-    <span class="footer-ver">v5.54 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
+    <span class="footer-ver">v5.55 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
   </div>
 </footer>
 
@@ -610,6 +610,23 @@
 <script src="gedcom.js"></script>
 <script src="data/world-coords.js"></script>
 <script src="app.js"></script>
+
+<!-- v5.55：通用決策 modal（重大/小型/家人共決三種版型共用） -->
+<div id="decisionModal" class="modal" hidden>
+  <div class="modal-card focus-card dec-card">
+    <button class="lm-close" data-close-modal="decisionModal" title="關閉">×</button>
+    <div class="dec-kind" id="decisionKind">中大決定</div>
+    <h2 class="modal-q" id="decisionTitle">要選什麼？</h2>
+    <p class="modal-help muted" id="decisionBody"></p>
+    <p class="fact" id="decisionFact" hidden></p>
+    <p class="modal-help" id="decisionHint" hidden></p>
+    <div id="decisionChoices" class="dec-choices"></div>
+    <label class="dec-note-wrap" id="decisionNoteWrap" hidden>
+      <span data-t="dec.note.label">留下一句話（選擇性）</span>
+      <textarea id="decisionNote" maxlength="200" rows="2" placeholder=""></textarea>
+    </label>
+  </div>
+</div>
 
 <!-- v5.25：花錢 modal（1in8b.life 風格） -->
 <div id="spendModal" class="modal" hidden>
