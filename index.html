@@ -44,6 +44,12 @@
 
 <!-- INTRO -->
 <section id="view-intro" class="view active">
+  <!-- v5.53：可愛插畫 hero -->
+  <div class="illus-strip" aria-hidden="true">
+    <img src="assets/illus-baby-book.jpg" alt="" loading="lazy" decoding="async">
+    <img src="assets/illus-world-people.jpg" alt="" loading="lazy" decoding="async">
+    <img src="assets/illus-time-seed.jpg" alt="" loading="lazy" decoding="async">
+  </div>
   <div class="hero">
     <h1 class="hero-title">
       <span class="kicker" data-t="intro.kicker">8 億 分 之 1</span>
@@ -308,6 +314,8 @@
     <div class="life-actual-vs-random" id="lifeActualVsRandom"></div>
 
     <div class="life-scene" id="lifeScene"></div>
+    <!-- v5.53：隨年齡更換的可愛插畫 -->
+    <div class="life-illus" id="lifeIllus" aria-hidden="true"></div>
 
     <div class="life-this-year" id="lifeThisYear">
       <h4>📌 今年的你 <span class="muted">（這一年最重要的事）</span></h4>
@@ -457,6 +465,8 @@
   <div id="shelfGrid" class="shelf-grid"></div>
 
   <div class="memorial-wall" id="memorialWall">
+    <!-- v5.53：追思館插畫 -->
+    <img class="memorial-illus" src="assets/illus-memorial-lantern.jpg" alt="" loading="lazy" decoding="async">
     <h3 class="memorial-title" data-t="memorial.title">追思館</h3>
     <p class="memorial-subtitle" data-t="memorial.subtitle">在這裡為過去活過的人生點一盞燈。</p>
     <div class="memorial-empty" data-t="memorial.empty" hidden>還沒有可追思的人生。</div>
@@ -541,7 +551,7 @@
     <a href="#" id="btnPrivacy" class="footer-link" data-t="footer.privacy">隱私權政策</a>
     <a href="#" id="btnTerms" class="footer-link" data-t="footer.terms">使用須知</a>
     <a href="mailto:contact@born-somewhere.app" id="btnContact" class="footer-link" data-t="footer.contact">聯絡我們</a>
-    <span class="footer-ver">v5.52 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
+    <span class="footer-ver">v5.53 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
   </div>
 </footer>
 

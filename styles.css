@@ -1967,6 +1967,46 @@ input[type="checkbox"], input[type="radio"] { background: var(--bg-2); accent-co
   padding: 2px 8px; border-radius: 999px; text-decoration: none;
 }
 
+
+/* v5.53：可愛插畫 */
+.illus-strip {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  margin: 28px auto 0; max-width: 1100px;
+}
+.illus-strip img {
+  width: clamp(110px, 22vw, 200px);
+  aspect-ratio: 1 / 1; object-fit: cover;
+  border-radius: 18px; border: 1px solid var(--line);
+  box-shadow: 0 6px 22px -10px rgba(19,33,42,.18);
+  background: var(--card, var(--bg-2));
+  transition: transform .35s ease;
+}
+.illus-strip img:hover { transform: translateY(-3px) rotate(-1deg); }
+.memorial-illus {
+  display: block; width: 96px; height: 96px;
+  margin: 0 auto 8px; border-radius: 50%;
+  border: 1px solid var(--line);
+  box-shadow: 0 0 0 6px var(--stamp-soft);
+}
+.life-illus {
+  margin: 8px auto 16px; max-width: 220px;
+  display: flex; align-items: center; justify-content: center;
+}
+.life-illus img {
+  width: 100%; aspect-ratio: 1 / 1; object-fit: cover;
+  border-radius: 16px; border: 1px solid var(--line);
+  box-shadow: 0 4px 14px -8px rgba(19,33,42,.18);
+  background: var(--card, var(--bg-2));
+  animation: lifeIllusBreathe 4.6s ease-in-out infinite;
+}
+@keyframes lifeIllusBreathe {
+  0%, 100% { transform: scale(1) rotate(0); }
+  50% { transform: scale(1.03) rotate(.6deg); }
+}
+body.theme-dark .illus-strip img,
+body.theme-dark .memorial-illus,
+body.theme-dark .life-illus img { box-shadow: 0 6px 22px -10px rgba(0,0,0,.6); }
+
 /* v5.41：3 欄 panel 佈局（1in8b.life 風格）
    v5.47：欄寬改為實測原版值 320px minmax(0,1fr) 340px；panel 圓角 4px、padding 16px、gap 16px
    依據：evidence/1in8b.life-styles.css + evidence/1in8b.life-reference.json */

@@ -2177,6 +2177,18 @@ function renderLifeCompanions() {
   const wrap = $('#lifeCompanions');
   if (!wrap) return;
   const isEn = LANG === 'en';
+  // v5.53：隨年齡更換的可愛插畫（<18 寶寶書本 / 18–64 時間種子 / 65+ 丘陵老人）
+  const illusEl = $('#lifeIllus');
+  if (illusEl) {
+    const age = STATE.life.age;
+    const src = age < 18 ? 'assets/illus-baby-book.jpg'
+               : age < 65 ? 'assets/illus-time-seed.jpg'
+               : 'assets/illus-elder-hill.jpg';
+    if (illusEl.dataset.src !== src) {
+      illusEl.dataset.src = src;
+      illusEl.innerHTML = `<img src="${src}" alt="" loading="lazy" decoding="async">`;
+    }
+  }
   // v5.29：渲染場景描述（1in8b.life 風格「與父母和兄弟姊妹X人同住」）
   const sceneEl = $('#lifeScene');
   if (sceneEl) {
