@@ -541,13 +541,14 @@
     <a href="#" id="btnPrivacy" class="footer-link" data-t="footer.privacy">隱私權政策</a>
     <a href="#" id="btnTerms" class="footer-link" data-t="footer.terms">使用須知</a>
     <a href="mailto:contact@born-somewhere.app" id="btnContact" class="footer-link" data-t="footer.contact">聯絡我們</a>
-    <span class="footer-ver">v5.51 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
+    <span class="footer-ver">v5.52 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
   </div>
 </footer>
 
 <!-- 暫停問題 modal -->
 <div id="pauseModal" class="modal" hidden>
   <div class="modal-card">
+    <button class="lm-close" data-close-modal="pauseModal" title="關閉">×</button>
     <h2 class="modal-q" id="pauseQuestion">如果 15 歲的你能記得一件事⋯</h2>
     <p class="modal-help" data-t="pause.placeholder">不寫也可以，這段會留在你腦海。</p>
     <textarea id="pauseInput" class="modal-input" rows="3"></textarea>
@@ -561,6 +562,7 @@
 <!-- v5.13：年度焦點 modal -->
 <div id="focusModal" class="modal" hidden>
   <div class="modal-card focus-card">
+    <button class="lm-close" data-close-modal="focusModal" title="關閉">×</button>
     <h2 class="modal-q" id="focusQuestion">這一年你想把重心放在哪？</h2>
     <p class="modal-help" data-t="focus.placeholder">選一個會影響你的狀態條與淨資產。</p>
     <div id="focusBody" class="focus-body"></div>
@@ -570,6 +572,7 @@
 <!-- v5.13：財務決策 modal -->
 <div id="financeModal" class="modal" hidden>
   <div class="modal-card focus-card">
+    <button class="lm-close" data-close-modal="financeModal" title="關閉">×</button>
     <h2 class="modal-q" id="financeQuestion">你要怎麼處理你的錢？</h2>
     <p class="modal-help" data-t="finance.placeholder">選一項會影響淨資產與狀態。</p>
     <div id="financeBody" class="focus-body"></div>
