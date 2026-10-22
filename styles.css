@@ -2336,3 +2336,27 @@ body { overflow-x: hidden; }
 @media (max-width: 520px) {
   .navbtn { padding: 8px 11px; font-size: 13px; }
 }
+
+/* v5.78：訃聞頁「你做過的決定」 */
+.end-decisions {
+  margin-top: 14px; padding: 12px 16px;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+}
+.end-decisions h3 { margin: 0 0 4px; font-size: 14px; color: var(--accent); }
+.ed-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 12px; }
+.ed-chip {
+  font-size: 11px; padding: 2px 8px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--paper); color: var(--ink-2);
+}
+.ed-chip-big    { border-color: var(--accent); color: var(--accent); }
+.ed-chip-family { border-color: var(--stamp); color: var(--stamp); }
+.ed-chip-skip   { opacity: 0.7; }
+.ed-list { display: grid; gap: 4px; }
+.ed-row {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 5px 0; border-bottom: 1px dashed var(--line); font-size: 13px;
+}
+.ed-row:last-child { border-bottom: none; }
+.ed-age { min-width: 2.4em; color: var(--ink-3); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.ed-icon { flex: none; }
+.ed-text { color: var(--ink); }

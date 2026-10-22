@@ -716,7 +716,11 @@
     "lab.start": "人數",
     "focus.placeholder": "選一個會影響你的狀態條與淨資產。",
     "finance.placeholder": "選一項會影響淨資產與狀態。",
-    "feedback.submit": "送出"
+    "feedback.submit": "送出",
+    "dec.end.title": "✦ 你做過的決定",
+    "dec.end.count": "這一生你做了 {n} 個選擇。",
+    "dec.end.skipped": "跳過 {n} 次",
+    "dec.end.none": "這一生沒有做出任何選擇。"
   },
   "zh-Hans": {
     "title": "选出生地 · 人生模拟",
@@ -1435,7 +1439,11 @@
     "lab.start": "人数",
     "focus.placeholder": "选一个会影响你的状态条与净资产。",
     "finance.placeholder": "选一项会影响净资产与状态。",
-    "feedback.submit": "发送"
+    "feedback.submit": "发送",
+    "dec.end.title": "✦ 你做过的决定",
+    "dec.end.count": "这一生你做了 {n} 个选择。",
+    "dec.end.skipped": "跳过 {n} 次",
+    "dec.end.none": "这一生没有做出任何选择。"
   },
   "en": {
     "title": "Born Somewhere · Life Simulator",
@@ -2154,7 +2162,11 @@
     "lab.start": "How many",
     "focus.placeholder": "Picking one affects your stat bars and net assets.",
     "finance.placeholder": "Picking one affects net assets and stats.",
-    "feedback.submit": "Send"
+    "feedback.submit": "Send",
+    "dec.end.title": "✦ Decisions you made",
+    "dec.end.count": "You made {n} choices in this life.",
+    "dec.end.skipped": "{n} skipped",
+    "dec.end.none": "You made no choices in this life."
   },
   "ko": {
     "title": "태어난 곳 · 인생 시뮬레이션",
@@ -2873,7 +2885,11 @@
     "end.lastMoments": "마지막 순간",
     "focus.placeholder": "고르면 능력치 막대와 순자산에 영향을 줍니다.",
     "finance.placeholder": "고르면 순자산과 능력치에 영향을 줍니다.",
-    "feedback.submit": "보내기"
+    "feedback.submit": "보내기",
+    "dec.end.title": "✦ 내가 내린 결정",
+    "dec.end.count": "이 삶에서 {n}개의 선택을 했습니다.",
+    "dec.end.skipped": "{n}회 건너뜀",
+    "dec.end.none": "이 삶에서 내린 선택이 없습니다."
   },
   "ja": {
     "title": "出生地 · 人生シミュレーション",
@@ -3592,7 +3608,11 @@
     "end.lastMoments": "最後の瞬間",
     "focus.placeholder": "選ぶとステータスと純資産が変わります。",
     "finance.placeholder": "選ぶと純資産とステータスが変わります。",
-    "feedback.submit": "送信"
+    "feedback.submit": "送信",
+    "dec.end.title": "✦ あなたが選んだこと",
+    "dec.end.count": "この人生で {n} 回選びました。",
+    "dec.end.skipped": "{n} 回スキップ",
+    "dec.end.none": "この人生では選択しませんでした。"
   },
   "vi": {
     "title": "Nơi sinh · Mô phỏng cuộc đời",
@@ -4311,7 +4331,11 @@
     "end.lastMoments": "Khoảnh khắc cuối",
     "focus.placeholder": "Chọn sẽ ảnh hưởng thanh chỉ số và tài sản ròng.",
     "finance.placeholder": "Chọn sẽ ảnh hưởng tài sản ròng và chỉ số.",
-    "feedback.submit": "Gửi"
+    "feedback.submit": "Gửi",
+    "dec.end.title": "✦ Những lựa chọn của bạn",
+    "dec.end.count": "Bạn đã đưa ra {n} lựa chọn trong kiếp sống này.",
+    "dec.end.skipped": "Bỏ qua {n} lần",
+    "dec.end.none": "Bạn không đưa ra lựa chọn nào trong kiếp sống này."
   },
   "fr": {
     "title": "Né quelque part · Simulateur de vie",
@@ -5030,7 +5054,11 @@
     "end.lastMoments": "Les derniers moments",
     "focus.placeholder": "Choisir modifie vos barres de stats et votre patrimoine.",
     "finance.placeholder": "Choisir modifie le patrimoine et les stats.",
-    "feedback.submit": "Envoyer"
+    "feedback.submit": "Envoyer",
+    "dec.end.title": "✦ Vos décisions",
+    "dec.end.count": "Vous avez pris {n} décisions dans cette vie.",
+    "dec.end.skipped": "{n} ignorées",
+    "dec.end.none": "Vous n'avez pris aucune décision dans cette vie."
   },
   "th": {
     "title": "เกิดที่ไหน · จำลองชีวิต",
@@ -5749,7 +5777,11 @@
     "end.lastMoments": "ช่วงสุดท้าย",
     "focus.placeholder": "การเลือกจะส่งผลต่อแถบสถานะและสินทรัพย์สุทธิ",
     "finance.placeholder": "การเลือกจะส่งผลต่อสินทรัพย์สุทธิและสถานะ",
-    "feedback.submit": "ส่ง"
+    "feedback.submit": "ส่ง",
+    "dec.end.title": "✦ การตัดสินใจของคุณ",
+    "dec.end.count": "คุณตัดสินใจ {n} ครั้งในชีวิตนี้",
+    "dec.end.skipped": "ข้าม {n} ครั้ง",
+    "dec.end.none": "คุณไม่ได้ตัดสินใจในชีวิตนี้เลย"
   },
   "es": {
     "title": "Nacido en algún lugar · Simulador de vida",
@@ -6468,6 +6500,10 @@
     "end.lastMoments": "Los últimos momentos",
     "focus.placeholder": "Elegir afecta a las barras de estado y al patrimonio.",
     "finance.placeholder": "Elegir afecta al patrimonio y a las estadísticas.",
-    "feedback.submit": "Enviar"
+    "feedback.submit": "Enviar",
+    "dec.end.title": "✦ Tus decisiones",
+    "dec.end.count": "Tomaste {n} decisiones en esta vida.",
+    "dec.end.skipped": "{n} omitidas",
+    "dec.end.none": "No tomaste ninguna decisión en esta vida."
   }
 }

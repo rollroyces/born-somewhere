@@ -124,9 +124,9 @@ function showDecision({ id, kind, age, title, body, fact, hint, choices, hasNote
       const noteText = hasNote ? (note.value || '').trim() : '';
       // 套用效果
       try { choice.apply && choice.apply(STATE.life, { note: noteText }); } catch (e) { console.warn('decision apply failed', id, k, e); }
-      // 記錄
+      // 記錄（v5.78：連 label / icon 一起存，訃聞頁才組得出這一生做過的決定）
       STATE.life.decisions = STATE.life.decisions || [];
-      STATE.life.decisions.push({ id, age, key: k, note: noteText });
+      STATE.life.decisions.push({ id, age, key: k, label: choice.label, icon: choice.icon || '', note: noteText });
       // 寫進 log（讓使用者往後看得到）
       STATE.life.log.push({ age, kind: 'decision', icon: choice.icon || '✦', text: title + ' → ' + choice.label });
       logLife(t('dec.log', choice.label));
@@ -3436,6 +3436,8 @@ function renderEnd() {
   }
   // v5.20：死亡原因分析（本年 + 一生 Top 3）
   renderEndCauseAnalysis();
+  // v5.78：這一生做過的決定
+  renderEndDecisions();
   // v5.31：前世紀錄面板
   renderEndPastRecords(past);
 }
@@ -4128,6 +4130,53 @@ function computeLifetimeCauses(life) {
   const top = sorted.slice(0, 3).map(([k, v]) => ({ cause: k, pct: total > 0 ? (v / total * 100) : 0 }));
   return { top, byAge: causeAccum };
 }
+/* v5.78：訃聞頁的「你做過的決定」
+   決策事件一直只寫進 life.log / life.decisions，訃聞頁完全沒有提到它們。
+   這裡把一生做過的選擇整理出來，讓互動有回報。 */
+const DECISION_KIND_LABEL = {
+  big: 'dec.kind.big',
+  small: 'dec.kind.small',
+  family: 'dec.kind.family',
+};
+function renderEndDecisions() {
+  const wrap = $('#endDecisions');
+  if (!wrap || !STATE.life) return;
+  const life = STATE.life;
+  const decided = (life.decisions || []).filter(d => d && d.key && d.key !== 'skipped');
+  const skipped = (life.decisions || []).filter(d => d && d.key === 'skipped');
+  if (!decided.length && !skipped.length) {
+    wrap.innerHTML = `<h3>${t('dec.end.title')}</h3><p class="muted">${t('dec.end.none')}</p>`;
+    return;
+  }
+  // 用事件 id 找回當初的 label（choices 內的 icon / label 不存起來，這裡重建）
+  const byId = {};
+  for (const d of DECISIONS) byId[d.id] = d;
+  const rows = decided.map(r => {
+    // label / icon 在作答當下就存進紀錄了；舊紀錄沒有就退回事件 id
+    const label = r.label || r.id;
+    const icon = r.icon || '✦';
+    return `<div class="ed-row">
+      <span class="ed-age">${r.age ?? '?'}</span>
+      <span class="ed-icon">${escapeHtml(icon)}</span>
+      <span class="ed-text">${escapeHtml(label)}</span>
+    </div>`;
+  }).join('');
+
+  const kindCount = {};
+  for (const r of decided) {
+    const k = byId[r.id]?.kind || 'small';
+    kindCount[k] = (kindCount[k] || 0) + 1;
+  }
+  const chips = Object.entries(kindCount).map(([k, n]) =>
+    `<span class="ed-chip ed-chip-${k}">${t(DECISION_KIND_LABEL[k] || k)} ${n}</span>`).join('');
+
+  wrap.innerHTML = `
+    <h3>${t('dec.end.title')}</h3>
+    <p class="muted" style="font-size:12px;margin:0 0 10px;">${t('dec.end.count', { n: decided.length })}</p>
+    <div class="ed-chips">${chips}${skipped.length ? `<span class="ed-chip ed-chip-skip">${t('dec.end.skipped', { n: skipped.length })}</span>` : ''}</div>
+    <div class="ed-list">${rows}</div>`;
+}
+
 function renderEndCauseAnalysis() {
   const wrap = $('#endCauseAnalysis');
   if (!wrap || !STATE.life) return;
