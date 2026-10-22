@@ -54,13 +54,37 @@ for lang, kv in d.items():
         if r not in kv or not str(kv[r]).strip():
             issues.append(('MISSING-KEY', lang, r, '', ''))
 
+# 4. key-set parity. A language missing a key the others have renders the raw key
+#    in that language only -- invisible if you only test zh-Hant and en.
+base = set(d['zh-Hant'])
+for lang, kv in d.items():
+    if lang == 'zh-Hant':
+        continue
+    missing = sorted(base - set(kv))
+    extra = sorted(set(kv) - base)
+    for k in missing:
+        issues.append(('MISSING-VS-BASE', lang, k, '', ''))
+    for k in extra:
+        issues.append(('ORPHAN-KEY', lang, k, '', ''))
+
+# 5. empty / placeholder values anywhere
+import re as _re
+_placeholder = _re.compile(r'^(TODO|FIXME|xxx|test|lorem|\.\.\.)$', _re.I)
+for lang, kv in d.items():
+    for k, v in kv.items():
+        s = str(v).strip()
+        if not s:
+            issues.append(('EMPTY', lang, k, '', ''))
+        elif _placeholder.match(s):
+            issues.append(('PLACEHOLDER', lang, k, '', s))
+
 if issues:
     for t, lang, k, detail, snippet in issues:
-        print(f'{t:12} {lang}.{k}  [{detail}]  {snippet!r}')
+        print(f'{t:15} {lang}.{k}  [{detail}]  {snippet!r}')
     print('\nTOTAL:', len(issues))
     sys.exit(1)
 
 total = sum(len(v) for v in d.values())
 print(f'clean — {len(d)} languages, {total} values, '
       f'{len([r for r in refs if not r.endswith(".")])} referenced keys all resolve, '
-      f'0 U+FFFD, 0 Han-in-Korean')
+      f'key sets identical, 0 U+FFFD, 0 Han-in-Korean, 0 empty/placeholder')
