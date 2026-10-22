@@ -2266,3 +2266,15 @@ body.theme-dark .dec-card .fact { background: var(--bg); }
 
 /* 精簡模式下讓主要欄位更寬鬆、好讀 */
 #view-life:not(.show-detail) .life-col-c { display: flex; flex-direction: column; }
+
+/* v5.62：財務 modal 版面修正
+   實測：卡片寬 480px，#financeBody 422px，但六個投資選項只分到兩欄各 207px，
+   選項名稱被擠成 3–5 行（「股債各半基金」「股票（指數）」都斷行）。
+   原因：.focus-body 在 app.css 第 1065 行是 grid-template-columns: 1fr 1fr。
+   只覆寫 #financeBody（ID 選擇器優先權高），不動 focusModal 的兩欄排版。 */
+#financeBody { grid-template-columns: minmax(0, 1fr); }
+.fin-grid { width: 100%; }
+/* 選項太少又太窄，兩欄只會更擠：窄時單欄、夠寬才兩欄 */
+@media (max-width: 520px) {
+  .fin-grid { grid-template-columns: 1fr; }
+}
