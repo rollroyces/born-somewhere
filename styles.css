@@ -2360,3 +2360,12 @@ body { overflow-x: hidden; }
 .ed-age { min-width: 2.4em; color: var(--ink-3); font-size: 11.5px; font-variant-numeric: tabular-nums; }
 .ed-icon { flex: none; }
 .ed-text { color: var(--ink); }
+
+/* v5.80：書架「共享人生」逐批展開（34 條 = 7101px → 先顯示 8 張） */
+.shared-more-btn {
+  display: block; width: 100%; margin-top: 10px; padding: 10px 12px;
+  background: var(--paper); border: 1px dashed var(--line); border-radius: 8px;
+  color: var(--accent); font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.shared-more-btn:hover { background: var(--bg-3); border-color: var(--accent); }

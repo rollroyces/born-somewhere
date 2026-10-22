@@ -27,6 +27,7 @@ const STATE = {
   pendingDecision: null,
   autoDecide: false,  // v5.9 新增：自動抉擇模式
   fastForward: false, // v5.9 新增：快轉到下一個抉擇
+  sharedShown: 8,    // v5.80：書架「共享人生」先顯示幾張
   thoughtsEnabled: true, // v5.10：✎ 寫下想法 啟用（5/15/30/50/70 暫停時彈出 modal）
   pastLives: [],
   modal: null,
@@ -3926,7 +3927,13 @@ function renderSharedLives(lives) {
   if (!list) return;
   list.innerHTML = '';
   const state = getSharedState();
-  lives.forEach((life) => {
+  // v5.80：過去人生一多，這一區會長到 7000px 以上（實測 34 條 = 7101px）。
+  // 先顯示前 SHARED_PAGE 張，其餘按「看更多」逐批展開。
+  const SHARED_PAGE = 8;
+  const shown = STATE.sharedShown || SHARED_PAGE;
+  const slice = lives.slice(0, shown);
+
+  slice.forEach((life) => {
     const c = countryById(life.country);
     const flag = c ? c.flag : '🏳️';
     const loc = localize(c);
@@ -3983,6 +3990,27 @@ function renderSharedLives(lives) {
     });
     list.appendChild(card);
   });
+
+  // v5.80：剩餘的按「看更多」逐批展開
+  if (lives.length > shown) {
+    const more = document.createElement('button');
+    more.className = 'shared-more-btn';
+    more.textContent = t('shared.more', { n: Math.min(SHARED_PAGE, lives.length - shown), left: lives.length - shown });
+    more.addEventListener('click', () => {
+      STATE.sharedShown = Math.min(lives.length, shown + SHARED_PAGE);
+      renderSharedLives(lives);
+    });
+    list.appendChild(more);
+  } else if (shown > SHARED_PAGE) {
+    const less = document.createElement('button');
+    less.className = 'shared-more-btn';
+    less.textContent = t('shared.less');
+    less.addEventListener('click', () => {
+      STATE.sharedShown = SHARED_PAGE;
+      renderSharedLives(lives);
+    });
+    list.appendChild(less);
+  }
 }
 
 /* ==== v5.20：現在居住的地方 (Active Players Map, intro) ==== */

@@ -720,7 +720,9 @@
     "dec.end.title": "✦ 你做過的決定",
     "dec.end.count": "這一生你做了 {n} 個選擇。",
     "dec.end.skipped": "跳過 {n} 次",
-    "dec.end.none": "這一生沒有做出任何選擇。"
+    "dec.end.none": "這一生沒有做出任何選擇。",
+    "shared.more": "看更多（還有 {left} 筆）",
+    "shared.less": "收合"
   },
   "zh-Hans": {
     "title": "选出生地 · 人生模拟",
@@ -1443,7 +1445,9 @@
     "dec.end.title": "✦ 你做过的决定",
     "dec.end.count": "这一生你做了 {n} 个选择。",
     "dec.end.skipped": "跳过 {n} 次",
-    "dec.end.none": "这一生没有做出任何选择。"
+    "dec.end.none": "这一生没有做出任何选择。",
+    "shared.more": "看更多（还有 {left} 条）",
+    "shared.less": "收起"
   },
   "en": {
     "title": "Born Somewhere · Life Simulator",
@@ -2166,7 +2170,9 @@
     "dec.end.title": "✦ Decisions you made",
     "dec.end.count": "You made {n} choices in this life.",
     "dec.end.skipped": "{n} skipped",
-    "dec.end.none": "You made no choices in this life."
+    "dec.end.none": "You made no choices in this life.",
+    "shared.more": "Show more ({left} left)",
+    "shared.less": "Show less"
   },
   "ko": {
     "title": "태어난 곳 · 인생 시뮬레이션",
@@ -2889,7 +2895,9 @@
     "dec.end.title": "✦ 내가 내린 결정",
     "dec.end.count": "이 삶에서 {n}개의 선택을 했습니다.",
     "dec.end.skipped": "{n}회 건너뜀",
-    "dec.end.none": "이 삶에서 내린 선택이 없습니다."
+    "dec.end.none": "이 삶에서 내린 선택이 없습니다.",
+    "shared.more": "더 보기 ({left}개 남음)",
+    "shared.less": "접기"
   },
   "ja": {
     "title": "出生地 · 人生シミュレーション",
@@ -3612,7 +3620,9 @@
     "dec.end.title": "✦ あなたが選んだこと",
     "dec.end.count": "この人生で {n} 回選びました。",
     "dec.end.skipped": "{n} 回スキップ",
-    "dec.end.none": "この人生では選択しませんでした。"
+    "dec.end.none": "この人生では選択しませんでした。",
+    "shared.more": "もっと見る（残り {left} 件）",
+    "shared.less": "折りたたむ"
   },
   "vi": {
     "title": "Nơi sinh · Mô phỏng cuộc đời",
@@ -4335,7 +4345,9 @@
     "dec.end.title": "✦ Những lựa chọn của bạn",
     "dec.end.count": "Bạn đã đưa ra {n} lựa chọn trong kiếp sống này.",
     "dec.end.skipped": "Bỏ qua {n} lần",
-    "dec.end.none": "Bạn không đưa ra lựa chọn nào trong kiếp sống này."
+    "dec.end.none": "Bạn không đưa ra lựa chọn nào trong kiếp sống này.",
+    "shared.more": "Xem thêm (còn {left})",
+    "shared.less": "Thu gọn"
   },
   "fr": {
     "title": "Né quelque part · Simulateur de vie",
@@ -5058,7 +5070,9 @@
     "dec.end.title": "✦ Vos décisions",
     "dec.end.count": "Vous avez pris {n} décisions dans cette vie.",
     "dec.end.skipped": "{n} ignorées",
-    "dec.end.none": "Vous n'avez pris aucune décision dans cette vie."
+    "dec.end.none": "Vous n'avez pris aucune décision dans cette vie.",
+    "shared.more": "Voir plus ({left} restants)",
+    "shared.less": "Réduire"
   },
   "th": {
     "title": "เกิดที่ไหน · จำลองชีวิต",
@@ -5781,7 +5795,9 @@
     "dec.end.title": "✦ การตัดสินใจของคุณ",
     "dec.end.count": "คุณตัดสินใจ {n} ครั้งในชีวิตนี้",
     "dec.end.skipped": "ข้าม {n} ครั้ง",
-    "dec.end.none": "คุณไม่ได้ตัดสินใจในชีวิตนี้เลย"
+    "dec.end.none": "คุณไม่ได้ตัดสินใจในชีวิตนี้เลย",
+    "shared.more": "ดูเพิ่ม (อีก {left} รายการ)",
+    "shared.less": "ย่อ"
   },
   "es": {
     "title": "Nacido en algún lugar · Simulador de vida",
@@ -6504,6 +6520,8 @@
     "dec.end.title": "✦ Tus decisiones",
     "dec.end.count": "Tomaste {n} decisiones en esta vida.",
     "dec.end.skipped": "{n} omitidas",
-    "dec.end.none": "No tomaste ninguna decisión en esta vida."
+    "dec.end.none": "No tomaste ninguna decisión en esta vida.",
+    "shared.more": "Ver más ({left} restantes)",
+    "shared.less": "Ver menos"
   }
 }
