@@ -2148,7 +2148,7 @@ function showFinancialChoice() {
       if (d.happiness) tags.push(`<span class="fin-stat">${d.happiness > 0 ? '+' : ''}${d.happiness} 😊</span>`);
       if (d.social) tags.push(`<span class="fin-stat">${d.social > 0 ? '+' : ''}${d.social} 👥</span>`);
       const isCheap = i === cheapestIdx;
-      const badge = isCheap ? `<span class="fin-auto">${isEn ? '⚡ auto' : '⚡ 自動'}</span>` : '';
+      const badge = isCheap ? `<span class="fin-badge">${isEn ? '⚡ auto' : '⚡ 自動'}</span>` : '';
       return `<button class="finance-btn" data-idx="${i}"><span class="fin-text">${c.text}${badge}</span><span class="fin-tags">${tags.join(' ')}</span></button>`;
     }).join('')}</div>
     <div class="fc-auto-row">
