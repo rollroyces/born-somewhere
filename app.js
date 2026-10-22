@@ -1628,10 +1628,15 @@ function milestoneEvents(life, newAge) {
     events.push({ age: 60, kind: 'milestone', icon: '🏖️', text: t('event.retirement') });
   }
   // 偶發事件（教學版過濾掉疾病）
+  // v5.62：只挑還沒得過的病 — 否則同一個人生會重複出現「罹患癌症」
   if (!STATE.eduMode && !STATE.softMode && newAge >= 18 && newAge <= 65 && chance(0.04)) {
-    const cond = pick(['cancer', 'heart', 'stroke', 'diabetes']);
-    life.conditions[cond === 'cancer' ? 'cancer' : cond === 'heart' ? 'heart' : cond === 'stroke' ? 'heart' : 'diabetes'] = true;
-    events.push({ age: newAge, kind: 'illness', icon: '💊', text: t('event.illness.' + cond) });
+    const fresh = ['cancer', 'heart', 'stroke', 'diabetes']
+      .filter(c => !(c === 'stroke' ? life.conditions.heart : life.conditions[c]));
+    if (fresh.length) {
+      const cond = pick(fresh);
+      life.conditions[cond === 'stroke' ? 'heart' : cond] = true;
+      events.push({ age: newAge, kind: 'illness', icon: '💊', text: t('event.illness.' + cond) });
+    }
   }
   if (newAge >= 12 && newAge <= 25 && chance(0.02)) {
     events.push({ age: newAge, kind: 'social', icon: '🎓', text: t('event.event.school.exam') });
@@ -1645,16 +1650,24 @@ function milestoneEvents(life, newAge) {
     events.push({ age: newAge, kind: 'social', icon: '🌿', text: LANG === 'en' ? 'You identify as indigenous; get education & health support.' : '你被認定為原住民後裔，獲得教育補助與健康資源。' });
   }
   // 戰爭/衝突（教學版過濾掉）
-  const wh = life.countryData?.wh || 0;
-  if (!STATE.eduMode && !STATE.softMode && wh > 0.1 && newAge >= 1 && chance(wh * 0.1)) {
-    const warEvt = pick([
+  // v5.62：每種戰爭事件一生只出現一次，全部用完就不再抽
+  const warEvt = life.countryData?.wh || 0;
+  if (!STATE.eduMode && !STATE.softMode && warEvt > 0.1 && newAge >= 1) {
+    const pool = [
       LANG === 'en' ? 'Air raid sirens. The family shelters in the basement.' : '空襲警報響起，全家躲進防空洞。',
       LANG === 'en' ? 'A neighbor dies in the fighting. You witness the scene.' : '鄰居在衝突中喪生，你目睹了場面。',
       LANG === 'en' ? 'Your father is conscripted. Months of silence.' : '父親被徵召上前線，數月無音訊。',
       LANG === 'en' ? 'The neighborhood is evacuated; supplies run short.' : '鄰里被疏散到臨時營地，物資匱乏。',
       LANG === 'en' ? 'Fighting blocks the roads. School closes for a week.' : '武裝衝突封鎖道路，學校關閉一週。',
-    ]);
-    events.push({ age: newAge, kind: 'heavy', icon: '⚔️', text: warEvt });
+    ];
+    // 用陣列不用 Set：整段人生會被 lifeExport 整包 JSON.stringify，Set 會變成 {}
+    const seenWar = life.seenWar || (life.seenWar = []);
+    const fresh = pool.filter(w => !seenWar.includes(w));
+    if (fresh.length && chance(warEvt * 0.1)) {
+      const w = pick(fresh);
+      seenWar.push(w);
+      events.push({ age: newAge, kind: 'heavy', icon: '⚔️', text: w });
+    }
   }
   // 寄養（美/英/紐/澳/韓/日）— 教學版不觸發
   if (!STATE.eduMode && !STATE.softMode && ['USA','GBR','NZL','AUS','KOR','JPN'].includes(life.country) && newAge === 0) {
@@ -2226,15 +2239,15 @@ function generateYearlyEvent(life) {
     // 幼兒期
     events.push({ weight: 30, icon: '👶', en: 'Learned to walk', zh: '學會走路' });
     events.push({ weight: 20, icon: '🗣️', en: 'First word spoken', zh: '說出第一個字' });
-    events.push({ weight: 15, icon: '🤒', en: 'Had a fever', zh: '發燒了' });
+    events.push({ weight: 15, icon: '🤒', en: 'Had a fever', zh: '發燒了', rep: true });
     events.push({ weight: 10, icon: '👨‍👩‍👧', en: 'Started recognizing family', zh: '開始認得家人' });
   } else if (age < 13) {
     // 學齡
-    events.push({ weight: 25, icon: '📚', en: 'Made a new friend', zh: '交了新朋友' });
+    events.push({ weight: 25, icon: '📚', en: 'Made a new friend', zh: '交了新朋友', rep: true });
     events.push({ weight: 20, icon: '🏆', en: 'Won a small competition', zh: '在小比賽得名次' });
     events.push({ weight: 15, icon: '🤕', en: 'Got injured playing', zh: '玩耍時受傷' });
     events.push({ weight: 10, icon: '📖', en: 'Discovered a favorite book', zh: '發現一本喜歡的書' });
-    events.push({ weight: 10, icon: '🤒', en: 'Caught a cold', zh: '感冒了' });
+    events.push({ weight: 10, icon: '🤒', en: 'Caught a cold', zh: '感冒了', rep: true });
     if (focus === 'study') events.push({ weight: 30, icon: '📝', en: 'Got good grades', zh: '成績進步了' });
   } else if (age < 18) {
     // 青少年
@@ -2242,7 +2255,7 @@ function generateYearlyEvent(life) {
     events.push({ weight: 20, icon: '💔', en: 'First heartbreak', zh: '初戀破滅' });
     events.push({ weight: 15, icon: '🎮', en: 'Got into gaming', zh: '迷上電玩' });
     events.push({ weight: 15, icon: '🚲', en: 'Biked somewhere new', zh: '騎腳踏車去新地方' });
-    events.push({ weight: 10, icon: '🤒', en: 'Got sick for a week', zh: '病了一週' });
+    events.push({ weight: 10, icon: '🤒', en: 'Got sick for a week', zh: '病了一週', rep: true });
     if (focus === 'study') events.push({ weight: 30, icon: '🎓', en: 'Won academic award', zh: '獲得學業獎' });
   } else if (age < 30) {
     // 青年
@@ -2262,35 +2275,45 @@ function generateYearlyEvent(life) {
     events.push({ weight: 15, icon: '🚗', en: 'Bought a car', zh: '買了車' });
     events.push({ weight: 10, icon: '🤒', en: 'Had health issue', zh: '健康出了狀況' });
     events.push({ weight: 5, icon: '💔', en: 'Got divorced', zh: '離婚了' });
-    if (focus === 'family') events.push({ weight: 25, icon: '👨‍👩‍👧', en: 'Family trip', zh: '家族旅遊' });
+    if (focus === 'family') events.push({ weight: 25, icon: '👨‍👩‍👧', en: 'Family trip', zh: '家族旅遊', rep: true });
   } else if (age < 65) {
     // 中老年
     events.push({ weight: 25, icon: '🎂', en: 'Child graduated', zh: '孩子畢業了' });
-    events.push({ weight: 20, icon: '🏖', en: 'Took vacation', zh: '去度假' });
+    events.push({ weight: 20, icon: '🏖', en: 'Took vacation', zh: '去度假', rep: true });
     events.push({ weight: 20, icon: '🎉', en: 'Grandchild born', zh: '孫子女出生' });
-    events.push({ weight: 15, icon: '🤒', en: 'Health checkup', zh: '健康檢查' });
+    events.push({ weight: 15, icon: '🤒', en: 'Health checkup', zh: '健康檢查', rep: true });
     events.push({ weight: 10, icon: '🎓', en: 'Went back to school', zh: '重返校園' });
     events.push({ weight: 10, icon: '💔', en: 'Lost a loved one', zh: '失去摯愛' });
   } else {
     // 老年
-    events.push({ weight: 25, icon: '👨‍👩‍👧', en: 'Grandchildren visit', zh: '孫子女來訪' });
-    events.push({ weight: 20, icon: '🌳', en: 'Walked in the park', zh: '公園散步' });
-    events.push({ weight: 20, icon: '📖', en: 'Read a great book', zh: '讀了一本好書' });
+    events.push({ weight: 25, icon: '👨‍👩‍👧', en: 'Grandchildren visit', zh: '孫子女來訪', rep: true });
+    events.push({ weight: 20, icon: '🌳', en: 'Walked in the park', zh: '公園散步', rep: true });
+    events.push({ weight: 20, icon: '📖', en: 'Read a great book', zh: '讀了一本好書', rep: true });
     events.push({ weight: 15, icon: '👴', en: 'Saw grandchild grow', zh: '看孫子女長大' });
-    events.push({ weight: 10, icon: '🏥', en: 'Had health check', zh: '做了健康檢查' });
+    events.push({ weight: 10, icon: '🏥', en: 'Had health check', zh: '做了健康檢查', rep: true });
   }
   // 加國家特殊事件
   if (c.wh > 0.5 && Math.random() < c.wh * 0.1) {
-    events.push({ weight: 50, icon: '⚔️', en: 'Affected by local unrest', zh: '受到當地動亂影響' });
+    events.push({ weight: 20, icon: '⚔️', en: 'Affected by local unrest', zh: '受到當地動亂影響' });
   }
-  // 抽權重
-  const total = events.reduce((s, e) => s + e.weight, 0);
+  // v5.62：抽權重前先濾掉「一生只該發生一次」而且已經發生過的事件，
+  // 否則「畢業了」「有了孩子」「結婚了」會在一生裡重複三四次，看起來像雜訊。
+  // 標了 rep: true 的（感冒、旅行、健康檢查…）本來就是日常，可以重複。
+  // 若這個年齡層的一次性事件全用完了，就寧可那年沒有小事件 ——
+  // 寧靜也不要「同一生結了五次婚、離了三次婚」。
+  // 用陣列不用 Set：整段人生會被 lifeExport 整包 JSON.stringify，Set 會變成 {}
+  const seen = life.seenOnce || (life.seenOnce = []);
+  const pool = events.filter(e => e.rep || !seen.includes(e.en));
+  if (!pool.length) return null;
+  const total = pool.reduce((s, e) => s + e.weight, 0);
   let r = Math.random() * total;
-  for (const e of events) {
+  for (const e of pool) {
     r -= e.weight;
-    if (r <= 0) return e;
+    if (r <= 0) { if (!e.rep) seen.push(e.en); return e; }
   }
-  return events[0];
+  const first = pool[0];
+  if (first && !first.rep) seen.push(first.en);
+  return first;
 }
 
 /* v5.14：套用事件到狀態條（重要事件才有效果） */
