@@ -126,7 +126,7 @@ function showDecision({ id, kind, age, title, body, fact, hint, choices, hasNote
       try { choice.apply && choice.apply(STATE.life, { note: noteText }); } catch (e) { console.warn('decision apply failed', id, k, e); }
       // 記錄（v5.78：連 label / icon 一起存，訃聞頁才組得出這一生做過的決定）
       STATE.life.decisions = STATE.life.decisions || [];
-      STATE.life.decisions.push({ id, age, key: k, label: choice.label, icon: choice.icon || '', note: noteText });
+      STATE.life.decisions.push({ id, age, key: k, label: choice.label, icon: choice.icon || '', note: noteText, lang: LANG });
       // 寫進 log（讓使用者往後看得到）
       STATE.life.log.push({ age, kind: 'decision', icon: choice.icon || '✦', text: title + ' → ' + choice.label });
       logLife(t('dec.log', choice.label));
@@ -4142,6 +4142,17 @@ function renderEndDecisions() {
   const wrap = $('#endDecisions');
   if (!wrap || !STATE.life) return;
   const life = STATE.life;
+  // 決定是在作答當下記下的，標籤也是那個時候的語言。
+  // 如果玩家中途換語言，整塊用「當初記錄時的語言」呈現，避免清單跟著標題變、
+  // 內容卻停在另一種語言。
+  const recorded = (life.decisions || []).find(d => d && d.lang)?.lang;
+  const prevLang = LANG;
+  if (recorded && recorded !== LANG) { LANG = recorded; }
+  try { renderEndDecisionsInner(wrap, life); }
+  finally { if (recorded && recorded !== prevLang) LANG = prevLang; }
+}
+
+function renderEndDecisionsInner(wrap, life) {
   const decided = (life.decisions || []).filter(d => d && d.key && d.key !== 'skipped');
   const skipped = (life.decisions || []).filter(d => d && d.key === 'skipped');
   if (!decided.length && !skipped.length) {
