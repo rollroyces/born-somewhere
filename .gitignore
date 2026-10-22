@@ -8,3 +8,8 @@ node_modules/
 .env.local
 *.swp
 *.tmp
+
+# i18n 產生中間產物（不進版控、不進部署內容）
+tmp_sm_i18n.json
+scripts_add_sm_i18n.py
+zu-pu/
