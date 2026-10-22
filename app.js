@@ -5613,11 +5613,8 @@ function renderSoftModeBtn() {
     if (!b) return;
     b.setAttribute('aria-pressed', on ? 'true' : 'false');
     b.classList.toggle('active', on);
-    if (sel === '#btnSoftMode') {
-      b.title = on
-        ? (LANG === 'en' ? 'Heavy events are hidden — click to show them' : '已略過可怕的情節 — 點一下恢復')
-        : (LANG === 'en' ? 'Hide suicide, violence, drugs and abuse events' : '讓自殺、性暴力、藥物、暴力這類情節不會發生');
-    }
+    // v5.82：intro 那顆以前沒有 tooltip（只有 topbar 有），順手補上並走 i18n
+    b.title = t(on ? 'soft.on' : 'soft.off');
   });
 }
 

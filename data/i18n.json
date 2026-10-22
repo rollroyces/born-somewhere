@@ -722,7 +722,9 @@
     "dec.end.skipped": "跳過 {n} 次",
     "dec.end.none": "這一生沒有做出任何選擇。",
     "shared.more": "看更多（還有 {left} 筆）",
-    "shared.less": "收合"
+    "shared.less": "收合",
+    "soft.on": "已略過可怕的情節 — 點一下恢復",
+    "soft.off": "讓自殺、性暴力、藥物、暴力這類情節不會發生"
   },
   "zh-Hans": {
     "title": "选出生地 · 人生模拟",
@@ -1447,7 +1449,9 @@
     "dec.end.skipped": "跳过 {n} 次",
     "dec.end.none": "这一生没有做出任何选择。",
     "shared.more": "看更多（还有 {left} 条）",
-    "shared.less": "收起"
+    "shared.less": "收起",
+    "soft.on": "已跳过可怕的情节 — 点一下恢复",
+    "soft.off": "让自杀、性暴力、药物、暴力这类情节不会发生"
   },
   "en": {
     "title": "Born Somewhere · Life Simulator",
@@ -2172,7 +2176,9 @@
     "dec.end.skipped": "{n} skipped",
     "dec.end.none": "You made no choices in this life.",
     "shared.more": "Show more ({left} left)",
-    "shared.less": "Show less"
+    "shared.less": "Show less",
+    "soft.on": "Heavy events are hidden — click to show them",
+    "soft.off": "Hide suicide, violence, drugs and abuse events"
   },
   "ko": {
     "title": "태어난 곳 · 인생 시뮬레이션",
@@ -2897,7 +2903,9 @@
     "dec.end.skipped": "{n}회 건너뜀",
     "dec.end.none": "이 삶에서 내린 선택이 없습니다.",
     "shared.more": "더 보기 ({left}개 남음)",
-    "shared.less": "접기"
+    "shared.less": "접기",
+    "soft.on": "무거운 장면이 숨겨져 있습니다 — 클릭하면 다시 표시",
+    "soft.off": "자살·폭력·마약·학대의 장면을 숨깁니다"
   },
   "ja": {
     "title": "出生地 · 人生シミュレーション",
@@ -3622,7 +3630,9 @@
     "dec.end.skipped": "{n} 回スキップ",
     "dec.end.none": "この人生では選択しませんでした。",
     "shared.more": "もっと見る（残り {left} 件）",
-    "shared.less": "折りたたむ"
+    "shared.less": "折りたたむ",
+    "soft.on": "重い場面は非表示です — クリックで再表示",
+    "soft.off": "自殺・暴力・薬物・虐待の場面を隠します"
   },
   "vi": {
     "title": "Nơi sinh · Mô phỏng cuộc đời",
@@ -4347,7 +4357,9 @@
     "dec.end.skipped": "Bỏ qua {n} lần",
     "dec.end.none": "Bạn không đưa ra lựa chọn nào trong kiếp sống này.",
     "shared.more": "Xem thêm (còn {left})",
-    "shared.less": "Thu gọn"
+    "shared.less": "Thu gọn",
+    "soft.on": "Cảnh nặng đang ẩn — bấm để hiện lại",
+    "soft.off": "Ẩn các cảnh tự sát, bạo lực, ma túy, lạm dụng"
   },
   "fr": {
     "title": "Né quelque part · Simulateur de vie",
@@ -5072,7 +5084,9 @@
     "dec.end.skipped": "{n} ignorées",
     "dec.end.none": "Vous n'avez pris aucune décision dans cette vie.",
     "shared.more": "Voir plus ({left} restants)",
-    "shared.less": "Réduire"
+    "shared.less": "Réduire",
+    "soft.on": "Les scènes lourdes sont masquées — cliquez pour les afficher",
+    "soft.off": "Masquer les scènes de suicide, violence, drogue et abus"
   },
   "th": {
     "title": "เกิดที่ไหน · จำลองชีวิต",
@@ -5797,7 +5811,9 @@
     "dec.end.skipped": "ข้าม {n} ครั้ง",
     "dec.end.none": "คุณไม่ได้ตัดสินใจในชีวิตนี้เลย",
     "shared.more": "ดูเพิ่ม (อีก {left} รายการ)",
-    "shared.less": "ย่อ"
+    "shared.less": "ย่อ",
+    "soft.on": "ซ่อนฉากหนักอยู่ — คลิกเพื่อแสดง",
+    "soft.off": "ซ่อนฉากการฆ่าตัวตาย ความรุนแรง ยาเสพติด และการทำร้าย"
   },
   "es": {
     "title": "Nacido en algún lugar · Simulador de vida",
@@ -6522,6 +6538,8 @@
     "dec.end.skipped": "{n} omitidas",
     "dec.end.none": "No tomaste ninguna decisión en esta vida.",
     "shared.more": "Ver más ({left} restantes)",
-    "shared.less": "Ver menos"
+    "shared.less": "Ver menos",
+    "soft.on": "Las escenas pesadas están ocultas — haz clic para mostrarlas",
+    "soft.off": "Ocultar escenas de suicidio, violencia, drogas y abuso"
   }
 }

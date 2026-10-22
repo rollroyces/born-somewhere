@@ -1,9 +1,9 @@
-/* born-somewhere service worker v5.81
+/* born-somewhere service worker v5.82
  * Cache-first strategy for the static app shell + countries/i18n JSON.
  * Falls back to network when cache misses, then caches the response.
  */
-const CACHE_NAME = 'born-somewhere-v5.81';
-const APP_VERSION = '5.81.0';
+const CACHE_NAME = 'born-somewhere-v5.82';
+const APP_VERSION = '5.82.0';
 
 // Files we want in the offline shell. List both the entry HTML and the data
 // blob so the game can boot without network.
