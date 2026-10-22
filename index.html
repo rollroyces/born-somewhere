@@ -130,6 +130,15 @@
     </div>
   </div>
 
+  <!-- v5.66：以下全部是「補充閱讀」，預設收起來。
+       實測：捲到這裡時頁面已 1501px，而「出生」按鈕在 957px（低於 817px 的視窗），
+       使用者要先捲才能開始玩。這段收起來後，主要選擇回到第一屏。 -->
+  <details class="intro-more" id="introMore">
+    <summary class="intro-more-sum">
+      <span data-t="intro.more.show">更多數據與說明</span>
+      <span class="ims-arrow">▾</span>
+    </summary>
+
   <!-- v5.19：即時計數器（自頁面載入起算） -->
   <section class="rt-counters">
     <h3 data-t="intro.rt.title">你打開這個頁面之後⋯⋯</h3>
@@ -183,6 +192,7 @@
     <div id="introPlayersMap"></div>
     <p class="muted players-legend" data-t="intro.players.legend">一個點代表一位進行中的人生</p>
   </section>
+  </details><!-- /.intro-more -->
 </section>
 
 <!-- LIFE -->
@@ -560,7 +570,7 @@
     <a href="#" id="btnPrivacy" class="footer-link" data-t="footer.privacy">隱私權政策</a>
     <a href="#" id="btnTerms" class="footer-link" data-t="footer.terms">使用須知</a>
     <a href="mailto:contact@born-somewhere.app" id="btnContact" class="footer-link" data-t="footer.contact">聯絡我們</a>
-    <span class="footer-ver">v5.65 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
+    <span class="footer-ver">v5.66 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
   </div>
 </footer>
 

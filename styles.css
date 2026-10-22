@@ -2282,3 +2282,26 @@ body.theme-dark .dec-card .fact { background: var(--bg); }
 @media (max-width: 520px) {
   .fin-grid { grid-template-columns: 1fr; }
 }
+
+/* v5.66：intro 頁 — 把「出生」按鈕拉回第一屏
+   實測：視窗 817px，但 #btnStart 在 957px，低於第一屏，使用者必須先捲才能開始玩。
+   收掉補充資料（.intro-more）之外，主要標題也縮一點讓 CTA 回到摺線之上。 */
+.intro-more { margin-top: 18px; border-top: 1px dashed var(--line); padding-top: 10px; }
+.intro-more-sum {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 11px 14px; cursor: pointer; list-style: none;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+  color: var(--accent); font-size: 13.5px; font-weight: 600;
+  transition: background .15s, border-color .15s;
+}
+.intro-more-sum::-webkit-details-marker { display: none; }
+.intro-more-sum:hover { background: var(--bg-3); border-color: var(--accent); }
+.intro-more[open] .ims-arrow { transform: rotate(180deg); }
+.intro-more .ims-arrow { transition: transform .18s; display: inline-block; }
+
+/* 標題小一號，CTA 回到第一屏（>= 900px 視窗時） */
+@media (min-width: 900px) {
+  .hero-title > span:nth-child(2) { font-size: clamp(52px, 7.4vw, 104px); }
+  .hero-title { margin: 20px 0 14px; }
+  .hero-sub { margin-bottom: 20px; font-size: 16px; }
+}

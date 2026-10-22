@@ -700,7 +700,8 @@
     "sm.phone.keep.sub": "省錢 但麻煩",
     "sm.phone.keep.log": "決定再撐一年。",
     "life.detail.show": "展開詳細資料",
-    "life.detail.hide": "收合詳細資料"
+    "life.detail.hide": "收合詳細資料",
+    "intro.more.show": "更多數據與說明"
   },
   "zh-Hans": {
     "title": "选出生地 · 人生模拟",
@@ -1403,7 +1404,8 @@
     "sm.phone.keep.sub": "省钱 但麻烦",
     "sm.phone.keep.log": "决定再撑一年。",
     "life.detail.show": "展开详细资料",
-    "life.detail.hide": "收起详细资料"
+    "life.detail.hide": "收起详细资料",
+    "intro.more.show": "更多数据与说明"
   },
   "en": {
     "title": "Born Somewhere · Life Simulator",
@@ -2106,7 +2108,8 @@
     "sm.phone.keep.sub": "Saves money but annoying",
     "sm.phone.keep.log": "You decided to make it last another year.",
     "life.detail.show": "Show detailed panels",
-    "life.detail.hide": "Hide detailed panels"
+    "life.detail.hide": "Hide detailed panels",
+    "intro.more.show": "More data and background"
   },
   "ko": {
     "title": "태어난 곳 · 인생 시뮬레이션",
@@ -2816,7 +2819,8 @@
     "sm.phone.keep.sub": "절약하지만 불편",
     "sm.phone.keep.log": "한 해 더 쓰기로 했다.",
     "life.detail.show": "상세 패널 펼치기",
-    "life.detail.hide": "상세 패널 접기"
+    "life.detail.hide": "상세 패널 접기",
+    "intro.more.show": "더 많은 데이터와 설명"
   },
   "ja": {
     "title": "出生地 · 人生シミュレーション",
@@ -3526,7 +3530,8 @@
     "sm.phone.keep.sub": "節約するが面倒",
     "sm.phone.keep.log": "もう一年使うことにした。",
     "life.detail.show": "詳細パネルを表示",
-    "life.detail.hide": "詳細パネルを隠す"
+    "life.detail.hide": "詳細パネルを隠す",
+    "intro.more.show": "さらに詳しいデータと解説"
   },
   "vi": {
     "title": "Nơi sinh · Mô phỏng cuộc đời",
@@ -4236,7 +4241,8 @@
     "sm.phone.keep.sub": "Tiết kiệm nhưng phiền",
     "sm.phone.keep.log": "Bạn quyết định dùng thêm một năm.",
     "life.detail.show": "Hiện bảng chi tiết",
-    "life.detail.hide": "Ẩn bảng chi tiết"
+    "life.detail.hide": "Ẩn bảng chi tiết",
+    "intro.more.show": "Thêm dữ liệu và giải thích"
   },
   "fr": {
     "title": "Né quelque part · Simulateur de vie",
@@ -4946,7 +4952,8 @@
     "sm.phone.keep.sub": "Économise mais pénible",
     "sm.phone.keep.log": "Vous avez décidé de tenir un an de plus.",
     "life.detail.show": "Afficher les panneaux détaillés",
-    "life.detail.hide": "Masquer les panneaux détaillés"
+    "life.detail.hide": "Masquer les panneaux détaillés",
+    "intro.more.show": "Plus de données et de contexte"
   },
   "th": {
     "title": "เกิดที่ไหน · จำลองชีวิต",
@@ -5656,7 +5663,8 @@
     "sm.phone.keep.sub": "ประหยัดแต่ลำบาก",
     "sm.phone.keep.log": "คุณตัดสินใจใช้ต่ออีกปี",
     "life.detail.show": "แสดงรายละเอียด",
-    "life.detail.hide": "ซ่อนรายละเอียด"
+    "life.detail.hide": "ซ่อนรายละเอียด",
+    "intro.more.show": "ข้อมูลและคำอธิบายเพิ่มเติม"
   },
   "es": {
     "title": "Nacido en algún lugar · Simulador de vida",
@@ -6366,6 +6374,7 @@
     "sm.phone.keep.sub": "Ahorras pero molesta",
     "sm.phone.keep.log": "Decidiste aguantar un año más.",
     "life.detail.show": "Mostrar paneles detallados",
-    "life.detail.hide": "Ocultar paneles detallados"
+    "life.detail.hide": "Ocultar paneles detallados",
+    "intro.more.show": "Más datos y contexto"
   }
 }
