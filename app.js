@@ -4236,7 +4236,7 @@ function renderLifeTreeInto(life, container) {
     else if (idx === 1) edges.push({ parentId: p.id, childId: self.id });
   });
   (f.siblings || []).forEach(s => {
-    f.parents.forEach(p => edges.push({ parentId: p.id, childId: s.id }));
+    (f.parents || []).forEach(p => edges.push({ parentId: p.id, childId: s.id }));
   });
   (f.grandparents || []).forEach(gp => {
     const par = (f.parents || []).find(p => p.sex === gp.sex && Math.abs((p.birth?.year||0) - (gp.birth?.year||0)) < 35);
@@ -5585,11 +5585,16 @@ function treePeopleGraph() {
     family: selfCaste
   };
   const people = { [self.id]: self };
-  f.parents.forEach(p => { 
+  // v5.71：這些陣欄位未必都存在（重開舊人生時 JSON 可能是舊格式），一律補上預設值。
+  // 原本只有 grandparents / kids 有 || []，parents / siblings 沒有，
+  // 讀到舊人生會直接 forEach undefined 而整個族譜頁崩掉。
+  const parents = f.parents || [];
+  const siblings = f.siblings || [];
+  parents.forEach(p => { 
     if (selfCaste && p.country === 'IND' && !p.family) p.family = selfCaste;
     people[p.id] = p; 
   });
-  f.siblings.forEach(p => { 
+  siblings.forEach(p => { 
     if (selfCaste && !p.family) p.family = selfCaste;
     people[p.id] = p; 
   });
@@ -5603,14 +5608,14 @@ function treePeopleGraph() {
     people[p.id] = p; 
   });
   const edges = [];
-  if (f.parents[0]) edges.push({ parentId: f.parents[0].id, childId: 'self', kind: 'parent' });
-  if (f.parents[1]) edges.push({ parentId: f.parents[1].id, childId: 'self', kind: 'parent' });
-  f.siblings.forEach(s => {
-    if (f.parents[0]) edges.push({ parentId: f.parents[0].id, childId: s.id, kind: 'parent' });
-    if (f.parents[1]) edges.push({ parentId: f.parents[1].id, childId: s.id, kind: 'parent' });
+  if (parents[0]) edges.push({ parentId: parents[0].id, childId: 'self', kind: 'parent' });
+  if (parents[1]) edges.push({ parentId: parents[1].id, childId: 'self', kind: 'parent' });
+  siblings.forEach(s => {
+    if (parents[0]) edges.push({ parentId: parents[0].id, childId: s.id, kind: 'parent' });
+    if (parents[1]) edges.push({ parentId: parents[1].id, childId: s.id, kind: 'parent' });
   });
   (f.grandparents||[]).forEach(gp => {
-    const par = f.parents.find(p => p.sex === gp.sex && Math.abs((p.birth?.year||0) - (gp.birth?.year||0)) < 35);
+    const par = parents.find(p => p.sex === gp.sex && Math.abs((p.birth?.year||0) - (gp.birth?.year||0)) < 35);
     if (par) edges.push({ parentId: gp.id, childId: par.id, kind: 'parent' });
   });
   if (f.partner) edges.push({ parentId: 'self', childId: f.partner.id, kind: 'spouse' });
