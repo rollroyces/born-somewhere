@@ -2181,6 +2181,9 @@ body.theme-sepia .muted { color: #8b7355; }
 .lef-star:hover { opacity: 1; transform: scale(1.2); }
 .lef-row { display: flex; gap: 10px; padding: 5px 8px; border-bottom: 1px solid var(--line); font-size: 13px; align-items: flex-start; }
 .lef-row.kind-birth, .lef-row.kind-finance, .lef-row.kind-death, .lef-row.kind-focus { background: rgba(0,0,0,0.02); }
+/* v5.55 決策 — 用淡紫底，與 milestone/focus 區隔 */
+.lef-row.kind-decision { background: rgba(160, 80, 200, 0.06); border-left: 2px solid rgba(160, 80, 200, 0.45); }
+.lef-row.kind-decision .lef-icon { color: rgba(160, 80, 200, 0.85); }
 .lef-row:last-child { border-bottom: none; }
 
 /* v5.31 前世紀錄面板 */
