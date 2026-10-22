@@ -334,6 +334,8 @@
 
     <div class="life-companions" id="lifeCompanions"></div>
 
+    <!-- v5.61：以下為「詳細資料」，精簡模式時整個欄位收起來 -->
+    <div class="life-detail-only">
     <div class="life-map" id="lifeMap"></div>
 
     <div class="life-survival-curve" id="lifeSurvivalCurve"></div>
@@ -350,6 +352,12 @@
       <h4 data-t="life.events">事件記錄</h4>
       <div class="cert-log" id="lifeLog"></div>
     </div>
+    </div><!-- /.life-detail-only -->
+
+    <button class="life-detail-toggle" id="btnDetailToggle" aria-expanded="false">
+      <span class="ldt-label" data-t="life.detail.show">展開詳細資料</span>
+      <span class="ldt-arrow">▾</span>
+    </button>
     </div><!-- /.life-col-c -->
   </div><!-- /.life-grid -->
 </section>
@@ -551,7 +559,7 @@
     <a href="#" id="btnPrivacy" class="footer-link" data-t="footer.privacy">隱私權政策</a>
     <a href="#" id="btnTerms" class="footer-link" data-t="footer.terms">使用須知</a>
     <a href="mailto:contact@born-somewhere.app" id="btnContact" class="footer-link" data-t="footer.contact">聯絡我們</a>
-    <span class="footer-ver">v5.60 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
+    <span class="footer-ver">v5.61 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
   </div>
 </footer>
 

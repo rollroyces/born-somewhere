@@ -2246,3 +2246,23 @@ body.theme-dark .dec-card .modal-help.muted { color: var(--ink-2); }
 body.theme-dark .dec-c { background: var(--paper); }
 body.theme-dark .dec-c:hover { background: var(--bg); }
 body.theme-dark .dec-card .fact { background: var(--bg); }
+
+/* v5.61：精簡模式 — 詳細資料預設收起來
+   實測一條人生頁面高約 9000px，全部展開時捲動成本很高。
+   預設只留「身份證 + 狀態條 + 今年的你 + 人生紀錄 + 手動決策 + 家人 + 同伴」，
+   圖表 / 統計 / 事件記錄收在按鈕後面，需要時再展開。 */
+.life-detail-only { display: none; }
+#view-life.show-detail .life-detail-only { display: block; }
+.life-detail-toggle {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; margin-top: 12px; padding: 9px 12px;
+  background: var(--paper); border: 1px dashed var(--line); border-radius: 8px;
+  color: var(--accent); font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.life-detail-toggle:hover { background: var(--bg); border-color: var(--accent); }
+.life-detail-toggle .ldt-arrow { transition: transform 0.18s; display: inline-block; }
+#view-life.show-detail .life-detail-toggle .ldt-arrow { transform: rotate(180deg); }
+
+/* 精簡模式下讓主要欄位更寬鬆、好讀 */
+#view-life:not(.show-detail) .life-col-c { display: flex; flex-direction: column; }

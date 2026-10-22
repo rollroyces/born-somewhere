@@ -762,13 +762,30 @@ const DECISIONS = [
   },
 ];
 
-/* 每年 tick 走到 newAge 時呼叫 — 試著觸發一個通用決策 */
+/* v5.61：決策節奏控制
+   實測一條人生（跑到 100 歲）會有 28 次 modal 中斷，而且決策嚴重擠在中年：
+   26, 28, 30, 32, 34, 36, 38, 40 — 十五年裡八次，約兩年一個，
+   而且 26/36/40 跟財務 modal 撞在同一年，玩家會被連續兩次打斷。
+   這裡加兩道保護：
+     1) 冷卻期：兩個決策之間至少隔 DECISION_COOLDOWN 年
+     2) 避開其他 modal：別的中斷（財務 / 暫停）在 INTERRUPT_GAP 年內就不再出決策。
+   注意：財務 modal 是 setTimeout 延遲開啟的，觸發那年跟真正打斷那年會差一歲，
+   所以這裡用「區間」而不是「同年」，並且在 modal 真正開啟時才記錄中斷。 */
+const DECISION_COOLDOWN = 4;
+const INTERRUPT_GAP = 2;
+
 function tryTriggerDecision(life, newAge) {
   if (!life) return false;
   // 已經有 modal 在開就不要觸發
   const decM = document.getElementById('decisionModal');
   if (decM && !decM.hasAttribute('hidden')) return false;
-  // 已記錄過的 id 不要重來
+  // 冷卻期：距上一個決策還不夠就先不要，這一年仍然有機會（隔年再試）
+  const lastAge = life.lastDecisionAge;
+  if (lastAge != null && newAge - lastAge < DECISION_COOLDOWN) return false;
+  // 剛被別的 modal 打斷過就讓玩家喘口氣
+  const lastInt = life.lastInterruptAge;
+  if (lastInt != null && newAge - lastInt < INTERRUPT_GAP) return false;
+
   const done = new Set((life.decisions || []).map(d => d.id));
   // 每年只嘗試最多一個
   for (const dec of DECISIONS) {
@@ -781,7 +798,7 @@ function tryTriggerDecision(life, newAge) {
             id: dec.id, kind: dec.kind, age: newAge,
             ...payload,
           });
-          if (ok) return true;
+          if (ok) { life.lastDecisionAge = newAge; return true; }
         }
       } catch (e) { console.warn('decision show failed', dec.id, e); }
     }
@@ -851,6 +868,15 @@ function setLang(lang) {
   localStorage.setItem(STORAGE_KEY + ':lang', lang);
   document.documentElement.lang = lang;
   renderAll();
+  syncDetailToggleLabel();
+}
+/* v5.61：切換語言後更新「詳細資料」按鈕文字 */
+function syncDetailToggleLabel() {
+  const btn = $('#btnDetailToggle');
+  if (!btn) return;
+  const on = $('#view-life')?.classList.contains('show-detail');
+  const lbl = btn.querySelector('.ldt-label');
+  if (lbl) lbl.textContent = t(on ? 'life.detail.hide' : 'life.detail.show');
 }
 
 // ==== 國家 ====
@@ -1863,6 +1889,7 @@ function resolvePendingDecision() {
 /* v5.10：顯示暫停問題 modal（✎ 寫下想法） */
 function showPauseQuestion() {
   if (!STATE.pendingDecision || STATE.pendingDecision.type !== 'pause') return;
+  STATE.life.lastInterruptAge = STATE.life.age;   // v5.61
   const age = STATE.pendingDecision.age;
   // v5.33：不再設 STATE.paused = true（讓生命繼續在背景跑；modal 顯示但可手動互動）
   const modal = $('#pauseModal');
@@ -1878,6 +1905,7 @@ function showPauseQuestion() {
 /* v5.13：年度焦點選擇（每年 6+ 歲彈出） */
 function showFocusChoice() {
   if (!STATE.life) return;
+  STATE.life.lastInterruptAge = STATE.life.age;   // v5.61
   const _fm = $('#focusModal');
   if (_fm && !_fm.hasAttribute('hidden')) return; // 已在開啟中，避免重複掛 listener
   STATE.paused = true;
@@ -1958,6 +1986,8 @@ const INVEST_OPTIONS = [
 
 function showFinanceModal(forceOpt) {
   if (!STATE.life) return;
+  // v5.61：記錄「今年真的被打斷了」，讓通用決策避開（延遲開啟時觸發年跟實際年會差一歲）
+  STATE.life.lastInterruptAge = STATE.life.age;
   const _fm = $('#financeModal');
   if (_fm && !_fm.hasAttribute('hidden')) return; // 已在開啟中，避免重複掛 listener
   STATE.paused = true;
@@ -2130,6 +2160,7 @@ function showFinancialChoice() {
 /* v5.25：花錢 modal — 4 種隨機社交支出選項 */
 function showSpendModal() {
   if (!STATE.life) return;
+  STATE.life.lastInterruptAge = STATE.life.age;   // v5.61
   const _sm = $('#spendModal');
   if (_sm && !_sm.hasAttribute('hidden')) return; // 已在開啟中，避免重複掛 listener
   STATE.paused = true;
@@ -4635,6 +4666,22 @@ function wire() {
     const btn = $(sel);
     if (btn) btn.addEventListener('click', toggleSoftMode);
   });
+  // v5.61：詳細資料展開／收合（記住偏好）
+  const detailBtn = $('#btnDetailToggle');
+  if (detailBtn) {
+    const apply = () => {
+      const on = localStorage.getItem(STORAGE_KEY + ':detail') === '1';
+      $('#view-life')?.classList.toggle('show-detail', on);
+      detailBtn.setAttribute('aria-expanded', on ? 'true' : 'false');
+      syncDetailToggleLabel();
+    };
+    detailBtn.addEventListener('click', () => {
+      const on = $('#view-life')?.classList.contains('show-detail');
+      localStorage.setItem(STORAGE_KEY + ':detail', on ? '0' : '1');
+      apply();
+    });
+    apply();
+  }
   const pauseSave = $('#pauseSave');
   if (pauseSave) pauseSave.addEventListener('click', savePauseQuote);
   const pauseSkip = $('#pauseSkip');

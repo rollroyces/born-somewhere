@@ -698,7 +698,9 @@
     "sm.phone.upgrade.log": "換了新機。",
     "sm.phone.keep": "再撐一年",
     "sm.phone.keep.sub": "省錢 但麻煩",
-    "sm.phone.keep.log": "決定再撐一年。"
+    "sm.phone.keep.log": "決定再撐一年。",
+    "life.detail.show": "展開詳細資料",
+    "life.detail.hide": "收合詳細資料"
   },
   "zh-Hans": {
     "title": "选出生地 · 人生模拟",
@@ -1399,7 +1401,9 @@
     "sm.phone.upgrade.log": "换了新机。",
     "sm.phone.keep": "再撑一年",
     "sm.phone.keep.sub": "省钱 但麻烦",
-    "sm.phone.keep.log": "决定再撑一年。"
+    "sm.phone.keep.log": "决定再撑一年。",
+    "life.detail.show": "展开详细资料",
+    "life.detail.hide": "收起详细资料"
   },
   "en": {
     "title": "Born Somewhere · Life Simulator",
@@ -2100,7 +2104,9 @@
     "sm.phone.upgrade.log": "You got a new phone.",
     "sm.phone.keep": "Squeeze another year out",
     "sm.phone.keep.sub": "Saves money but annoying",
-    "sm.phone.keep.log": "You decided to make it last another year."
+    "sm.phone.keep.log": "You decided to make it last another year.",
+    "life.detail.show": "Show detailed panels",
+    "life.detail.hide": "Hide detailed panels"
   },
   "ko": {
     "title": "태어난 곳 · 인생 시뮬레이션",
@@ -2808,7 +2814,9 @@
     "sm.phone.upgrade.log": "새 폰을 샀다.",
     "sm.phone.keep": "한 해 더 쓰기",
     "sm.phone.keep.sub": "절약하지만 불편",
-    "sm.phone.keep.log": "한 해 더 쓰기로 했다."
+    "sm.phone.keep.log": "한 해 더 쓰기로 했다.",
+    "life.detail.show": "상세 패널 펼치기",
+    "life.detail.hide": "상세 패널 접기"
   },
   "ja": {
     "title": "出生地 · 人生シミュレーション",
@@ -3516,7 +3524,9 @@
     "sm.phone.upgrade.log": "新しいスマホを買った。",
     "sm.phone.keep": "もう一年使う",
     "sm.phone.keep.sub": "節約するが面倒",
-    "sm.phone.keep.log": "もう一年使うことにした。"
+    "sm.phone.keep.log": "もう一年使うことにした。",
+    "life.detail.show": "詳細パネルを表示",
+    "life.detail.hide": "詳細パネルを隠す"
   },
   "vi": {
     "title": "Nơi sinh · Mô phỏng cuộc đời",
@@ -4224,7 +4234,9 @@
     "sm.phone.upgrade.log": "Bạn đã đổi máy mới.",
     "sm.phone.keep": "Dùng thêm một năm",
     "sm.phone.keep.sub": "Tiết kiệm nhưng phiền",
-    "sm.phone.keep.log": "Bạn quyết định dùng thêm một năm."
+    "sm.phone.keep.log": "Bạn quyết định dùng thêm một năm.",
+    "life.detail.show": "Hiện bảng chi tiết",
+    "life.detail.hide": "Ẩn bảng chi tiết"
   },
   "fr": {
     "title": "Né quelque part · Simulateur de vie",
@@ -4932,7 +4944,9 @@
     "sm.phone.upgrade.log": "Vous avez acheté un neuf.",
     "sm.phone.keep": "Tenir encore un an",
     "sm.phone.keep.sub": "Économise mais pénible",
-    "sm.phone.keep.log": "Vous avez décidé de tenir un an de plus."
+    "sm.phone.keep.log": "Vous avez décidé de tenir un an de plus.",
+    "life.detail.show": "Afficher les panneaux détaillés",
+    "life.detail.hide": "Masquer les panneaux détaillés"
   },
   "th": {
     "title": "เกิดที่ไหน · จำลองชีวิต",
@@ -5640,7 +5654,9 @@
     "sm.phone.upgrade.log": "คุณซื้อมือถือใหม่",
     "sm.phone.keep": "ใช้ต่ออีกปี",
     "sm.phone.keep.sub": "ประหยัดแต่ลำบาก",
-    "sm.phone.keep.log": "คุณตัดสินใจใช้ต่ออีกปี"
+    "sm.phone.keep.log": "คุณตัดสินใจใช้ต่ออีกปี",
+    "life.detail.show": "แสดงรายละเอียด",
+    "life.detail.hide": "ซ่อนรายละเอียด"
   },
   "es": {
     "title": "Nacido en algún lugar · Simulador de vida",
@@ -6348,6 +6364,8 @@
     "sm.phone.upgrade.log": "Compraste un móvil nuevo.",
     "sm.phone.keep": "Aguantar un año más",
     "sm.phone.keep.sub": "Ahorras pero molesta",
-    "sm.phone.keep.log": "Decidiste aguantar un año más."
+    "sm.phone.keep.log": "Decidiste aguantar un año más.",
+    "life.detail.show": "Mostrar paneles detallados",
+    "life.detail.hide": "Ocultar paneles detallados"
   }
 }
