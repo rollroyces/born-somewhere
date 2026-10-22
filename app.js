@@ -41,6 +41,11 @@ const STATE = {
 const PAUSING_MODALS = ['focusModal', 'financeModal', 'spendModal', 'pauseModal', 'decisionModal'];
 function closeModal(id) {
   const el = id ? document.getElementById(id) : null;
+  const wasOpen = el ? !el.hasAttribute('hidden') : false;
+  // v5.73：決策 modal 若是被關掉（而非點選項），記成 skipped
+  if (id === 'decisionModal' && wasOpen) {
+    dismissDecision(STATE.pendingDecision?.id, STATE.pendingDecision?.age);
+  }
   if (el) el.setAttribute('hidden', '');
   else PAUSING_MODALS.forEach(i => document.getElementById(i)?.setAttribute('hidden', ''));
   if (STATE.paused) {
@@ -60,6 +65,22 @@ function closeModal(id) {
      STATE.pendingDecision = { kind: 'decision', id: 'de_xxx', age, choices: [...] }
      STATE.life.decisions  = [ { id, age, key } ]   // 已答過的決策避免重複 */
 let _decisionBound = false;
+/* v5.73：決策被「關掉但沒選」時要記成已處理。
+   實測問題：25 歲那年同時是決策年與財務年，玩家對決策按 Escape ——
+   決策有關掉、tick 也恢復了，但財務 modal 立刻補上來，玩家看到「按了沒反應」。
+   修法：Escape / × / 點背景關掉決策時，把它記成 skipped，
+   這樣 STATE.pendingDecision 清乾淨、tryTriggerDecision 的 done 集合也認得它已處理。 */
+function dismissDecision(id, age) {
+  if (!id) return;
+  STATE.pendingDecision = null;
+  const life = STATE.life;
+  if (!life) return;
+  life.decisions = life.decisions || [];
+  if (life.decisions.some(d => d.id === id)) return;   // 已經答過了（例如 autoDecide）
+  life.decisions.push({ id, age: age ?? life.age, key: 'skipped', note: '' });
+  life.lastDecisionAge = age ?? life.age;               // 也吃冷卻期，避免下一年就補一個
+}
+
 function showDecision({ id, kind, age, title, body, fact, hint, choices, hasNote }) {
   const modal = $('#decisionModal');
   if (!modal) return false;
@@ -1871,10 +1892,18 @@ function tick() {
   // v5.20：每 5 年套用投資收益
   if (STATE.life.age % 5 === 0 && STATE.life.age > 0) applyInvestmentReturn();
   // v5.20：每 5 年彈出財務管理 modal（25/30/35/40/45/50/55/60）
+  // v5.73：若這一刻已經有別的 modal 開著，就不要疊上去 ——
+  // 否則玩家對上方的決策按 Escape，下一瞬間又看到財務 modal，感覺「按了沒反應」。
+  // 跳過的那一年記進 financeModalShown，下一次機會自然會補上。
   if ([25, 30, 35, 40, 45, 50, 55, 60].includes(STATE.life.age) && !STATE.life.financeModalShown?.includes(STATE.life.age)) {
     STATE.life.financeModalShown = STATE.life.financeModalShown || [];
-    STATE.life.financeModalShown.push(STATE.life.age);
-    setTimeout(() => showFinanceModal(), 100);
+    if (STATE.paused) {
+      STATE.life.financeModalShown.push(STATE.life.age);   // 記成已處理，改用自動進行
+      applyInvestmentReturn();                            // 投資照跑，不影響玩家資產
+    } else {
+      STATE.life.financeModalShown.push(STATE.life.age);
+      setTimeout(() => showFinanceModal(), 100);
+    }
   }
   // v5.55：通用決策 — 在每年 tick 末尾試一個未觸發過的事件
   setTimeout(() => tryTriggerDecision(STATE.life, STATE.life.age), 120);
@@ -4620,6 +4649,22 @@ function wire() {
     m.addEventListener('mousedown', e => { if (e.target === m) closeModal(m.id); });
   });
   document.addEventListener('keydown', e => {
+    const openAll = $$('.modal').filter(el => !el.hasAttribute('hidden'));
+    // v5.72：焦點圈住 — modal 開著時 Tab 只能在 modal 裡面循環。
+    // 實測原本按兩次 Tab 就會跳出到 modal 背後的頁面元件（例如右下角的 ? 按鈕），
+    // 鍵盤使用者會在不知不覺中操作到被遮住的控制項。
+    if (e.key === 'Tab' && openAll.length) {
+      const m = openAll[openAll.length - 1];
+      const f = $$('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])', m)
+        .filter(el => !el.hasAttribute('hidden') && el.offsetParent !== null && el.tabIndex !== -1);
+      if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      const active = document.activeElement;
+      if (!m.contains(active)) { e.preventDefault(); first.focus(); return; }
+      if (e.shiftKey && active === first) { e.preventDefault(); last.focus(); return; }
+      if (!e.shiftKey && active === last) { e.preventDefault(); first.focus(); return; }
+      return;
+    }
     if (e.key !== 'Escape') return;
     const open = PAUSING_MODALS.map(i => document.getElementById(i))
       .filter(el => el && !el.hasAttribute('hidden'));
