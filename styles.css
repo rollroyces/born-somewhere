@@ -1,4 +1,10 @@
 /* === born-somewhere v2 === */
+/* v5.58：全域 hidden 保護 — 對齊 1in8b.life 的 inline reset。
+   問題：任何帶有顯式 display 的元素（.dec-note-wrap 是 flex、.dec-choices 是 grid…）
+   都會蓋掉 UA 的 [hidden]{display:none}，導致 JS 用 hidden 屬性切換時畫面不變。
+   解法與原作一致：全域 !important 強制生效。 */
+[hidden] { display: none !important; }
+
 :root {
   --bg: #f4f1eb;
   --bg-2: #faf7f0;
