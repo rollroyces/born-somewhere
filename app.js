@@ -47,6 +47,8 @@ function closeModal(id) {
     STATE.paused = false;
     const p = $('#btnPause');
     if (p) p.textContent = '❚❚';
+    // v5.68：paused 在這裡被清掉，暫停鈕的圖示與 tooltip 也要跟著更新
+    if (typeof syncPauseBtn === 'function') syncPauseBtn();
   }
   return el;
 }
@@ -2495,6 +2497,9 @@ function renderAll() {
   // v5.68：title / aria-label 也走 i18n（topbar 那幾顆只有圖示，靠 tooltip 解釋）
   $$('[data-t-title]').forEach(el => { el.title = t(el.dataset.tTitle); });
   $$('[data-t-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.tAria)); });
+  // 暫停鈕的圖示/t���示跟著實際狀態走（STATE.paused 有很多地方會被清掉）
+  if (typeof syncPauseBtn === 'function') syncPauseBtn();
+  if (typeof syncAutoBtn === 'function') syncAutoBtn();
   // 視圖
   if (STATE.view === 'intro') renderIntro();
   else if (STATE.view === 'life') renderLife();
