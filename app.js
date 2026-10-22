@@ -144,6 +144,24 @@ function escAttr(s) { return esc(s); }
      - show(life) 才真正塞內容到 modal
    每個 choice = { k, label, sub, apply(life, ctx) }
    apply 不會 throw；失敗也要關 modal、不卡 tick。 */
+/* v5.60：家屬存活狀態改為「按年份推算」，不再讀 p.alive。
+   generateFamily() 只寫 birth / death 年份，從來沒有設過 alive，
+   所以 `parents.some(p => p.alive)` 永遠是 undefined → falsy，
+   de_parents_care 與 de_inheritance 兩個事件形同虛設（永久不會觸發）。
+   現在改成用他們實際擁有的年份資料推算。 */
+function isAliveAt(person, year) {
+  if (!person) return false;
+  const b = person.birth?.year;
+  if (b == null || b > year) return false;
+  const d = person.death?.year;
+  return d == null || d > year;
+}
+function anyParentAlive(life) {
+  if (!life?.family?.parents) return false;
+  const year = (life.year || 0) + (life.yearOffset || 0);
+  return life.family.parents.some(p => isAliveAt(p, year));
+}
+
 const DECISIONS = [
   // 1. 失業：要不要接受一份外地工作？
   {
@@ -240,7 +258,7 @@ const DECISIONS = [
   {
     id: 'de_parents_care', kind: 'big',
     chance: (life) => life.age >= 45 && life.age <= 75 &&
-                     life.family && life.family.parents && life.family.parents.some(p => p.alive) &&
+                     anyParentAlive(life) &&
                      Math.random() < 0.06,
     show: (life) => ({
       title: t('de.parents.title'),
@@ -480,8 +498,7 @@ const DECISIONS = [
   {
     id: 'de_inheritance', kind: 'big',
     chance: (life) => life.age >= 40 && life.age <= 80 &&
-                     life.family && life.family.parents &&
-                     life.family.parents.some(p => p.alive) &&
+                     anyParentAlive(life) &&
                      Math.random() < 0.04,
     show: (life) => ({
       title: t('de.inherit.title'),
