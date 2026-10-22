@@ -28,6 +28,7 @@ const STATE = {
   autoDecide: false,  // v5.9 新增：自動抉擇模式
   fastForward: false, // v5.9 新增：快轉到下一個抉擇
   sharedShown: 8,    // v5.80：書架「共享人生」先顯示幾張
+  shelfShown: 12,    // v5.81：書架「書本」先顯示幾本
   thoughtsEnabled: true, // v5.10：✎ 寫下想法 啟用（5/15/30/50/70 暫停時彈出 modal）
   pastLives: [],
   modal: null,
@@ -3591,7 +3592,11 @@ function renderShelf() {
     worldWrap.appendChild(renderShelfWorldMap(lives));
     shelf.appendChild(worldWrap);
   }
-  for (const life of lives) {
+  // v5.81：書架書本也是無上限的 — 37 本 = 2738px，50 本（savePastLife 的上限）
+  // 會到 3700px。書本比較小，先顯示 12 本再逐批展開。
+  const BOOK_PAGE = 12;
+  const shownBooks = STATE.shelfShown || BOOK_PAGE;
+  for (const life of lives.slice(0, shownBooks)) {
     const c = countryById(life.country);
     const flag = c ? c.flag : '🏳️';
     const book = document.createElement('div');
@@ -3612,6 +3617,23 @@ function renderShelf() {
     // v5.22：右鍵 / long-press 觸發「繼續這段人生」選單（雙擊 = 從當年齡接續）
     let clickTime = 0;
     book.addEventListener('dblclick', () => continueOldLife(life));
+  }
+  // v5.81：書本「看更多 / 收合」
+  if (lives.length > BOOK_PAGE) {
+    const more = document.createElement('button');
+    more.className = 'shared-more-btn';
+    more.style.gridColumn = '1/-1';
+    if (shownBooks >= lives.length) {
+      more.textContent = t('shared.less');
+      more.addEventListener('click', () => { STATE.shelfShown = BOOK_PAGE; renderShelf(); });
+    } else {
+      more.textContent = t('shared.more', { n: Math.min(BOOK_PAGE, lives.length - shownBooks), left: lives.length - shownBooks });
+      more.addEventListener('click', () => {
+        STATE.shelfShown = Math.min(lives.length, shownBooks + BOOK_PAGE);
+        renderShelf();
+      });
+    }
+    shelf.appendChild(more);
   }
   // v5.23：整理紀錄按鈕 + 音樂 toggle + PWA badges
   const manageWrap = document.createElement('div');
