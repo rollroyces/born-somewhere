@@ -1726,10 +1726,14 @@ function milestoneEvents(life, newAge) {
   }
   // 5/15/30/50/70 暫停問題
   if ([5, 15, 30, 50, 70].includes(newAge) && !life.quotes[newAge]) {
-    // v5.73：這一年若已經有別的 modal 開著（例如同年也觸發了決策或財務），
-    // 就不要再疊一個反思框上來 —— 否則玩家同時看到兩個視窗，關掉上面那個下面那個還在。
-    const dmOpen = document.getElementById('decisionModal');
-    const alreadyShowing = STATE.paused || (dmOpen && !dmOpen.hasAttribute('hidden'));
+    // v5.73 / v5.84：這一年若已經有別的 modal 開著，就不要再疊一個反思框上來。
+    // v5.84 補上漏判：財務 modal 是 setTimeout(+100ms) 延遲開啟的，所以同一個 tick 裡
+    // milestoneEvents 跑到這裡時 STATE.paused 還是 false，光看 paused 會漏掉 30／50 歲
+    // 同時觸發財務 + 反思的情況（實測 pauseModal 與 financeModal 兩個視窗同時開著）。
+    // 改看「今年是否已經記錄過任何一次打斷」，那是在排程當下同步寫的，不受延遲影響。
+    const anyModalOpen = ['decisionModal', 'focusModal', 'financeModal', 'spendModal']
+      .some(id => { const e = document.getElementById(id); return e && !e.hasAttribute('hidden'); });
+    const alreadyShowing = STATE.paused || anyModalOpen || life.lastInterruptAge === newAge;
     if (alreadyShowing) {
       life.lastInterruptAge = newAge;
     } else {
@@ -4340,9 +4344,12 @@ function showShortcutsModal() {
   modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
 }
 
-function showLifeModal(life) {
+function showLifeModal(rec) {
   // 移除舊的
   document.querySelector('#lifeModal')?.remove();
+  // v5.83：完整人生放在 .full 裡（v5.82 以前只有摘要殼，這裡的 family / quotes /
+  // year / yearOffset 全部拿不到，詳情視窗永遠是空的）
+  const life = rec.full || rec;
   const isEn = LANG === 'en';
   const c = countryById(life.country);
   const modal = document.createElement('div');
