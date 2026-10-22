@@ -1724,9 +1724,17 @@ function milestoneEvents(life, newAge) {
   }
   // 5/15/30/50/70 暫停問題
   if ([5, 15, 30, 50, 70].includes(newAge) && !life.quotes[newAge]) {
-    STATE.pendingDecision = { age: newAge, type: 'pause' };
-    if (STATE.thoughtsEnabled && !STATE.autoDecide && STATE.view === 'life') {
-      setTimeout(() => showPauseQuestion(), 50);
+    // v5.73：這一年若已經有別的 modal 開著（例如同年也觸發了決策或財務），
+    // 就不要再疊一個反思框上來 —— 否則玩家同時看到兩個視窗，關掉上面那個下面那個還在。
+    const dmOpen = document.getElementById('decisionModal');
+    const alreadyShowing = STATE.paused || (dmOpen && !dmOpen.hasAttribute('hidden'));
+    if (alreadyShowing) {
+      life.lastInterruptAge = newAge;
+    } else {
+      STATE.pendingDecision = { age: newAge, type: 'pause' };
+      if (STATE.thoughtsEnabled && !STATE.autoDecide && STATE.view === 'life') {
+        setTimeout(() => showPauseQuestion(), 50);
+      }
     }
   }
   // v5.16：18/25/35/50 財務決策 — 改為手動觸發（不自動彈出）
