@@ -377,8 +377,11 @@ const DECISIONS = [
     id: 'de_mental_health', kind: 'big',
     chance: (life) => !STATE.eduMode &&
                      life.age >= 25 && life.age <= 70 &&
-                     life.stats.happiness < 40 &&
-                     Math.random() < 0.04,
+                     // v5.59：門檻 40 → 55。原本 happiness 只會被玩家的選擇單向推動，
+                     // 要掉到 40 需要淨虧 30 分，而一生大約只有 17 次選擇 — 幾乎不可能。
+                     // 加了幸福回歸模型後，失業／病中／孤立／負債會把水位壓到 50 以下。
+                     (life.stats.happiness < 55 || life.stats.social < 35) &&
+                     Math.random() < 0.05,
     show: (life) => ({
       title: t('de.mental.title'),
       body: t('de.mental.body'),
@@ -1265,6 +1268,8 @@ function newLife(countryCode) {
       religion: pickReligion(c),
       birthPlaceType: Math.random() < 0.55 ? 'rural' : 'urban',  // 55% 鄉村、45% 城市
     },
+    // v5.59：教育上限（依出生國家的 eys / ter 統計抽出），教育歷程會往這個目標推進
+    eduTarget: rollEducation(c),
     // 父母詳細（v5.8 新增）
     fatherDetail: father ? { age: 20 + Math.floor(Math.random()*25), job: pickParentJob(c, 'M') } : null,
     motherDetail: mother ? { age: 18 + Math.floor(Math.random()*22), job: pickParentJob(c, 'F') } : null,
@@ -1476,27 +1481,66 @@ function generateFamily(countryCode, selfSex, fc) {
 }
 
 // ==== 事件 ====
+/* v5.59：依國家統計抽出個人教育上限（0–4）。
+   刻度對應 i18n：0=未上學 1=小學 2=國中 3=高中 4=大學。
+   eys = 預期受教育年數（UNESCO），ter = 高等教育粗在學率（%）。
+   加一點個人變異，避免同一國家每個人讀一模一樣的書。 */
+function rollEducation(c) {
+  const base = Number.isFinite(c?.eys) ? c.eys : 12;
+  const eys = base + (Math.random() * 6 - 3);          // ±3 年個人差異
+  let lvl;
+  if (eys < 6.5) lvl = 0;
+  else if (eys < 9.5) lvl = 1;
+  else if (eys < 12) lvl = 2;
+  else if (eys < 15) lvl = 3;
+  else lvl = 3;                                       // 有機會讀大學，但要看當地大學入學率
+  if (eys >= 15) {
+    const ter = Number.isFinite(c?.ter) ? c.ter : 30;
+    if (Math.random() * 100 < ter) lvl = 4;
+  }
+  return lvl;
+}
+
 function milestoneEvents(life, newAge) {
   const events = [];
-  if (newAge === 6) events.push({ age: 6, kind: 'milestone', icon: '🎒', text: t('event.school.start') });
-  if (newAge === 12) events.push({ age: 12, kind: 'milestone', icon: '📚', text: t('event.school.middle') });
-  if (newAge === 15) {
-    if (life.stats.education < 2 && chance(0.4)) {
-      life.stats.education = 1;
-      events.push({ age: 15, kind: 'milestone', icon: '📖', text: t('event.education.low') });
-    }
+  // v5.59：教育歷程改為「往上限爬」而非用絕對值當門檻。
+  // 舊碼只有 `education = 1` 這一個寫入點，因此 education >= 2 永不成立，
+  // 連帶 employment 永遠不會是 'employed'（收入不累積、5 個決策事件形同虛設）。
+  // 出生時先依國家統計抽出 eduTarget（0–4），之後每年齡把 education 往目標推進。
+  const tgt = life.eduTarget ?? life.stats.education;
+  if (newAge === 6) {
+    if (tgt >= 1) life.stats.education = Math.max(life.stats.education, 1);
+    events.push({ age: 6, kind: 'milestone', icon: '🎒', text: t('event.school.start') });
+  }
+  if (newAge === 12) {
+    if (tgt >= 2) life.stats.education = Math.max(life.stats.education, 2);
+    events.push({ age: 12, kind: 'milestone', icon: '📚', text: t('event.school.middle') });
+  }
+  if (newAge === 15 && life.stats.education === 2 && tgt < 3 && chance(0.5)) {
+    life.stats.education = 1;  // 國中輟學
+    events.push({ age: 15, kind: 'milestone', icon: '📖', text: t('event.education.low') });
   }
   if (newAge === 18) {
-    if (life.stats.education === 4 || (life.stats.education === 3 && chance(0.5))) {
+    if (tgt >= 3) {
+      life.stats.education = 3;                       // 至少高中畢業
+      life.stats.employment = life.stats.employment === 'none' ? 'seeking' : life.stats.employment;
       events.push({ age: 18, kind: 'milestone', icon: '🎓', text: t('event.school.graduate') });
-    } else if (life.stats.education >= 2) {
+    } else if (tgt >= 1) {
+      life.stats.education = Math.max(life.stats.education, 1);
+      life.stats.employment = 'employed';            // v5.59：舊碼忘了設，這裡補上
       events.push({ age: 18, kind: 'milestone', icon: '🔨', text: t('event.work.start') });
     }
   }
-  if (newAge === 22 && life.stats.education === 4 && chance(0.5)) {
+  if (newAge >= 19 && newAge <= 23 && life.stats.employment === 'seeking' && chance(0.4)) {
+    life.stats.employment = 'employed';
+  }
+  if (newAge === 22 && life.stats.education >= 3 && tgt >= 4 && chance(0.6)) {
     life.stats.education = 4;
     life.stats.employment = 'university';
     events.push({ age: 22, kind: 'milestone', icon: '🎓', text: t('event.education.university') });
+  }
+  if (life.stats.employment === 'university' && newAge >= 24 && newAge <= 27) {
+    life.stats.employment = 'employed';              // 研究所/大學畢業後進入職場
   }
   if (newAge >= 25 && newAge <= 35 && !life.stats.married && chance(0.15) && (life.stats.employment === 'university' || life.stats.employment === 'employed')) {
     life.stats.married = true;
@@ -1720,9 +1764,34 @@ function tick() {
   }
   // v5.8 新增：狀態自然衰減/成長
   if (STATE.life.age > 60) STATE.life.stats.health = Math.max(0, STATE.life.stats.health - 0.3);
-  if (STATE.life.stats.employment === 'employed') STATE.life.stats.netAssets += STATE.life.stats.annualIncome || 0;
+  // v5.59：年收入 — 舊碼 annualIncome 永遠是 0，所以「在職」也存不到錢。
+  // 基準對齊原作 incomeAt(c, pct) ≈ c.ppp * 0.9，再依教育、家境分位調整。
+  // 生活開銷依「自己的收入」而非人均 GDP 計算（否則低教育的人生會被壓成負資產）；
+  // 儲蓄率隨分位提高 — 高收入家庭本來就存得比較多。
+  if (STATE.life.stats.employment === 'employed' || STATE.life.stats.employment === 'university') {
+    const ppp = Number.isFinite(c?.ppp) ? c.ppp : 12000;
+    const eduMult = [0.45, 0.6, 0.75, 0.9, 1.25][Math.min(STATE.life.stats.education, 4)] ?? 0.75;
+    const q = Math.min(Math.max(STATE.life.stats.incomeQuartile, 1), 4);
+    const qMult = [0.55, 0.8, 1.15, 1.9][q - 1] ?? 1;
+    const saveRate = [0.15, 0.22, 0.28, 0.40][q - 1] ?? 0.25;   // 分位 1→4
+    const gross = ppp * 0.9 * eduMult * qMult;
+    STATE.life.stats.annualIncome = Math.round(gross);
+    STATE.life.stats.netAssets += Math.round(gross * saveRate);
+  }
   // 知識隨教育成長
   if (STATE.life.stats.education >= 2 && STATE.life.stats.knowledge < 90) STATE.life.stats.knowledge = Math.min(100, STATE.life.stats.knowledge + 0.5);
+  // v5.59：幸福會慢慢回到「當下處境決定的水位」— 沒有這個，happiness 只會被玩家的
+  // 選擇單向推動，低落的時候（失業／病中／孤立／負債）永遠走不到，心理健康事件形同虛設。
+  {
+    const st = STATE.life.stats;
+    const baseline = 45
+      + (st.health - 60) * 0.35
+      + (st.social - 60) * 0.12
+      + (st.employment === 'employed' ? 8 : st.employment === 'university' ? 5 : st.employment === 'retired' ? 3 : -2)
+      + (st.netAssets < 0 ? -8 : 0);
+    st.happiness += (baseline - st.happiness) * 0.06;
+    st.happiness = Math.max(0, Math.min(100, st.happiness));
+  }
   // 事件
   const events = milestoneEvents(STATE.life, STATE.life.age);
   for (const e of events) {
