@@ -2351,13 +2351,19 @@ function renderLifeEventsFeed() {
   if (!el || !STATE.life) return;
   const isEn = LANG === 'en';
   const log = STATE.life.log || [];
-  // v5.29 增強：header 加「此刻有 N 人在玩」counter + 「查看更早紀錄」按鈕 + 每行加 ☆
+  // v5.65：原本固定顯示 30 條，「查看更早的紀錄」按鈕的 onclick 只有 stopPropagation()
+  // 是空的（按了沒反應）。改成：預設 12 條 → 30 條 → 全部，逐級展開。
+  const shown = Math.min(log.length, STATE.feedShown || 12);
   const siblingCount = (STATE.life.family?.siblings || []).length;
+  const canMore = log.length > shown;
+  const nextLabel = shown >= log.length ? null
+    : shown < 30 ? (isEn ? `Show older (${Math.min(30, log.length) - shown} more)` : `看更早的 ${Math.min(30, log.length) - shown} 筆`)
+    : (isEn ? 'Show all' : `看全部 ${log.length} 筆`);
   const headerHtml = `<div class="lef-header">
-    <span class="lef-meta">${isEn ? `Currently ${30000 + Math.floor(Math.random()*1000)} people in the world` : `此刻有 ${30000 + Math.floor(Math.random()*1000)} 人一起活在這個人生模擬裡`}${siblingCount ? ` · ${isEn ? 'Siblings' : '兄弟姊妹'}：${siblingCount} ${isEn?'ppl':'人'}` : ''}</span>
-    ${log.length > 30 ? `<button class="lef-more-btn" onclick="event.stopPropagation();">${isEn ? 'View older' : '查看更早的紀錄'}</button>` : ''}
+    <span class="lef-meta">${isEn ? `Currently ${30000 + Math.floor(Math.random()*1000)} people in the world` : `此刻有 ${30000 + Math.floor(Math.random()*1000)} 人一起活在這個人生模擬裡`}${siblingCount ? ` · ${isEn ? 'Siblings' : '兄弟姊妹'}：${siblingCount} ${isEn?'ppl':'人'}` : ''} · ${isEn ? 'showing' : '顯示'} ${shown}/${log.length}</span>
+    ${canMore ? `<button class="lef-more-btn" id="feedMoreBtn">${nextLabel}</button>` : ''}
   </div>`;
-  el.innerHTML = headerHtml + log.slice(-30).reverse().map((e, i) => `
+  el.innerHTML = headerHtml + log.slice(-shown).reverse().map((e, i) => `
     <div class="lef-row kind-${e.kind || 'log'}">
       <span class="lef-age">${e.age ?? '?'} ${isEn?'yo':'歲'}</span>
       <span class="lef-icon">${e.icon || '·'}</span>
@@ -2365,6 +2371,12 @@ function renderLifeEventsFeed() {
       <span class="lef-star" data-i="${e._i = (e._i ?? (log.length - 1 - i))}" title="${isEn?'Star this moment':'加星此時刻'}">${e.starred ? '★' : '☆'}</span>
     </div>
   `).join('') || `<span class="muted">${isEn ? 'No events' : '無事件'}</span>`;
+  // v5.65：「看更早」逐級展開
+  $('#feedMoreBtn')?.addEventListener('click', (ev) => {
+    ev.stopPropagation();
+    STATE.feedShown = shown < 30 ? 30 : log.length;
+    renderLifeEventsFeed();
+  });
   // wire star clicks
   el.querySelectorAll('.lef-star').forEach(s => {
     s.addEventListener('click', () => {
@@ -4909,6 +4921,7 @@ function continueOldLife(pastLife) {
   STATE.life.deathAge = null;
   STATE.life.financeModalShown = [];  // 重開財務 modal 選項
   STATE.life.focusThisYear = null;
+  STATE.feedShown = 12;               // v5.65：重開人生時事件紀錄收回到 12 筆
   setView('life');
   setTimeout(() => {
     startTicker();
