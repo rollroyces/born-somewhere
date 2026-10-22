@@ -396,6 +396,164 @@ const DECISIONS = [
       hasNote: true,
     }),
   },
+
+  // 11. 買房 vs 租房（30-55）
+  {
+    id: 'de_buy_home', kind: 'big',
+    chance: (life) => life.age >= 30 && life.age <= 55 &&
+                     life.stats.employment === 'employed' &&
+                     Math.random() < 0.04,
+    show: (life) => ({
+      title: t('de.home.title'),
+      body: t('de.home.body'),
+      fact: t('de.home.fact'),
+      choices: [
+        { k: 'buy', icon: '🏠',
+          label: t('de.home.buy'),
+          sub: t('de.home.buy.sub'),
+          apply: (life) => { life.stats.netAssets -= 20000; life.stats.social += 1; logLife(t('de.home.buy.log')); } },
+        { k: 'rent', icon: '🔑',
+          label: t('de.home.rent'),
+          sub: t('de.home.rent.sub'),
+          apply: (life) => { life.stats.netAssets += 5000; life.stats.happiness += 1; logLife(t('de.home.rent.log')); } },
+        { k: 'share', icon: '🏘️',
+          label: t('de.home.share'),
+          sub: t('de.home.share.sub'),
+          apply: (life) => { life.stats.netAssets -= 6000; life.stats.social += 5; life.stats.happiness += 3; logLife(t('de.home.share.log')); } },
+      ],
+    }),
+  },
+
+  // 12. 借錢給親友（25-65）
+  {
+    id: 'de_loan_request', kind: 'family',
+    chance: (life) => life.age >= 25 && life.age <= 65 &&
+                     Math.random() < 0.07,
+    show: (life) => ({
+      title: t('de.loan.title'),
+      body: t('de.loan.body'),
+      fact: t('de.loan.fact'),
+      choices: [
+        { k: 'give', icon: '🤝',
+          label: t('de.loan.give'),
+          sub: t('de.loan.give.sub'),
+          apply: (life) => { life.stats.netAssets -= 4000; life.stats.social += 6; logLife(t('de.loan.give.log')); } },
+        { k: 'refuse', icon: '🚫',
+          label: t('de.loan.refuse'),
+          sub: t('de.loan.refuse.sub'),
+          apply: () => { logLife(t('de.loan.refuse.log')); } },
+        { k: 'help_otherwise', icon: '💡',
+          label: t('de.loan.help_otherwise'),
+          sub: t('de.loan.help_otherwise.sub'),
+          apply: (life) => { life.stats.social += 3; life.stats.happiness += 2; logLife(t('de.loan.help_otherwise.log')); } },
+      ],
+    }),
+  },
+
+  // 13. 給自己放個長假（28-50）
+  {
+    id: 'de_sabbatical', kind: 'big',
+    chance: (life) => life.stats.employment === 'employed' &&
+                     life.age >= 28 && life.age <= 50 &&
+                     Math.random() < 0.05,
+    show: (life) => ({
+      title: t('de.sabbatical.title'),
+      body: t('de.sabbatical.body'),
+      fact: t('de.sabbatical.fact'),
+      choices: [
+        { k: 'take_it', icon: '🌴',
+          label: t('de.sabbatical.take_it'),
+          sub: t('de.sabbatical.take_it.sub'),
+          apply: (life) => { life.stats.happiness += 8; life.stats.health += 4; life.stats.netAssets -= 8000; logLife(t('de.sabbatical.take_it.log')); } },
+        { k: 'push', icon: '💼',
+          label: t('de.sabbatical.push'),
+          sub: t('de.sabbatical.push.sub'),
+          apply: (life) => { life.stats.netAssets += 6000; life.stats.knowledge += 2; logLife(t('de.sabbatical.push.log')); } },
+      ],
+    }),
+  },
+
+  // 14. 長輩留下事業 / 遺產（40-80）
+  {
+    id: 'de_inheritance', kind: 'big',
+    chance: (life) => life.age >= 40 && life.age <= 80 &&
+                     life.family && life.family.parents &&
+                     life.family.parents.some(p => p.alive) &&
+                     Math.random() < 0.04,
+    show: (life) => ({
+      title: t('de.inherit.title'),
+      body: t('de.inherit.body'),
+      fact: t('de.inherit.fact'),
+      choices: [
+        { k: 'keep', icon: '🏛️',
+          label: t('de.inherit.keep'),
+          sub: t('de.inherit.keep.sub'),
+          apply: (life) => { life.stats.netAssets += 15000; life.stats.employment = 'family_biz'; logLife(t('de.inherit.keep.log')); } },
+        { k: 'sell', icon: '💰',
+          label: t('de.inherit.sell'),
+          sub: t('de.inherit.sell.sub'),
+          apply: (life) => { life.stats.netAssets += 80000; life.stats.happiness -= 2; logLife(t('de.inherit.sell.log')); } },
+        { k: 'split', icon: '👨‍👩‍👧',
+          label: t('de.inherit.split'),
+          sub: t('de.inherit.split.sub'),
+          apply: (life) => { life.stats.netAssets += 5000; life.stats.social += 8; logLife(t('de.inherit.split.log')); } },
+      ],
+    }),
+  },
+
+  // 15. 非父母親屬需要照顧（姑姑 / 阿姨）(35-65)
+  {
+    id: 'de_care_relative', kind: 'family',
+    chance: (life) => life.age >= 35 && life.age <= 65 &&
+                     Math.random() < 0.05,
+    show: (life) => ({
+      title: t('de.relative.title'),
+      body: t('de.relative.body'),
+      fact: t('de.relative.fact'),
+      choices: [
+        { k: 'take_in', icon: '🏡',
+          label: t('de.relative.take_in'),
+          sub: t('de.relative.take_in.sub'),
+          apply: (life) => { life.stats.netAssets -= 5000; life.stats.social += 4; life.stats.happiness -= 1; logLife(t('de.relative.take_in.log')); } },
+        { k: 'facility', icon: '🏥',
+          label: t('de.relative.facility'),
+          sub: t('de.relative.facility.sub'),
+          apply: (life) => { life.stats.netAssets -= 10000; life.stats.social += 2; logLife(t('de.relative.facility.log')); } },
+        { k: 'kin_share', icon: '👪',
+          label: t('de.relative.kin_share'),
+          sub: t('de.relative.kin_share.sub'),
+          apply: (life) => { life.stats.social += 3; logLife(t('de.relative.kin_share.log')); } },
+      ],
+    }),
+  },
+
+  // 16. 公司晉升但要搬家（28-50, 在職）
+  {
+    id: 'de_promotion', kind: 'big',
+    chance: (life) => life.stats.employment === 'employed' &&
+                     life.age >= 28 && life.age <= 50 &&
+                     Math.random() < 0.05,
+    show: (life) => ({
+      title: t('de.promotion.title'),
+      body: t('de.promotion.body'),
+      fact: t('de.promotion.fact'),
+      choices: [
+        { k: 'take', icon: '📈',
+          label: t('de.promotion.take'),
+          sub: t('de.promotion.take.sub'),
+          apply: (life) => { life.stats.netAssets += 4000; life.stats.knowledge += 3; life.stats.social -= 2; logLife(t('de.promotion.take.log')); } },
+        { k: 'decline', icon: '🚪',
+          label: t('de.promotion.decline'),
+          sub: t('de.promotion.decline.sub'),
+          apply: (life) => { life.stats.happiness += 2; logLife(t('de.promotion.decline.log')); } },
+        { k: 'negotiate', icon: '🤝',
+          label: t('de.promotion.negotiate'),
+          sub: t('de.promotion.negotiate.sub'),
+          apply: (life) => { if (Math.random() < 0.5) { life.stats.netAssets += 2000; life.stats.happiness += 1; logLife(t('de.promotion.negotiate.ok')); } else { logLife(t('de.promotion.negotiate.no')); } } },
+      ],
+      hasNote: true,
+    }),
+  },
 ];
 
 /* 每年 tick 走到 newAge 時呼叫 — 試著觸發一個通用決策 */
