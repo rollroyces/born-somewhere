@@ -2469,15 +2469,31 @@ document.addEventListener('click', e => {
 function savePastLife(life) {
   try {
     const arr = JSON.parse(localStorage.getItem(STORAGE_KEY + ':past') || '[]');
+    // v5.83：以前只存 country/name/age/cause 五個欄位（約 71 bytes），
+    // 導致「回到那一生」和「家族全景圖」拿到的是空殼 ——
+    // renderPanorama 每一次都會在 selfNodes[0].id 直接拋 TypeError（該功能完全壞掉）。
+    // 改存完整人生：實測約 12.8KB／段，50 段 ≈ 626KB（localStorage 配額通常 5MB）。
+    // 事件紀錄只留最後 60 條避免無限膨脹；family / stats / decisions 都保留。
+    const full = JSON.parse(JSON.stringify(life));
+    if (Array.isArray(full.log) && full.log.length > 60) full.log = full.log.slice(-60);
     const rec = {
       ts: Date.now(),
       country: life.country,
       name: life.name.full || life.name.full_en || '',
       age: life.deathAge || life.age,
       cause: life.cause,
+      full,                        // 完整人生；舊紀錄沒有這個欄位
     };
     arr.unshift(rec);
-    localStorage.setItem(STORAGE_KEY + ':past', JSON.stringify(arr.slice(0, 50)));
+    // 配額不足時逐步丟掉最舊的紀錄，而不是整個寫入失敗
+    while (arr.length) {
+      try {
+        localStorage.setItem(STORAGE_KEY + ':past', JSON.stringify(arr.slice(0, 50)));
+        break;
+      } catch (e) {
+        arr.pop();
+      }
+    }
   } catch (e) {}
 }
 function loadPastLives() {
@@ -4445,21 +4461,23 @@ function renderPanorama(lives) {
     return `${p.name}|${p.birth?.year || '?'}|${p.death?.year || ''}|${p.sex || ''}|${p.country || ''}`;
   }
   const idMap = {};
-  for (const life of lives) {
+  for (const rec of lives) {
+    // v5.83：紀錄裡的完整人生放在 .full（v5.82 以前是沒有 .full 的摘要殼）
+    const life = rec.full || rec;
     if (!life.family) continue;
     const f = life.family;
     const selfId = 'self_' + Math.random().toString(36).slice(2,9);
     const selfNode = {
       id: selfId,
-      name: life.name,
+      name: life.name?.full || life.name?.full_en || rec.name || '',
       sex: life.sex,
       country: life.country,
       countryData: countryById(life.country),
       birth: { year: life.year },
-      death: life.died ? { year: life.year + life.yearOffset } : null,
+      death: life.died || rec.cause ? { year: (life.year || 0) + (life.yearOffset || 0) } : null,
       isSelf: true,
-      lifeAge: life.age,
-      lifeCause: life.cause
+      lifeAge: rec.age ?? life.age,
+      lifeCause: life.cause || rec.cause
     };
     allPeople[selfId] = selfNode;
     selfNodes.push(selfNode);
@@ -4490,6 +4508,12 @@ function renderPanorama(lives) {
         allEdges.push({ parentId: gpid, childId: pid });
       }
     });
+  }
+  // v5.83：舊紀錄（v5.82 以前存的）沒有 family，selfNodes 會是空的，
+  // 直接 selfNodes[0].id 會拋 TypeError。改成顯示訊息而不是整片空白 + console error。
+  if (!selfNodes.length) {
+    toast(t('shelf.noFamilyData'));
+    return;
   }
   const commonAncestors = findCommonAncestors(selfNodes, allEdges, allPeople);
   const modal = document.createElement('div');
@@ -5109,7 +5133,9 @@ function continueOldLife(pastLife) {
     return;
   }
   stopTicker();
-  STATE.life = JSON.parse(JSON.stringify(pastLife));  // 深拷貝
+  // v5.83：v5.82 以前只存摘要，這裡會拿到空殼人生；新紀錄有 full 欄位就用它。
+  const src = pastLife.full || pastLife;
+  STATE.life = JSON.parse(JSON.stringify(src));  // 深拷貝
   STATE.life.died = false;
   STATE.life.cause = null;
   STATE.life.deathAge = null;

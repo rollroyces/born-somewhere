@@ -724,7 +724,8 @@
     "shared.more": "看更多（還有 {left} 筆）",
     "shared.less": "收合",
     "soft.on": "已略過可怕的情節 — 點一下恢復",
-    "soft.off": "讓自殺、性暴力、藥物、暴力這類情節不會發生"
+    "soft.off": "讓自殺、性暴力、藥物、暴力這類情節不會發生",
+    "shelf.noFamilyData": "舊的人生紀錄沒有家族資料，全景圖需要重新玩一段人生才能產生。"
   },
   "zh-Hans": {
     "title": "选出生地 · 人生模拟",
@@ -1451,7 +1452,8 @@
     "shared.more": "看更多（还有 {left} 条）",
     "shared.less": "收起",
     "soft.on": "已跳过可怕的情节 — 点一下恢复",
-    "soft.off": "让自杀、性暴力、药物、暴力这类情节不会发生"
+    "soft.off": "让自杀、性暴力、药物、暴力这类情节不会发生",
+    "shelf.noFamilyData": "旧的人生记录没有家族资料，全景图需要重新玩一段人生才能产生。"
   },
   "en": {
     "title": "Born Somewhere · Life Simulator",
@@ -2178,7 +2180,8 @@
     "shared.more": "Show more ({left} left)",
     "shared.less": "Show less",
     "soft.on": "Heavy events are hidden — click to show them",
-    "soft.off": "Hide suicide, violence, drugs and abuse events"
+    "soft.off": "Hide suicide, violence, drugs and abuse events",
+    "shelf.noFamilyData": "These older lives have no family data. Play a new life to build a panorama."
   },
   "ko": {
     "title": "태어난 곳 · 인생 시뮬레이션",
@@ -2905,7 +2908,8 @@
     "shared.more": "더 보기 ({left}개 남음)",
     "shared.less": "접기",
     "soft.on": "무거운 장면이 숨겨져 있습니다 — 클릭하면 다시 표시",
-    "soft.off": "자살·폭력·마약·학대의 장면을 숨깁니다"
+    "soft.off": "자살·폭력·마약·학대의 장면을 숨깁니다",
+    "shelf.noFamilyData": "이전 삶의 기록에는 가족 정보가 없습니다. 새 삶을 플레이하면 만들어집니다."
   },
   "ja": {
     "title": "出生地 · 人生シミュレーション",
@@ -3632,7 +3636,8 @@
     "shared.more": "もっと見る（残り {left} 件）",
     "shared.less": "折りたたむ",
     "soft.on": "重い場面は非表示です — クリックで再表示",
-    "soft.off": "自殺・暴力・薬物・虐待の場面を隠します"
+    "soft.off": "自殺・暴力・薬物・虐待の場面を隠します",
+    "shelf.noFamilyData": "以前の生活記録には家族情報がありません。新しい人生をプレイすると作成されます。"
   },
   "vi": {
     "title": "Nơi sinh · Mô phỏng cuộc đời",
@@ -4359,7 +4364,8 @@
     "shared.more": "Xem thêm (còn {left})",
     "shared.less": "Thu gọn",
     "soft.on": "Cảnh nặng đang ẩn — bấm để hiện lại",
-    "soft.off": "Ẩn các cảnh tự sát, bạo lực, ma túy, lạm dụng"
+    "soft.off": "Ẩn các cảnh tự sát, bạo lực, ma túy, lạm dụng",
+    "shelf.noFamilyData": "Các kiếp sống cũ không có dữ liệu gia đình. Hãy chơi một kiếp sống mới để tạo."
   },
   "fr": {
     "title": "Né quelque part · Simulateur de vie",
@@ -5086,7 +5092,8 @@
     "shared.more": "Voir plus ({left} restants)",
     "shared.less": "Réduire",
     "soft.on": "Les scènes lourdes sont masquées — cliquez pour les afficher",
-    "soft.off": "Masquer les scènes de suicide, violence, drogue et abus"
+    "soft.off": "Masquer les scènes de suicide, violence, drogue et abus",
+    "shelf.noFamilyData": "Ces vies passées n'ont pas de données familiales. Jouez une nouvelle vie pour créer le panorama."
   },
   "th": {
     "title": "เกิดที่ไหน · จำลองชีวิต",
@@ -5813,7 +5820,8 @@
     "shared.more": "ดูเพิ่ม (อีก {left} รายการ)",
     "shared.less": "ย่อ",
     "soft.on": "ซ่อนฉากหนักอยู่ — คลิกเพื่อแสดง",
-    "soft.off": "ซ่อนฉากการฆ่าตัวตาย ความรุนแรง ยาเสพติด และการทำร้าย"
+    "soft.off": "ซ่อนฉากการฆ่าตัวตาย ความรุนแรง ยาเสพติด และการทำร้าย",
+    "shelf.noFamilyData": "ชีวิตเก่าไม่มีข้อมูลครอบครัว เล่นชีวิตใหม่เพื่อสร้างแผนผัง"
   },
   "es": {
     "title": "Nacido en algún lugar · Simulador de vida",
@@ -6540,6 +6548,7 @@
     "shared.more": "Ver más ({left} restantes)",
     "shared.less": "Ver menos",
     "soft.on": "Las escenas pesadas están ocultas — haz clic para mostrarlas",
-    "soft.off": "Ocultar escenas de suicidio, violencia, drogas y abuso"
+    "soft.off": "Ocultar escenas de suicidio, violencia, drogas y abuso",
+    "shelf.noFamilyData": "Estas vidas antiguas no tienen datos familiares. Juega una vida nueva para crear el panorama."
   }
 }
