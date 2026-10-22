@@ -2305,3 +2305,14 @@ body.theme-dark .dec-card .fact { background: var(--bg); }
   .hero-title { margin: 20px 0 14px; }
   .hero-sub { margin-bottom: 20px; font-size: 16px; }
 }
+
+/* v5.66b：CTA 還差 17px 才回到第一屏（834 vs 視窗 817）。
+   illus-strip 200px 在最上方、hero-title 還有 204px — 兩者各收一點就夠了。 */
+@media (min-width: 900px) {
+  .hero-title { margin: 12px 0 10px; }
+  .hero-title > span:nth-child(2) { font-size: clamp(46px, 6.4vw, 88px); }
+  .hero-sub { font-size: 15px; margin-bottom: 14px; line-height: 1.6; }
+  /* 插畫是 aspect-ratio:1/1，所以要縮 width 才會等比縮高 */
+  .illus-strip { margin-top: 16px; }
+  .illus-strip img { width: clamp(84px, 13vw, 128px); border-radius: 14px; }
+}
