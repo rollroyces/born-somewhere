@@ -554,6 +554,192 @@ const DECISIONS = [
       hasNote: true,
     }),
   },
+
+  // ===== v5.57：小型日常選擇（對齊原作 sm_* 家族）=====
+  // 這些不是轉折點，而是讓人生「有紋理」的小決定；低頻、影響小、選項樸素。
+
+  // 17. 週末怎麼度過（18-75）
+  {
+    id: 'sm_weekend', kind: 'small',
+    chance: (life) => life.age >= 18 && life.age <= 75 && Math.random() < 0.10,
+    show: () => ({
+      title: t('sm.weekend.title'),
+      body: t('sm.weekend.body'),
+      choices: [
+        { k: 'friends', icon: '🍻',
+          label: t('sm.weekend.friends'),
+          sub: t('sm.weekend.friends.sub'),
+          apply: (life) => { life.stats.social += 4; life.stats.happiness += 3; life.stats.health -= 1; logLife(t('sm.weekend.friends.log')); } },
+        { k: 'family', icon: '🏡',
+          label: t('sm.weekend.family'),
+          sub: t('sm.weekend.family.sub'),
+          apply: (life) => { life.stats.social += 3; life.stats.happiness += 4; logLife(t('sm.weekend.family.log')); } },
+        { k: 'rest', icon: '🛌',
+          label: t('sm.weekend.rest'),
+          sub: t('sm.weekend.rest.sub'),
+          apply: (life) => { life.stats.health += 3; logLife(t('sm.weekend.rest.log')); } },
+        { k: 'alone', icon: '🚶',
+          label: t('sm.weekend.alone'),
+          sub: t('sm.weekend.alone.sub'),
+          apply: (life) => { life.stats.happiness -= 1; life.stats.knowledge += 1; logLife(t('sm.weekend.alone.log')); } },
+      ],
+    }),
+  },
+
+  // 18. 抽屜裡的零錢（8-15）
+  {
+    id: 'sm_pocket', kind: 'small',
+    chance: (life) => life.age >= 8 && life.age <= 15 && Math.random() < 0.12,
+    show: () => ({
+      title: t('sm.pocket.title'),
+      body: t('sm.pocket.body'),
+      fact: t('sm.pocket.fact'),
+      choices: [
+        { k: 'save', icon: '🐷',
+          label: t('sm.pocket.save'),
+          sub: t('sm.pocket.save.sub'),
+          apply: (life) => { life.stats.netAssets += 60; logLife(t('sm.pocket.save.log')); } },
+        { k: 'snack', icon: '🍡',
+          label: t('sm.pocket.snack'),
+          sub: t('sm.pocket.snack.sub'),
+          apply: (life) => { life.stats.happiness += 3; life.stats.health -= 1; logLife(t('sm.pocket.snack.log')); } },
+        { k: 'gift', icon: '🎁',
+          label: t('sm.pocket.gift'),
+          sub: t('sm.pocket.gift.sub'),
+          apply: (life) => { life.stats.social += 4; life.stats.happiness += 2; logLife(t('sm.pocket.gift.log')); } },
+      ],
+    }),
+  },
+
+  // 19. 打電話回家（25-80）
+  {
+    id: 'sm_call', kind: 'family',
+    chance: (life) => life.age >= 25 && life.age <= 80 && Math.random() < 0.10,
+    show: () => ({
+      title: t('sm.call.title'),
+      body: t('sm.call.body'),
+      fact: t('sm.call.fact'),
+      choices: [
+        { k: 'call', icon: '📞',
+          label: t('sm.call.call'),
+          sub: t('sm.call.call.sub'),
+          apply: (life) => { life.stats.social += 3; life.stats.happiness += 2; logLife(t('sm.call.call.log')); } },
+        { k: 'visit', icon: '🚄',
+          label: t('sm.call.visit'),
+          sub: t('sm.call.visit.sub'),
+          apply: (life) => { life.stats.social += 5; life.stats.netAssets -= 800; logLife(t('sm.call.visit.log')); } },
+        { k: 'later', icon: '⏳',
+          label: t('sm.call.later'),
+          sub: t('sm.call.later.sub'),
+          apply: (life) => { life.stats.social -= 2; life.stats.happiness -= 1; logLife(t('sm.call.later.log')); } },
+      ],
+    }),
+  },
+
+  // 20. 同學會（25-75）
+  {
+    id: 'sm_reunion', kind: 'small',
+    chance: (life) => life.age >= 25 && life.age <= 75 && Math.random() < 0.08,
+    show: () => ({
+      title: t('sm.reunion.title'),
+      body: t('sm.reunion.body'),
+      fact: t('sm.reunion.fact'),
+      choices: [
+        { k: 'go', icon: '🥂',
+          label: t('sm.reunion.go'),
+          sub: t('sm.reunion.go.sub'),
+          apply: (life) => { life.stats.social += 5; life.stats.happiness += 2; life.stats.netAssets -= 500; logLife(t('sm.reunion.go.log')); } },
+        { k: 'skip', icon: '🚫',
+          label: t('sm.reunion.skip'),
+          sub: t('sm.reunion.skip.sub'),
+          apply: (life) => { life.stats.netAssets += 200; logLife(t('sm.reunion.skip.log')); } },
+      ],
+    }),
+  },
+
+  // 21. 學做一道菜（20-75）
+  {
+    id: 'sm_cook', kind: 'small',
+    chance: (life) => life.age >= 20 && life.age <= 75 && Math.random() < 0.09,
+    show: () => ({
+      title: t('sm.cook.title'),
+      body: t('sm.cook.body'),
+      fact: t('sm.cook.fact'),
+      choices: [
+        { k: 'learn', icon: '🍳',
+          label: t('sm.cook.learn'),
+          sub: t('sm.cook.learn.sub'),
+          apply: (life) => { life.stats.happiness += 3; life.stats.knowledge += 2; life.stats.netAssets -= 100; logLife(t('sm.cook.learn.log')); } },
+        { k: 'buy', icon: '🍱',
+          label: t('sm.cook.buy'),
+          sub: t('sm.cook.buy.sub'),
+          apply: (life) => { life.stats.netAssets -= 200; life.stats.health -= 1; logLife(t('sm.cook.buy.log')); } },
+      ],
+    }),
+  },
+
+  // 22. 報名志工（20-75）
+  {
+    id: 'sm_volunteer', kind: 'small',
+    chance: (life) => life.age >= 20 && life.age <= 75 && Math.random() < 0.08,
+    show: () => ({
+      title: t('sm.volunteer.title'),
+      body: t('sm.volunteer.body'),
+      fact: t('sm.volunteer.fact'),
+      choices: [
+        { k: 'join', icon: '🤲',
+          label: t('sm.volunteer.join'),
+          sub: t('sm.volunteer.join.sub'),
+          apply: (life) => { life.stats.happiness += 5; life.stats.social += 4; life.stats.knowledge += 1; logLife(t('sm.volunteer.join.log')); } },
+        { k: 'pass', icon: '🙅',
+          label: t('sm.volunteer.pass'),
+          sub: t('sm.volunteer.pass.sub'),
+          apply: (life) => { life.stats.happiness -= 1; logLife(t('sm.volunteer.pass.log')); } },
+      ],
+    }),
+  },
+
+  // 23. 出去走走（40-85）
+  {
+    id: 'sm_walk', kind: 'small',
+    chance: (life) => life.age >= 40 && life.age <= 85 && Math.random() < 0.09,
+    show: () => ({
+      title: t('sm.walk.title'),
+      body: t('sm.walk.body'),
+      fact: t('sm.walk.fact'),
+      choices: [
+        { k: 'walk', icon: '👟',
+          label: t('sm.walk.walk'),
+          sub: t('sm.walk.walk.sub'),
+          apply: (life) => { life.stats.health += 4; life.stats.happiness += 2; logLife(t('sm.walk.walk.log')); } },
+        { k: 'later', icon: '⏳',
+          label: t('sm.walk.later'),
+          sub: t('sm.walk.later.sub'),
+          apply: (life) => { life.stats.health -= 1; logLife(t('sm.walk.later.log')); } },
+      ],
+    }),
+  },
+
+  // 24. 換新手機（13-60）
+  {
+    id: 'sm_phone', kind: 'small',
+    chance: (life) => life.age >= 13 && life.age <= 60 && Math.random() < 0.07,
+    show: () => ({
+      title: t('sm.phone.title'),
+      body: t('sm.phone.body'),
+      fact: t('sm.phone.fact'),
+      choices: [
+        { k: 'upgrade', icon: '📱',
+          label: t('sm.phone.upgrade'),
+          sub: t('sm.phone.upgrade.sub'),
+          apply: (life) => { life.stats.netAssets -= 900; life.stats.happiness += 3; life.stats.knowledge += 1; logLife(t('sm.phone.upgrade.log')); } },
+        { k: 'keep', icon: '📴',
+          label: t('sm.phone.keep'),
+          sub: t('sm.phone.keep.sub'),
+          apply: (life) => { life.stats.netAssets += 300; life.stats.happiness -= 1; logLife(t('sm.phone.keep.log')); } },
+      ],
+    }),
+  },
 ];
 
 /* 每年 tick 走到 newAge 時呼叫 — 試著觸發一個通用決策 */
