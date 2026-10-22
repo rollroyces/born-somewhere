@@ -706,7 +706,17 @@
     "life.endNow": "結束這段人生",
     "life.restart": "用同一個設定重來",
     "life.autoDecide": "自動抉擇",
-    "life.autoDecide.off": "停止自動"
+    "life.autoDecide.off": "停止自動",
+    "end.replay": "再看一次最後的時刻",
+    "end.lastMoments": "最後的時刻",
+    "lab.country": "國家 A",
+    "lab.sex": "性別",
+    "lab.this": "隨機",
+    "lab.era": "年代",
+    "lab.start": "人數",
+    "focus.placeholder": "選一個會影響你的狀態條與淨資產。",
+    "finance.placeholder": "選一項會影響淨資產與狀態。",
+    "feedback.submit": "送出"
   },
   "zh-Hans": {
     "title": "选出生地 · 人生模拟",
@@ -1415,7 +1425,17 @@
     "life.endNow": "结束这段人生",
     "life.restart": "用同一个设置重来",
     "life.autoDecide": "自动抉择",
-    "life.autoDecide.off": "停止自动"
+    "life.autoDecide.off": "停止自动",
+    "end.replay": "再看一次最后的时刻",
+    "end.lastMoments": "最后的时刻",
+    "lab.country": "国家 A",
+    "lab.sex": "性别",
+    "lab.this": "随机",
+    "lab.era": "年代",
+    "lab.start": "人数",
+    "focus.placeholder": "选一个会影响你的状态条与净资产。",
+    "finance.placeholder": "选一项会影响净资产与状态。",
+    "feedback.submit": "发送"
   },
   "en": {
     "title": "Born Somewhere · Life Simulator",
@@ -2124,7 +2144,17 @@
     "life.endNow": "End this life",
     "life.restart": "Restart with the same setup",
     "life.autoDecide": "Auto-decide",
-    "life.autoDecide.off": "Stop auto"
+    "life.autoDecide.off": "Stop auto",
+    "end.replay": "Watch the last moments again",
+    "end.lastMoments": "The last moments",
+    "lab.country": "Country A",
+    "lab.sex": "Sex",
+    "lab.this": "Random",
+    "lab.era": "Era",
+    "lab.start": "How many",
+    "focus.placeholder": "Picking one affects your stat bars and net assets.",
+    "finance.placeholder": "Picking one affects net assets and stats.",
+    "feedback.submit": "Send"
   },
   "ko": {
     "title": "태어난 곳 · 인생 시뮬레이션",
@@ -2840,7 +2870,12 @@
     "life.endNow": "이 삶 끝내기",
     "life.restart": "같은 설정으로 다시",
     "life.autoDecide": "자동 선택",
-    "life.autoDecide.off": "자동 중지"
+    "life.autoDecide.off": "자동 중지",
+    "end.replay": "마지막 순간 다시 보기",
+    "end.lastMoments": "마지막 순간",
+    "focus.placeholder": "고르면 능력치 막대와 순자산에 영향을 줍니다.",
+    "finance.placeholder": "고르면 순자산과 능력치에 영향을 줍니다.",
+    "feedback.submit": "보내기"
   },
   "ja": {
     "title": "出生地 · 人生シミュレーション",
@@ -3556,7 +3591,12 @@
     "life.endNow": "この人生を終える",
     "life.restart": "同じ設定でやり直す",
     "life.autoDecide": "自動で選択",
-    "life.autoDecide.off": "自動を停止"
+    "life.autoDecide.off": "自動を停止",
+    "end.replay": "最後の瞬間をもう一度",
+    "end.lastMoments": "最後の瞬間",
+    "focus.placeholder": "選ぶとステータスと純資産が変わります。",
+    "finance.placeholder": "選ぶと純資産とステータスが変わります。",
+    "feedback.submit": "送信"
   },
   "vi": {
     "title": "Nơi sinh · Mô phỏng cuộc đời",
@@ -4272,7 +4312,12 @@
     "life.endNow": "Kết thúc kiếp sống này",
     "life.restart": "Chơi lại với cùng thiết lập",
     "life.autoDecide": "Tự động chọn",
-    "life.autoDecide.off": "Tắt tự động"
+    "life.autoDecide.off": "Tắt tự động",
+    "end.replay": "Xem lại khoảnh khắc cuối",
+    "end.lastMoments": "Khoảnh khắc cuối",
+    "focus.placeholder": "Chọn sẽ ảnh hưởng thanh chỉ số và tài sản ròng.",
+    "finance.placeholder": "Chọn sẽ ảnh hưởng tài sản ròng và chỉ số.",
+    "feedback.submit": "Gửi"
   },
   "fr": {
     "title": "Né quelque part · Simulateur de vie",
@@ -4988,7 +5033,12 @@
     "life.endNow": "Terminer cette vie",
     "life.restart": "Recommencer avec les mêmes réglages",
     "life.autoDecide": "Choix automatique",
-    "life.autoDecide.off": "Arrêter l'auto"
+    "life.autoDecide.off": "Arrêter l'auto",
+    "end.replay": "Revoir les derniers moments",
+    "end.lastMoments": "Les derniers moments",
+    "focus.placeholder": "Choisir modifie vos barres de stats et votre patrimoine.",
+    "finance.placeholder": "Choisir modifie le patrimoine et les stats.",
+    "feedback.submit": "Envoyer"
   },
   "th": {
     "title": "เกิดที่ไหน · จำลองชีวิต",
@@ -5704,7 +5754,12 @@
     "life.endNow": "จบชีวิตนี้",
     "life.restart": "เริ่มใหม่ด้วยการตั้งค่าเดิม",
     "life.autoDecide": "เลือกอัตโนมัติ",
-    "life.autoDecide.off": "หยุดอัตโนมัติ"
+    "life.autoDecide.off": "หยุดอัตโนมัติ",
+    "end.replay": "ดูช่วงสุดท้ายอีกครั้ง",
+    "end.lastMoments": "ช่วงสุดท้าย",
+    "focus.placeholder": "การเลือกจะส่งผลต่อแถบสถานะและสินทรัพย์สุทธิ",
+    "finance.placeholder": "การเลือกจะส่งผลต่อสินทรัพย์สุทธิและสถานะ",
+    "feedback.submit": "ส่ง"
   },
   "es": {
     "title": "Nacido en algún lugar · Simulador de vida",
@@ -6420,6 +6475,11 @@
     "life.endNow": "Terminar esta vida",
     "life.restart": "Reiniciar con la misma configuración",
     "life.autoDecide": "Decisión automática",
-    "life.autoDecide.off": "Detener automático"
+    "life.autoDecide.off": "Detener automático",
+    "end.replay": "Ver los últimos momentos otra vez",
+    "end.lastMoments": "Los últimos momentos",
+    "focus.placeholder": "Elegir afecta a las barras de estado y al patrimonio.",
+    "finance.placeholder": "Elegir afecta al patrimonio y a las estadísticas.",
+    "feedback.submit": "Enviar"
   }
 }
