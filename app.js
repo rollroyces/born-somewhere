@@ -282,9 +282,14 @@ const DECISIONS = [
   // 5. 父母行動不便：接過來同住 vs. 找看護 vs. 讓親戚照顧
   {
     id: 'de_parents_care', kind: 'big',
-    chance: (life) => life.age >= 45 && life.age <= 75 &&
+    chance: (life) =>
+                     // v5.85：視窗原本是 45–75，但實測父母大約在你 40 歲前後就過世了
+                     // （generateFamily 給父親 +70、母親 +75 年的壽命），
+                     // 45 歲以後幾乎沒有任何人生還有活著的��親 — 這個事件從未出現。
+                     // 改成 40–58：這才是「父母開始需要照顧」的實際年齡區間。
+                     life.age >= 40 && life.age <= 58 &&
                      anyParentAlive(life) &&
-                     Math.random() < 0.06,
+                     Math.random() < 0.08,
     show: (life) => ({
       title: t('de.parents.title'),
       body: t('de.parents.body'),
@@ -420,11 +425,16 @@ const DECISIONS = [
     id: 'de_mental_health', kind: 'big',
     chance: (life) => !STATE.eduMode &&
                      life.age >= 25 && life.age <= 70 &&
-                     // v5.59：門檻 40 → 55。原本 happiness 只會被玩家的選擇單向推動，
-                     // 要掉到 40 需要淨虧 30 分，而一生大約只有 17 次選擇 — 幾乎不可能。
-                     // 加了幸福回歸模型後，失業／病中／孤立／負債會把水位壓到 50 以下。
-                     (life.stats.happiness < 55 || life.stats.social < 35) &&
-                     Math.random() < 0.05,
+                     // v5.85：門檻是照著「實際量到的分布」訂的，不是拍腦袋。
+                     // v5.59 設 < 55，但實測 25–70 歲的 happiness 每年取樣 4,537 筆：
+                     //   p01=57.6  p05=60.9  p10=62.9  p50=65.2
+                     // 55 低於 p01，等於這個事件永遠不會發生（實測 120 條人生 0 次）。
+                     // 改成 < 62（約落在底端 6–8%），配合 6% 擲骰，
+                     // 大約 15–20% 的人生會在某一年的某個時刻遇到一次低潮。
+                     // 註：happy 分布偏窄（57–65）是幸福回歸模型本身的特性，
+                     // 要拉寬分布得改那個模型，會連動淨資產／收入的數字，另行評估。
+                     life.stats.happiness < 62 &&
+                     Math.random() < 0.06,
     show: (life) => ({
       title: t('de.mental.title'),
       body: t('de.mental.body'),
@@ -812,22 +822,27 @@ function tryTriggerDecision(life, newAge) {
   if (lastInt != null && newAge - lastInt < INTERRUPT_GAP) return false;
 
   const done = new Set((life.decisions || []).map(d => d.id));
-  // 每年只嘗試最多一個
+  // v5.85：先收集所有「擲骰通過」的事件，再從中隨機挑一個。
+  // 舊寫法照 DECISIONS 陣列順序逐一嘗試、遇到第一個就 return ——
+  // 這讓排在後面的事件被前面的系統性壓制。
+  // 實測 de_mental_health 排在第 10 位，200 條人生一次都沒出現過。
+  const eligible = [];
   for (const dec of DECISIONS) {
     if (done.has(dec.id)) continue;
-    if (dec.chance(life)) {
-      try {
-        const payload = dec.show(life);
-        if (payload) {
-          const ok = showDecision({
-            id: dec.id, kind: dec.kind, age: newAge,
-            ...payload,
-          });
-          if (ok) { life.lastDecisionAge = newAge; return true; }
-        }
-      } catch (e) { console.warn('decision show failed', dec.id, e); }
-    }
+    let ok = false;
+    try { ok = dec.chance(life); } catch (e) { continue; }
+    if (ok) eligible.push(dec);
   }
+  if (!eligible.length) return false;
+  // 每年最多一個
+  const dec = eligible[Math.floor(Math.random() * eligible.length)];
+  try {
+    const payload = dec.show(life);
+    if (payload) {
+      const ok = showDecision({ id: dec.id, kind: dec.kind, age: newAge, ...payload });
+      if (ok) { life.lastDecisionAge = newAge; return true; }
+    }
+  } catch (e) { console.warn('decision show failed', dec.id, e); }
   return false;
 }
 
