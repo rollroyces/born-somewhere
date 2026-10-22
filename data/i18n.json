@@ -701,7 +701,12 @@
     "sm.phone.keep.log": "決定再撐一年。",
     "life.detail.show": "展開詳細資料",
     "life.detail.hide": "收合詳細資料",
-    "intro.more.show": "更多數據與說明"
+    "intro.more.show": "更多數據與說明",
+    "life.resume": "繼續",
+    "life.endNow": "結束這段人生",
+    "life.restart": "用同一個設定重來",
+    "life.autoDecide": "自動抉擇",
+    "life.autoDecide.off": "停止自動"
   },
   "zh-Hans": {
     "title": "选出生地 · 人生模拟",
@@ -1405,7 +1410,12 @@
     "sm.phone.keep.log": "决定再撑一年。",
     "life.detail.show": "展开详细资料",
     "life.detail.hide": "收起详细资料",
-    "intro.more.show": "更多数据与说明"
+    "intro.more.show": "更多数据与说明",
+    "life.resume": "继续",
+    "life.endNow": "结束这段人生",
+    "life.restart": "用同一个设置重来",
+    "life.autoDecide": "自动抉择",
+    "life.autoDecide.off": "停止自动"
   },
   "en": {
     "title": "Born Somewhere · Life Simulator",
@@ -2109,7 +2119,12 @@
     "sm.phone.keep.log": "You decided to make it last another year.",
     "life.detail.show": "Show detailed panels",
     "life.detail.hide": "Hide detailed panels",
-    "intro.more.show": "More data and background"
+    "intro.more.show": "More data and background",
+    "life.resume": "Resume",
+    "life.endNow": "End this life",
+    "life.restart": "Restart with the same setup",
+    "life.autoDecide": "Auto-decide",
+    "life.autoDecide.off": "Stop auto"
   },
   "ko": {
     "title": "태어난 곳 · 인생 시뮬레이션",
@@ -2820,7 +2835,12 @@
     "sm.phone.keep.log": "한 해 더 쓰기로 했다.",
     "life.detail.show": "상세 패널 펼치기",
     "life.detail.hide": "상세 패널 접기",
-    "intro.more.show": "더 많은 데이터와 설명"
+    "intro.more.show": "더 많은 데이터와 설명",
+    "life.resume": "계속",
+    "life.endNow": "이 삶 끝내기",
+    "life.restart": "같은 설정으로 다시",
+    "life.autoDecide": "자동 선택",
+    "life.autoDecide.off": "자동 중지"
   },
   "ja": {
     "title": "出生地 · 人生シミュレーション",
@@ -3531,7 +3551,12 @@
     "sm.phone.keep.log": "もう一年使うことにした。",
     "life.detail.show": "詳細パネルを表示",
     "life.detail.hide": "詳細パネルを隠す",
-    "intro.more.show": "さらに詳しいデータと解説"
+    "intro.more.show": "さらに詳しいデータと解説",
+    "life.resume": "続ける",
+    "life.endNow": "この人生を終える",
+    "life.restart": "同じ設定でやり直す",
+    "life.autoDecide": "自動で選択",
+    "life.autoDecide.off": "自動を停止"
   },
   "vi": {
     "title": "Nơi sinh · Mô phỏng cuộc đời",
@@ -4242,7 +4267,12 @@
     "sm.phone.keep.log": "Bạn quyết định dùng thêm một năm.",
     "life.detail.show": "Hiện bảng chi tiết",
     "life.detail.hide": "Ẩn bảng chi tiết",
-    "intro.more.show": "Thêm dữ liệu và giải thích"
+    "intro.more.show": "Thêm dữ liệu và giải thích",
+    "life.resume": "Tiếp tục",
+    "life.endNow": "Kết thúc kiếp sống này",
+    "life.restart": "Chơi lại với cùng thiết lập",
+    "life.autoDecide": "Tự động chọn",
+    "life.autoDecide.off": "Tắt tự động"
   },
   "fr": {
     "title": "Né quelque part · Simulateur de vie",
@@ -4953,7 +4983,12 @@
     "sm.phone.keep.log": "Vous avez décidé de tenir un an de plus.",
     "life.detail.show": "Afficher les panneaux détaillés",
     "life.detail.hide": "Masquer les panneaux détaillés",
-    "intro.more.show": "Plus de données et de contexte"
+    "intro.more.show": "Plus de données et de contexte",
+    "life.resume": "Reprendre",
+    "life.endNow": "Terminer cette vie",
+    "life.restart": "Recommencer avec les mêmes réglages",
+    "life.autoDecide": "Choix automatique",
+    "life.autoDecide.off": "Arrêter l'auto"
   },
   "th": {
     "title": "เกิดที่ไหน · จำลองชีวิต",
@@ -5664,7 +5699,12 @@
     "sm.phone.keep.log": "คุณตัดสินใจใช้ต่ออีกปี",
     "life.detail.show": "แสดงรายละเอียด",
     "life.detail.hide": "ซ่อนรายละเอียด",
-    "intro.more.show": "ข้อมูลและคำอธิบายเพิ่มเติม"
+    "intro.more.show": "ข้อมูลและคำอธิบายเพิ่มเติม",
+    "life.resume": "เล่นต่อ",
+    "life.endNow": "จบชีวิตนี้",
+    "life.restart": "เริ่มใหม่ด้วยการตั้งค่าเดิม",
+    "life.autoDecide": "เลือกอัตโนมัติ",
+    "life.autoDecide.off": "หยุดอัตโนมัติ"
   },
   "es": {
     "title": "Nacido en algún lugar · Simulador de vida",
@@ -6375,6 +6415,11 @@
     "sm.phone.keep.log": "Decidiste aguantar un año más.",
     "life.detail.show": "Mostrar paneles detallados",
     "life.detail.hide": "Ocultar paneles detallados",
-    "intro.more.show": "Más datos y contexto"
+    "intro.more.show": "Más datos y contexto",
+    "life.resume": "Continuar",
+    "life.endNow": "Terminar esta vida",
+    "life.restart": "Reiniciar con la misma configuración",
+    "life.autoDecide": "Decisión automática",
+    "life.autoDecide.off": "Detener automático"
   }
 }

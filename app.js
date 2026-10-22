@@ -869,6 +869,8 @@ function setLang(lang) {
   document.documentElement.lang = lang;
   renderAll();
   syncDetailToggleLabel();
+  syncPauseBtn();
+  syncAutoBtn();
 }
 /* v5.61：切換語言後更新「詳細資料」按鈕文字 */
 function syncDetailToggleLabel() {
@@ -2444,6 +2446,26 @@ function loadPastLives() {
 }
 
 // ==== 路由 ====
+/* ==== v5.68：topbar 圖示按鈕的圖示與 tooltip ====
+   修兩個問題：
+   1) 暫停鈕第一次點擊後圖示會從 ❚❚ 變成 ⏸（不同字形），而且完全沒有 tooltip
+   2) 自動抉擇鈕的標籤是寫死的中文「⏸ 停止自動」，在英文/日文介面仍是中文 */
+function syncPauseBtn() {
+  const b = $('#btnPause');
+  if (!b) return;
+  const paused = !!STATE.paused;
+  b.textContent = paused ? '▶' : '❚❚';
+  b.title = t(paused ? 'life.resume' : 'life.pause');
+  b.setAttribute('aria-label', b.title);
+}
+function syncAutoBtn() {
+  const b = $('#btnAuto');
+  if (!b) return;
+  const on = !!STATE.autoDecide;
+  b.textContent = on ? `⏹ ${t('life.autoDecide.off')}` : `▶ ${t('life.autoDecide')}`;
+  b.title = t(on ? 'life.autoDecide.off' : 'life.autoDecide');
+}
+
 function setView(v) {
   STATE.view = v;
   $$('.view').forEach(el => el.classList.remove('active'));
@@ -2470,6 +2492,9 @@ function renderAll() {
   // 通用翻譯
   $$('[data-t]').forEach(el => { el.textContent = t(el.dataset.t); });
   $$('[data-t-html]').forEach(el => { el.innerHTML = t(el.dataset.tHtml); });
+  // v5.68：title / aria-label 也走 i18n（topbar 那幾顆只有圖示，靠 tooltip 解釋）
+  $$('[data-t-title]').forEach(el => { el.title = t(el.dataset.tTitle); });
+  $$('[data-t-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.tAria)); });
   // 視圖
   if (STATE.view === 'intro') renderIntro();
   else if (STATE.view === 'life') renderLife();
@@ -4653,15 +4678,16 @@ function wire() {
   const pauseBtn = $('#btnPause');
   if (pauseBtn) pauseBtn.addEventListener('click', () => {
     STATE.paused = !STATE.paused;
-    pauseBtn.textContent = STATE.paused ? '▶' : '⏸';
+    syncPauseBtn();
   });
+  syncPauseBtn();
   $$('.ltb-speed-btn').forEach(b => b.addEventListener('click', () => setSpeed(+b.dataset.speed)));
   // v5.9：自動抉擇模式
   const autoBtn = $('#btnAuto');
   if (autoBtn) autoBtn.addEventListener('click', () => {
     STATE.autoDecide = !STATE.autoDecide;
     autoBtn.classList.toggle('active', STATE.autoDecide);
-    autoBtn.textContent = STATE.autoDecide ? '⏸ 停止自動' : '▶ 自動抉擇';
+    syncAutoBtn();
     if (STATE.autoDecide && STATE.pendingDecision) resolvePendingDecision();
   });
   // v5.9：快轉到下一個抉擇

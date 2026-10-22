@@ -209,16 +209,20 @@
         </div>
       </div>
       <div class="ltb-speed">
-        <button class="ltb-pause" id="btnPause" aria-label="暫停">❚❚</button>
+        <!-- v5.68：這幾顆原本 title 是寫死的英文（End now / Restart / Auto-decide），
+             中文介面裡 hover 出來卻是英文；而且 ↺（回轉箭頭）標在「結束」、
+             🔄 標在「重生」，圖示跟意思剛好相反，容易按錯。改成：
+             結束 = ■（停止），重生 = ↺（再來一次），並用 data-t 走 i18n。 -->
+        <button class="ltb-pause" id="btnPause" data-t-title="life.pause" aria-label="暫停">❚❚</button>
         <button class="ltb-speed-btn" data-speed="1">1×</button>
         <button class="ltb-speed-btn" data-speed="2">2×</button>
         <button class="ltb-speed-btn" data-speed="4">4×</button>
         <button class="ltb-speed-btn" data-speed="8">8×</button>
         <button class="ltb-speed-btn" data-speed="12">12×</button>
         <button class="ltb-speed-btn" data-speed="16">16×</button>
-        <button class="ltb-more" id="btnDieNow" title="End now" aria-label="結束">↺</button>
-        <button class="ltb-more" id="btnRebirth" title="Restart" aria-label="重生">🔄</button>
-        <button class="ltb-more" id="btnAuto" title="Auto-decide" aria-label="自動">▶</button>
+        <button class="ltb-more" id="btnDieNow" data-t-title="life.endNow" aria-label="結束">■</button>
+        <button class="ltb-more" id="btnRebirth" data-t-title="life.restart" aria-label="重生">↺</button>
+        <button class="ltb-more" id="btnAuto" data-t-title="life.autoDecide" aria-label="自動">▶</button>
         <button class="ltb-more" id="btnThoughts" title="寫下想法" aria-label="寫想法">✎</button>
         <button class="ltb-more" id="btnShareCard" title="分享出生卡" aria-label="分享">📤</button>
         <button class="ltb-more" id="btnSkip" title="跳過抉擇" aria-label="跳過">⏭</button>
@@ -570,7 +574,7 @@
     <a href="#" id="btnPrivacy" class="footer-link" data-t="footer.privacy">隱私權政策</a>
     <a href="#" id="btnTerms" class="footer-link" data-t="footer.terms">使用須知</a>
     <a href="mailto:contact@born-somewhere.app" id="btnContact" class="footer-link" data-t="footer.contact">聯絡我們</a>
-    <span class="footer-ver">v5.67 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
+    <span class="footer-ver">v5.68 · <span data-t="footer.copyright">CC BY 4.0 · 開放源</span></span>
   </div>
 </footer>
 
