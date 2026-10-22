@@ -2316,3 +2316,23 @@ body.theme-dark .dec-card .fact { background: var(--bg); }
   .illus-strip { margin-top: 16px; }
   .illus-strip img { width: clamp(84px, 13vw, 128px); border-radius: 14px; }
 }
+
+/* v5.70：手機版水平溢出
+   實測 485px 視窗下 .topnav 的按鈕一直排到 860px，整頁被撐出 360px 的橫向捲動，
+   使用者會以為頁面壞掉。改成：topnav 自己橫向捲動、按鈕不縮，
+   並給頁面加 overflow-x 保護（真正的溢出源已修好，這只是保險）。 */
+.topnav {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.topnav::-webkit-scrollbar { display: none; }
+.navbtn { flex: 0 0 auto; }
+
+body { overflow-x: hidden; }
+
+/* 極窄螢幕：按鈕內距收一點，六顆剛好放得下就不用捲 */
+@media (max-width: 520px) {
+  .navbtn { padding: 8px 11px; font-size: 13px; }
+}
