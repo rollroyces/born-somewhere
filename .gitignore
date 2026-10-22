@@ -13,3 +13,6 @@ node_modules/
 tmp_sm_i18n.json
 scripts_add_sm_i18n.py
 zu-pu/
+
+# i18n 修正腳本（一次性）
+fix_i18n_57.py
