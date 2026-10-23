@@ -674,6 +674,14 @@ body.theme-dark input[type="date"]::-webkit-calendar-picker-indicator { filter: 
   padding: 28px;
   max-width: 480px; width: 100%;
   box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+  /* v5.91：小螢幕上，財務視窗（6 個選項 + 長說明）會長到 1140px，
+     比 640px 的視窗還高。因為這裡原本沒有高度上限、overflow 又是 visible，
+     超出視窗上緣的那 250px 直接消失而且捲不到 ——
+     被切掉的正好是標題「積蓄：NT$60,000」，也就是做這個決定最重要的資訊。
+     加上高度上限並讓卡片自己捲，標題就會留在畫面上。 */
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .modal-q { font-family: var(--serif); font-size: 22px; margin: 0 0 8px; line-height: 1.3; font-weight: 600; color: var(--accent); }
 .modal-help { color: var(--ink-2); font-size: 13px; margin: 0 0 12px; }
