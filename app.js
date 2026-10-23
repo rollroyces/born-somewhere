@@ -23,7 +23,7 @@ let CACHE = { countries: null, i18n: null };
    結果是：更新說明對外顯示 v5.19.0、匯出的出生卡寫 v5.12、匯出的生命證書寫 v5.2，
    而玩家用的其實是 v5.97。分享圖是別人會看到的東西，寫錯版本特別明顯。
    現在這兩張圖都改讀 APP_VERSION；`python3 i18n_audit.py` 第 6 項檢查會擋住以後再漂。 */
-const APP_VERSION = '6.09.0';
+const APP_VERSION = '6.10.0';
 const APP_BUILD = '2026-10-23';
 
 const STATE = {
@@ -314,7 +314,7 @@ const DECISIONS = [
     chance: (life) =>
                      // v5.85：視窗原本是 45–75，但實測父母大約在你 40 歲前後就過世了
                      // （generateFamily 給父親 +70、母親 +75 年的壽命），
-                     // 45 歲以後幾乎沒有任何人生還有活著的��親 — 這個事件從未出現。
+                     // 45 歲以後幾乎沒有任何人生還有活著的親屬 — 這個事件從未出現。
                      // 改成 40–58：這才是「父母開始需要照顧」的實際年齡區間。
                      life.age >= 40 && life.age <= 58 &&
                      anyParentAlive(life) &&
@@ -2733,7 +2733,7 @@ function renderAll() {
   // v5.68：title / aria-label 也走 i18n（topbar 那幾顆只有圖示，靠 tooltip 解釋）
   $$('[data-t-title]').forEach(el => { el.title = t(el.dataset.tTitle); });
   $$('[data-t-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.tAria)); });
-  // 暫停鈕的圖示/t���示跟著實際狀態走（STATE.paused 有很多地方會被清掉）
+  // 暫停鈕的圖示 / tooltip 跟著實際狀態走（STATE.paused 有很多地方會被清掉）
   if (typeof syncPauseBtn === 'function') syncPauseBtn();
   if (typeof syncAutoBtn === 'function') syncAutoBtn();
   // 視圖
@@ -5634,6 +5634,70 @@ init();
 // 版本歷史（每個版本：v / date / items；每個 item 含 emoji badge + 文字）
 // 為節省空間與維護成本，所有語言文字都用 i18n key；徽章 emoji 是視覺標記。
 const CHANGELOG = [
+  { v: '6.09', date: '2026-10-24', items: [
+      { tag: 'fix', icon: '🌐', key: 'cl.6.09.ageUnit' },
+    ] },
+  { v: '6.08', date: '2026-10-24', items: [
+      { tag: 'fix', icon: '📇', key: 'cl.6.08.birthCert' },
+    ] },
+  { v: '6.07', date: '2026-10-24', items: [
+      { tag: 'fix', icon: '🙏', key: 'cl.6.07.religion' },
+    ] },
+  { v: '6.06', date: '2026-10-24', items: [
+      { tag: 'fix', icon: '🖤', key: 'cl.6.06.suicide' },
+    ] },
+  { v: '6.05', date: '2026-10-24', items: [
+      { tag: 'fix', icon: '🌳', key: 'cl.6.05.panoramaRoot' },
+    ] },
+  { v: '6.04', date: '2026-10-24', items: [
+      { tag: 'fix', icon: '✍️', key: 'cl.6.04.decisionNote' },
+    ] },
+  { v: '6.03', date: '2026-10-24', items: [
+      { tag: 'fix', icon: '👤', key: 'cl.6.03.nameFix' },
+    ] },
+  { v: '6.02', date: '2026-10-24', items: [
+      { tag: 'fix', icon: '📋', key: 'cl.6.02.manageRecords' },
+    ] },
+  { v: '6.01', date: '2026-10-24', items: [
+      { tag: 'fix', icon: '🗑️', key: 'cl.6.01.deleteAll' },
+    ] },
+  { v: '6.00', date: '2026-10-24', items: [
+      { tag: 'fix', icon: '🌐', key: 'cl.6.00.panoramaStack' },
+    ] },
+  { v: '5.99', date: '2026-10-23', items: [
+      { tag: 'fix', icon: '🧬', key: 'cl.5.99.gedcomSource' },
+    ] },
+  { v: '5.98', date: '2026-10-23', items: [
+      { tag: 'fix', icon: '🔖', key: 'cl.5.98.versionSource' },
+    ] },
+  { v: '5.97', date: '2026-10-23', items: [
+      { tag: 'fix', icon: '👥', key: 'cl.5.97.population' },
+    ] },
+  { v: '5.96', date: '2026-10-23', items: [
+      { tag: 'fix', icon: '🖼️', key: 'cl.5.96.certPattern' },
+    ] },
+  { v: '5.95', date: '2026-10-23', items: [
+      { tag: 'fix', icon: 'ℹ️', key: 'cl.5.95.statExplainer' },
+    ] },
+  { v: '5.94', date: '2026-10-23', items: [
+      { tag: 'fix', icon: '📄', key: 'cl.5.94.bornLine' },
+      { tag: 'fix', icon: '🔄', key: 'cl.5.94.swPrecache' },
+    ] },
+  { v: '5.93', date: '2026-10-23', items: [
+      { tag: 'fix', icon: '⏱️', key: 'cl.5.93.doublePrompt' },
+    ] },
+  { v: '5.92', date: '2026-10-23', items: [
+      { tag: 'fix', icon: '✍️', key: 'cl.5.92.reflectionAge' },
+    ] },
+  { v: '5.91', date: '2026-10-23', items: [
+      { tag: 'fix', icon: '📱', key: 'cl.5.91.financeModal' },
+    ] },
+  { v: '5.90', date: '2026-10-23', items: [
+      { tag: 'fix', icon: '❤️', key: 'cl.5.90.healthRange' },
+    ] },
+  { v: '5.89', date: '2026-10-23', items: [
+      { tag: 'fix', icon: '🎲', key: 'cl.5.89.eventCooldown' },
+    ] },
   { v: '5.19', date: '2026-10-18', items: [
       { tag: 'new',    icon: '📲', key: 'cl.5.19.pwa' },
       { tag: 'new',    icon: '🎓', key: 'cl.5.19.edu' },

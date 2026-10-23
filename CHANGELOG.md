@@ -1,6 +1,125 @@
 # born-somewhere 更新日誌
 
-> 從 v1.0 到 v5.19 的版本歷史。完整 in-app 面板見 footer → 「更新說明」。
+> 從 v1.0 至今的版本歷史。完整 in-app 面板見 footer → 「更新說明」。
+
+> **v5.89 → v6.09 的 21 個修正合併報告**：[`evidence/CONSOLIDATED-v5.89-v6.09.md`](evidence/CONSOLIDATED-v5.89-v6.09.md)
+> （每個缺陷的完整推導、原始數據與量測腳本都留有個別證據檔，連結如下）
+
+## v6.09 — 2026-10-24（目前）
+
+**修正**
+- 🌐 **年齡單位改用 `unit.years`**：原本 `${isEn?'yo':'歲'}` 讓英文以外一律顯示中文「歲」，現在 en/ko/ja/fr/th 各自正確（22 處）。→ [證據](evidence/v6.09-age-unit-localisation.md)
+
+## v6.08 — 2026-10-24
+
+**修正**
+- 📇 **出生登記證明改走 i18n**：原本 53 行的函式裡有 22 個硬編碼中英三元運算式，九種語言的完整翻譯一直沒被引用。→ [證據](evidence/v6.08-birth-cert-localisation.md)
+
+## v6.07 — 2026-10-24
+
+**修正**
+- 🙏 **宗教改用各國真實分布**（`c.rel`）：原本 38 個高收入國家的宗教 100% 被記成「無信仰」。→ [證據](evidence/v6.07-religion-real-data.md)
+
+## v6.06 — 2026-10-24
+
+**修正**
+- 🖤 **自殺率終於接上國家差**（`c.sf`）：原本匈牙利（29/10萬）與中國（2/10萬）的自殺權重完全相同。→ [證據](evidence/v6.06-suicide-rate-unused.md)
+
+## v6.05 — 2026-10-24
+
+**修正**
+- 🌳 **家族全景圖不再只畫一個人**：改以親屬最多的一段人生為根，並標示樹的範圍。→ [證據](evidence/v6.05-panorama-single-node.md)
+
+## v6.04 — 2026-10-24
+
+**修正**
+- ✍️ **決定裡玩家自己寫的話，現在會顯示在訃聞的決定清單**（原本存了但永遠看不到）。→ [證據](evidence/v6.04-decision-notes-never-shown.md)
+
+## v6.03 — 2026-10-24
+
+**修正**
+- 👤 書架「檢視」不再印出 `[object Object]`。→ [證據](evidence/v6.03-object-object-name.md)
+
+## v6.02 — 2026-10-24
+
+**修正**
+- 📋 整理紀錄的「檢視」不再無聲無息地失敗（按鈕索引與清單不同步）。→ [證據](evidence/v6.02-stale-index-in-manage-records.md)
+
+## v6.01 — 2026-10-24
+
+**修正**
+- 🗑️ 訃聞的「刪除所有過去的人生」原本整顆是死的（`isEn` 從未宣告，錯誤發生在 `confirm()` 之前）。→ [證據](evidence/v6.01-isEn-undefined-in-wire.md)
+
+## v6.00 — 2026-10-24
+
+**修正**
+- 🌐 全景圖按第二次不再疊出視窗，× 鈕也終於關得掉。→ [證據](evidence/v6.00-panorama-modal-stacking.md)
+
+## v5.99 — 2026-10-23
+
+**修正**
+- 🧬 匯出的 .ged 檔案不再寫著舊專案名 `zu-pu`。→ [證據](evidence/v5.99-gedcom-stale-source-name.md)
+
+## v5.98 — 2026-10-23
+
+**修正**
+- 🔖 五份版本字串統一為單一來源；稽核腳本新增第 6 項版本一致性檢查（負向測試：有漂移 exit 1）。→ [證據](evidence/v5.98-version-drift.md)
+
+## v5.97 — 2026-10-23
+
+**修正**
+- 👥 172 國的人口不再全部小一千倍（`c.pop` 的單位是千人，不是人）。→ [證據](evidence/v5.97-population-unit-bug.md)
+
+## v5.96 — 2026-10-23
+
+**修正**
+- 🖼️ 死亡證書的底紋終於畫得出來（SVG 塞進 `<canvas>` 從來不會顯示）。→ [證據](evidence/v5.96-certificate-guilloche-never-rendered.md)
+
+## v5.95 — 2026-10-23
+
+**修正**
+- ℹ️ 「狀態代表什麼」面板改成描述實際模型（健康與人際兩行描述的是已不存在的公式）。→ [證據](evidence/v5.95-stat-explainer-accuracy.md)
+
+## v5.94 — 2026-10-23
+
+**修正**
+- 📄 訃聞出生欄「2024/女 生」修正（九種語言都壞）。
+- 🔄 Service Worker 預存改為強制繞過 HTTP cache，版本保證機制恢復有效。
+  → [證據](evidence/v5.94-endborn-and-sw-stale-precache.md)
+
+## v5.93 — 2026-10-23
+
+**修正**
+- ⏱️ 同一年不會被連續問兩次（先決策、再財務）。→ [證據](evidence/v5.93-same-year-interruptions.md)
+
+## v5.92 — 2026-10-23
+
+**修正**
+- ✍️ 反思題存進正確的年齡（原本 15 歲寫的話被存成 19 歲）。→ [證據](evidence/v5.92-reflection-saved-at-wrong-age.md)
+
+## v5.91 — 2026-10-23
+
+**修正**
+- 📱 手機上財務視窗不再把自己的標題推出畫面。→ [證據](evidence/v5.91-finance-modal-overflow.md)
+
+## v5.90 — 2026-10-23
+
+**修正**
+- ❤️ 健康值不再溢出到 108，也不再前 31 年完全不動。→ [證據](evidence/v5.90-health-overflow-and-dead-bar.md)
+
+## v5.89 — 2026-10-23
+
+**修正**
+- 🎲 老年旁白不再輪流：加 6 年重播冷卻，並補滿被掏空的年齡層。→ [證據](evidence/v5.89-event-repetition.md)
+
+## v5.20 – v5.88 — 2026-10-18 ~ 10-23
+
+這一段沒有逐版條目。重要里程碑：
+
+- **v5.55** 通用決策系統：24 個決策事件、13 種大決定 / 3 種家人共決 / 8 種小選擇。→ [證據](evidence/v5.55-decisions-verification.md)
+- **v5.59** 修掉四個死值（教育、工作、收入、幸福只會被單向推動）。→ [證據](evidence/v5.59-education-employment-income-fix.md)
+- **v5.85** 決策事件可達性：600 人生實測 23/24 觸發（`de_conscription` 依設計不觸發）。→ [證據](evidence/v5.85-decision-reachability.md)
+- **v5.88** 172 國全人口經濟校準。→ [證據](evidence/v5.88-full-population-calibration.md)
 
 ## v5.19 — 2026-10-18（目前）
 
