@@ -23,7 +23,7 @@ let CACHE = { countries: null, i18n: null };
    結果是：更新說明對外顯示 v5.19.0、匯出的出生卡寫 v5.12、匯出的生命證書寫 v5.2，
    而玩家用的其實是 v5.97。分享圖是別人會看到的東西，寫錯版本特別明顯。
    現在這兩張圖都改讀 APP_VERSION；`python3 i18n_audit.py` 第 6 項檢查會擋住以後再漂。 */
-const APP_VERSION = '6.02.0';
+const APP_VERSION = '6.03.0';
 const APP_BUILD = '2026-10-23';
 
 const STATE = {
@@ -4503,6 +4503,20 @@ function showShortcutsModal() {
   modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
 }
 
+/* v6.03：取一個人類看得懂的名字。
+   完整人生的 life.name 是物件 {last, first, full, full_en}，
+   而書架摘要殼（v5.82 以前、沒有 .full 的那種）與部分紀錄裡的 name 是字串。
+   兩邊都會流到同一段顯示程式碼，舊碼直接 escapeHtml(life.name) ——
+   物件會被 String() 變成 "[object Object]"，於是書架的「檢視」視窗
+   標題和家族樹裡的自己都印成「🇭🇰 [object Object]」。
+   這個檔案裡 name?.full || name?.full_en 這段已經重複出現 8 次，
+   集中成一個函式之後，兩種形狀都處理得掉。 */
+function displayNameOf(x, fallback = '') {
+  if (!x) return fallback;
+  if (typeof x === 'string') return x;
+  return x.full || x.full_en || fallback;
+}
+
 function showLifeModal(rec) {
   // 移除舊的
   document.querySelector('#lifeModal')?.remove();
@@ -4517,7 +4531,7 @@ function showLifeModal(rec) {
   modal.innerHTML = `
     <div class="life-modal-card">
       <button class="lm-close" type="button">×</button>
-      <h2 class="lm-title">${c?.flag || ''} ${escapeHtml(life.name)}</h2>
+      <h2 class="lm-title">${c?.flag || ''} ${escapeHtml(displayNameOf(life.name, rec.name || '—'))}</h2>
       <div class="lm-meta">
         <span>${life.year || ''} → ${life.year + life.yearOffset || ''}</span>
         <span>·</span>
@@ -4550,7 +4564,7 @@ function renderLifeTreeInto(life, container) {
   // 重建 people + edges（用該 life 為中心）
   const self = {
     id: 'self_life',
-    name: life.name,
+    name: displayNameOf(life.name, ''),
     sex: life.sex,
     country: life.country,
     countryData: countryById(life.country),
