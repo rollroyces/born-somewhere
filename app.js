@@ -2292,6 +2292,10 @@ function savePauseQuote() {
 }
 
 /* v5.14：每年自動生成事件 — 依年齡/國家/焦點產生有意義的隨機事件 */
+// v5.89：可重複小事件的重播冷卻（年）。
+// 6 是量測出來的：冷卻 4 年時老年仍有大量四年內重複，6 年則能把同一句
+// 推到「玩家已經忘了上一次是幾歲」的位置，同時還能讓池子撐住不空掉。
+const REP_COOLDOWN = 6;
 function generateYearlyEvent(life) {
   const age = life.age;
   const c = life.countryData;
@@ -2300,62 +2304,102 @@ function generateYearlyEvent(life) {
   const focus = life.focusThisYear;
   // 隨機事件池（依年齡分層）
   const events = [];
+// v5.89：每個年齡層的池子都補到「夠撐過整個年齡層」的大小。
+  // 舊版 65+ 只有 5 條、其中 4 條可重複，於是二十幾年的老年就在那幾條裡輪流；
+  // 實測 60 條人生的最後 20 年有 45% 的 feed 是看過的舊句、376 次「四年內又見同一句」。
+  // 目標：池子大小 ≈ 該年齡層年數 ÷ 2，讓每句最多出現兩三次而且隔很久才再出現。
   if (age < 5) {
     // 幼兒期
     events.push({ weight: 30, icon: '👶', en: 'Learned to walk', zh: '學會走路' });
     events.push({ weight: 20, icon: '🗣️', en: 'First word spoken', zh: '說出第一個字' });
     events.push({ weight: 15, icon: '🤒', en: 'Had a fever', zh: '發燒了', rep: true });
     events.push({ weight: 10, icon: '👨‍👩‍👧', en: 'Started recognizing family', zh: '開始認得家人' });
+    events.push({ weight: 12, icon: '🍼', en: 'Started eating solid food', zh: '開始吃副食品', rep: true });
+    events.push({ weight: 10, icon: '🧸', en: 'Clung to a stuffed toy', zh: '抱著玩偶不放手', rep: true });
+    events.push({ weight: 10, icon: '🎨', en: 'Scribbled on the floor', zh: '拿蠟筆在地上畫', rep: true });
+    events.push({ weight: 8, icon: '😴', en: 'Slept through the night', zh: '第一次睡過整夜', rep: true });
   } else if (age < 13) {
     // 學齡
     events.push({ weight: 25, icon: '📚', en: 'Made a new friend', zh: '交了新朋友', rep: true });
     events.push({ weight: 20, icon: '🏆', en: 'Won a small competition', zh: '在小比賽得名次' });
-    events.push({ weight: 15, icon: '🤕', en: 'Got injured playing', zh: '玩耍時受傷' });
-    events.push({ weight: 10, icon: '📖', en: 'Discovered a favorite book', zh: '發現一本喜歡的書' });
+    events.push({ weight: 15, icon: '🤕', en: 'Got injured playing', zh: '玩耍時受傷', rep: true });
+    events.push({ weight: 10, icon: '📖', en: 'Discovered a favorite book', zh: '發現一本喜歡的書', rep: true });
     events.push({ weight: 10, icon: '🤒', en: 'Caught a cold', zh: '感冒了', rep: true });
-    if (focus === 'study') events.push({ weight: 30, icon: '📝', en: 'Got good grades', zh: '成績進步了' });
+    events.push({ weight: 12, icon: '🎒', en: 'Joined a school club', zh: '加入學校社團', rep: true });
+    events.push({ weight: 12, icon: '🧮', en: 'Got tutoring after school', zh: '課後補習', rep: true });
+    events.push({ weight: 10, icon: '🗺️', en: 'Went on a class trip', zh: '班級旅行', rep: true });
+    events.push({ weight: 8, icon: '✏️', en: 'Finished a big project', zh: '做完一件大作品', rep: true });
+    if (focus === 'study') events.push({ weight: 30, icon: '📝', en: 'Got good grades', zh: '成績進步了', rep: true });
   } else if (age < 18) {
     // 青少年
-    events.push({ weight: 25, icon: '🎵', en: 'Discovered favorite music', zh: '發現喜歡的音樂' });
+    events.push({ weight: 25, icon: '🎵', en: 'Discovered favorite music', zh: '發現喜歡的音樂', rep: true });
     events.push({ weight: 20, icon: '💔', en: 'First heartbreak', zh: '初戀破滅' });
-    events.push({ weight: 15, icon: '🎮', en: 'Got into gaming', zh: '迷上電玩' });
-    events.push({ weight: 15, icon: '🚲', en: 'Biked somewhere new', zh: '騎腳踏車去新地方' });
+    events.push({ weight: 15, icon: '🎮', en: 'Got into gaming', zh: '迷上電玩', rep: true });
+    events.push({ weight: 15, icon: '🚲', en: 'Biked somewhere new', zh: '騎腳踏車去新地方', rep: true });
     events.push({ weight: 10, icon: '🤒', en: 'Got sick for a week', zh: '病了一週', rep: true });
+    events.push({ weight: 12, icon: '🏀', en: 'Joined a school team', zh: '加入校隊', rep: true });
+    events.push({ weight: 10, icon: '✏️', en: 'Started a diary', zh: '開始寫日記', rep: true });
+    events.push({ weight: 10, icon: '💬', en: 'Got a first part-time job', zh: '第一次打工', rep: true });
+    events.push({ weight: 8, icon: '🎤', en: 'Performed on a stage', zh: '上台表演', rep: true });
     if (focus === 'study') events.push({ weight: 30, icon: '🎓', en: 'Won academic award', zh: '獲得學業獎' });
   } else if (age < 30) {
     // 青年
     events.push({ weight: 25, icon: '🎓', en: 'Graduated', zh: '畢業了' });
     events.push({ weight: 20, icon: '💼', en: 'Got first job', zh: '找到第一份工作' });
-    events.push({ weight: 20, icon: '❤️', en: 'Fell in love', zh: '戀愛了' });
+    events.push({ weight: 20, icon: '❤️', en: 'Fell in love', zh: '戀愛了', rep: true });
     events.push({ weight: 15, icon: '🏃', en: 'Ran a marathon', zh: '跑了馬拉松' });
     events.push({ weight: 15, icon: '🚗', en: 'Got driver license', zh: '考了駕照' });
-    events.push({ weight: 10, icon: '🤒', en: 'Had health scare', zh: '健康出了點狀況' });
-    if (focus === 'work') events.push({ weight: 25, icon: '📈', en: 'Got promoted', zh: '升職了' });
+    events.push({ weight: 10, icon: '🤒', en: 'Had health scare', zh: '健康出了點狀況', rep: true });
+    events.push({ weight: 14, icon: '✈️', en: 'Travelled alone for the first time', zh: '第一次一個人出遠門', rep: true });
+    events.push({ weight: 12, icon: '🎯', en: 'Set a long-term goal', zh: '立下一個長遠目標', rep: true });
+    events.push({ weight: 10, icon: '📸', en: 'Posted your first photo online', zh: '第一次在網上 po 照片', rep: true });
+    if (focus === 'work') events.push({ weight: 25, icon: '📈', en: 'Got promoted', zh: '升職了', rep: true });
   } else if (age < 50) {
     // 中年
     events.push({ weight: 20, icon: '💍', en: 'Got married', zh: '結婚了' });
-    events.push({ weight: 20, icon: '👶', en: 'Had a child', zh: '有了孩子' });
+    events.push({ weight: 20, icon: '👶', en: 'Had a child', zh: '有了孩子', rep: true });
     events.push({ weight: 15, icon: '🏠', en: 'Bought a home', zh: '買了房子' });
-    events.push({ weight: 15, icon: '📈', en: 'Got big promotion', zh: '大幅晉升' });
+    events.push({ weight: 15, icon: '📈', en: 'Got big promotion', zh: '大幅晉升', rep: true });
     events.push({ weight: 15, icon: '🚗', en: 'Bought a car', zh: '買了車' });
-    events.push({ weight: 10, icon: '🤒', en: 'Had health issue', zh: '健康出了狀況' });
+    events.push({ weight: 10, icon: '🤒', en: 'Had health issue', zh: '健康出了點狀況', rep: true });
     events.push({ weight: 5, icon: '💔', en: 'Got divorced', zh: '離婚了' });
+    events.push({ weight: 12, icon: '🧾', en: 'Started a project outside work', zh: '開始做業外專案', rep: true });
+    events.push({ weight: 10, icon: '📚', en: 'Took up a new hobby', zh: '培養新嗜好', rep: true });
+    events.push({ weight: 10, icon: '🌍', en: 'Took a work trip abroad', zh: '因公出國', rep: true });
+    events.push({ weight: 8, icon: '🏥', en: 'Started a regular checkup habit', zh: '開始定期健康檢查', rep: true });
+    events.push({ weight: 8, icon: '🎓', en: 'Took a night class', zh: '去上了夜間進修', rep: true });
     if (focus === 'family') events.push({ weight: 25, icon: '👨‍👩‍👧', en: 'Family trip', zh: '家族旅遊', rep: true });
   } else if (age < 65) {
     // 中老年
-    events.push({ weight: 25, icon: '🎂', en: 'Child graduated', zh: '孩子畢業了' });
+    events.push({ weight: 25, icon: '🎂', en: 'Child graduated', zh: '孩子畢業了', rep: true });
     events.push({ weight: 20, icon: '🏖', en: 'Took vacation', zh: '去度假', rep: true });
-    events.push({ weight: 20, icon: '🎉', en: 'Grandchild born', zh: '孫子女出生' });
+    events.push({ weight: 20, icon: '🎉', en: 'Grandchild born', zh: '孫子女出生', rep: true });
     events.push({ weight: 15, icon: '🤒', en: 'Health checkup', zh: '健康檢查', rep: true });
-    events.push({ weight: 10, icon: '🎓', en: 'Went back to school', zh: '重返校園' });
-    events.push({ weight: 10, icon: '💔', en: 'Lost a loved one', zh: '失去摯愛' });
+    events.push({ weight: 10, icon: '🎓', en: 'Went back to school', zh: '重返校園', rep: true });
+    events.push({ weight: 10, icon: '💔', en: 'Lost a loved one', zh: '失去摯愛', rep: true });
+    events.push({ weight: 12, icon: '🧓', en: 'The roles reversed with a parent', zh: '與父母的角色對調', rep: true });
+    events.push({ weight: 10, icon: '🐕', en: 'Adopted a pet', zh: '養了一隻寵物', rep: true });
+    events.push({ weight: 10, icon: '🍳', en: 'Started cooking at home', zh: '開始在家自己煮', rep: true });
+    events.push({ weight: 10, icon: '📱', en: 'Learned to use a smartphone', zh: '學會用智慧手機', rep: true });
+    events.push({ weight: 8, icon: '👩‍👦', en: 'Helped the kids with homework', zh: '幫孩子看功課', rep: true });
+    events.push({ weight: 8, icon: '💰', en: 'Started thinking about retirement', zh: '開始盤算退休' });
   } else {
-    // 老年
+    // 老年 — 這一段最長，池子也給得最多
     events.push({ weight: 25, icon: '👨‍👩‍👧', en: 'Grandchildren visit', zh: '孫子女來訪', rep: true });
     events.push({ weight: 20, icon: '🌳', en: 'Walked in the park', zh: '公園散步', rep: true });
     events.push({ weight: 20, icon: '📖', en: 'Read a great book', zh: '讀了一本好書', rep: true });
-    events.push({ weight: 15, icon: '👴', en: 'Saw grandchild grow', zh: '看孫子女長大' });
+    events.push({ weight: 15, icon: '👴', en: 'Saw grandchild grow', zh: '看孫子女長大', rep: true });
     events.push({ weight: 10, icon: '🏥', en: 'Had health check', zh: '做了健康檢查', rep: true });
+    events.push({ weight: 12, icon: '🪑', en: 'Sat on a bench watching the street', zh: '坐在長椅上看街景', rep: true });
+    events.push({ weight: 12, icon: '🍵', en: 'Had tea with an old friend', zh: '和老友喝下午茶', rep: true });
+    events.push({ weight: 10, icon: '🎍', en: 'Took up gardening', zh: '開始種花', rep: true });
+    events.push({ weight: 10, icon: '🧓', en: 'Joined a community class for seniors', zh: '參加長者社區課', rep: true });
+    events.push({ weight: 10, icon: '🕺', en: 'Danced at a community night', zh: '社區晚會上跳了舞', rep: true });
+    events.push({ weight: 10, icon: '📞', en: 'Called up an old friend', zh: '打電話給老朋友', rep: true });
+    events.push({ weight: 8, icon: '🧶', en: 'Learned to knit', zh: '學會了織毛衣', rep: true });
+    events.push({ weight: 8, icon: '✍️', en: 'Started writing a memoir', zh: '開始寫回憶錄', rep: true });
+    events.push({ weight: 8, icon: '🕊️', en: 'Went to a funeral', zh: '參加了一場喪禮', rep: true });
+    events.push({ weight: 8, icon: '🕯️', en: 'Kept an old photo on the shelf', zh: '把舊照片擺在架上', rep: true });
   }
   // 加國家特殊事件
   if (c.wh > 0.5 && Math.random() < c.wh * 0.1) {
@@ -2363,21 +2407,37 @@ function generateYearlyEvent(life) {
   }
   // v5.62：抽權重前先濾掉「一生只該發生一次」而且已經發生過的事件，
   // 否則「畢業了」「有了孩子」「結婚了」會在一生裡重複三四次，看起來像雜訊。
-  // 標了 rep: true 的（感冒、旅行、健康檢查…）本來就是日常，可以重複。
   // 若這個年齡層的一次性事件全用完了，就寧可那年沒有小事件 ——
   // 寧靜也不要「同一生結了五次婚、離了三次婚」。
+  //
+  // v5.89：再補一層冷卻。rep: true 只代表「可以重複」，不代表「可以年年重複」——
+  // 舊版 65+ 的五條裡有四條是 rep，於是「公園散步」「孫子女來訪」會連著好幾年
+  // 輪流出現，老年二十幾年看起來像同一句話的不同年份。
+  // 規定：可重複事件上一次出現之後要隔 REP_COOLDOWN 年才會再被抽到。
   // 用陣列不用 Set：整段人生會被 lifeExport 整包 JSON.stringify，Set 會變成 {}
   const seen = life.seenOnce || (life.seenOnce = []);
-  const pool = events.filter(e => e.rep || !seen.includes(e.en));
+  const repSeen = life.repSeen || (life.repSeen = []);
+  const lastRep = {};
+  for (const r of repSeen) lastRep[r.en] = r.age;
+  const pool = events.filter(e => {
+    if (!e.rep) return !seen.includes(e.en);
+    const last = lastRep[e.en];
+    return last === undefined || (age - last) >= REP_COOLDOWN;
+  });
   if (!pool.length) return null;
   const total = pool.reduce((s, e) => s + e.weight, 0);
   let r = Math.random() * total;
+  const commit = (e) => {
+    if (!e) return;
+    if (e.rep) repSeen.push({ en: e.en, age });
+    else seen.push(e.en);
+  };
   for (const e of pool) {
     r -= e.weight;
-    if (r <= 0) { if (!e.rep) seen.push(e.en); return e; }
+    if (r <= 0) { commit(e); return e; }
   }
   const first = pool[0];
-  if (first && !first.rep) seen.push(first.en);
+  commit(first);
   return first;
 }
 
