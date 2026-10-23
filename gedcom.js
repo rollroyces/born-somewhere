@@ -88,7 +88,9 @@
     }
 
     ln(0, 'HEAD');
-    ln(1, 'SOUR', 'zu-pu');
+    // v5.99：這裡原本寫 'zu-pu'（本專案改名前的舊名），會原樣出現在玩家匯出的
+    // .ged 檔案裡。族譜軟體會把 SOUR 顯示為「來源」，所以等於每份匯出都掛著舊專案名。
+    ln(1, 'SOUR', 'born-somewhere');
     ln(1, 'GEDC');
     ln(2, 'VERS', '5.5.1');
     ln(2, 'FORM', 'LINEAGE-LINKED');

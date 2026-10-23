@@ -23,7 +23,7 @@ let CACHE = { countries: null, i18n: null };
    結果是：更新說明對外顯示 v5.19.0、匯出的出生卡寫 v5.12、匯出的生命證書寫 v5.2，
    而玩家用的其實是 v5.97。分享圖是別人會看到的東西，寫錯版本特別明顯。
    現在這兩張圖都改讀 APP_VERSION；`python3 i18n_audit.py` 第 6 項檢查會擋住以後再漂。 */
-const APP_VERSION = '5.98.0';
+const APP_VERSION = '5.99.0';
 const APP_BUILD = '2026-10-23';
 
 const STATE = {
