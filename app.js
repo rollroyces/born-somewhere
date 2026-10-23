@@ -13,6 +13,19 @@ let I18N = {};
 let LANG = 'zh-Hant';
 let CACHE = { countries: null, i18n: null };
 
+/* v5.98：單一版本來源。
+   原本有五份各自硬編碼的版本字串，而且全部漂移了：
+     index.html footer        v5.97   （每次上線手動維護）
+     sw.js CACHE_NAME/VERSION v5.97   （同上）
+     app.js APP_VERSION       5.19.0  ← 更新說明標題、意見回報都讀這個
+     分享出生卡頁尾            v5.12   ← 匯出圖上的字
+     生命證書頁尾              v5.2    ← 更舊
+   結果是：更新說明對外顯示 v5.19.0、匯出的出生卡寫 v5.12、匯出的生命證書寫 v5.2，
+   而玩家用的其實是 v5.97。分享圖是別人會看到的東西，寫錯版本特別明顯。
+   現在這兩張圖都改讀 APP_VERSION；`python3 i18n_audit.py` 第 6 項檢查會擋住以後再漂。 */
+const APP_VERSION = '5.98.0';
+const APP_BUILD = '2026-10-23';
+
 const STATE = {
   view: 'intro',
   era: 'now',          // 'now' | 'past' | 'future'
@@ -5507,8 +5520,7 @@ init();
    contact / PWA install）+ 教學版模式 + 版本歷史
    ===================================================================== */
 
-const APP_VERSION = '5.19.0';
-const APP_BUILD = '2026-10-18';
+// v5.98：APP_VERSION / APP_BUILD 已移到檔案最上方，與匯出圖共用同一份。
 
 // 版本歷史（每個版本：v / date / items；每個 item 含 emoji badge + 文字）
 // 為節省空間與維護成本，所有語言文字都用 i18n key；徽章 emoji 是視覺標記。
@@ -6391,7 +6403,7 @@ function downloadLifeCertPNG() {
   svgParts.push(`<text x="${W-110}" y="425" font-size="10" fill="#8C1D3C" text-anchor="middle">${LANG==='en'?'BORN-SOMEWHERE':'選出生地'}</text>`);
   svgParts.push(`<text x="${W-110}" y="440" font-size="8" fill="#8C1D3C" text-anchor="middle">EST. 2024</text>`);
   // 底部
-  svgParts.push(`<text x="40" y="450" font-size="9" fill="#9a8a7a">${LANG==='en'?'Life certificate':'生命證書'} · born-somewhere v5.2 · ${LANG==='en'?'Real statistics':'真實統計'}</text>`);
+  svgParts.push(`<text x="40" y="450" font-size="9" fill="#9a8a7a">${LANG==='en'?'Life certificate':'生命證書'} · born-somewhere v${APP_VERSION} · ${LANG==='en'?'Real statistics':'真實統計'}</text>`);
   svgParts.push(`</svg>`);
   const svgStr = svgParts.join('');
   // 轉成 PNG via canvas
@@ -6482,7 +6494,7 @@ function downloadBirthCardPNG() {
   parts.push(`<text x="${W-110}" y="${H-22}" font-size="8" fill="#8C1D3C" text-anchor="middle" font-weight="bold">BORN-SOMEWHERE</text>`);
   parts.push(`<text x="${W-110}" y="${H-12}" font-size="7" fill="#8C1D3C" text-anchor="middle">EST. 2024</text>`);
   // 底部 watermark
-  parts.push(`<text x="40" y="${H-12}" font-size="8" fill="#9a8a7a">${isEn?'Birth certificate · born-somewhere v5.12':'出生登記 · born-somewhere v5.12'} · ${isEn?'Real statistics':'真實統計'}</text>`);
+  parts.push(`<text x="40" y="${H-12}" font-size="8" fill="#9a8a7a">${isEn?'Birth certificate · born-somewhere v'+APP_VERSION:'出生登記 · born-somewhere v'+APP_VERSION} · ${isEn?'Real statistics':'真實統計'}</text>`);
   parts.push(`</svg>`);
   const svgStr = parts.join('');
   const blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
