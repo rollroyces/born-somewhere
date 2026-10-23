@@ -3377,7 +3377,12 @@ function renderCountryStats() {
   // 16 個統計指標（依國家資料）
   const rows = [
     [isEn?'Annual births':'每年出生人數', Math.round(c.births || 240000).toLocaleString() + (isEn?' people':'人')],
-    [isEn?'Population':'人口', ((c.pop || 5000000)/1000000).toFixed(1) + (isEn?'M people':'百萬人')],
+    // v5.97：c.pop 的單位是「千人」，不是「人」。
+// 證據：172 國的 c.pop 加總 = 8,078,638，若視為千人剛好是 80.8 億（世界人口）；
+// 若視為「人」則只有 0.0081 億。台灣 c.pop = 23317 = 2331.7 萬人。
+// 舊碼除以 1,000,000，於是台灣顯示「0.0 百萬人」、印度「1.4 百萬人」（實際 1438.1）。
+// 另外預設值 5000000 也跟錯單位，應該是 5000（千人）。
+[isEn?'Population':'人口', ((c.pop || 5000)/1000).toFixed(1) + (isEn?'M people':'百萬人')],
     [isEn?'Life expectancy F/M':'平均壽命 女/男', ((c.le || 70) + (isEn?'/':'/') + Math.max(0,(c.le||70) - 4)) + (isEn?' yrs':'歲')],
     [isEn?'Under-5 mortality':'5歲以下死亡率', ((c.u5 || 25) / 1000 * 100).toFixed(1) + '%'],
     [isEn?'GDP per capita (PPP)':'人均GDP（PPP）', '$' + Math.round(c.ppp || 10000).toLocaleString()],
