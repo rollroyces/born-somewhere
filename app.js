@@ -23,7 +23,7 @@ let CACHE = { countries: null, i18n: null };
    結果是：更新說明對外顯示 v5.19.0、匯出的出生卡寫 v5.12、匯出的生命證書寫 v5.2，
    而玩家用的其實是 v5.97。分享圖是別人會看到的東西，寫錯版本特別明顯。
    現在這兩張圖都改讀 APP_VERSION；`python3 i18n_audit.py` 第 6 項檢查會擋住以後再漂。 */
-const APP_VERSION = '6.01.0';
+const APP_VERSION = '6.02.0';
 const APP_BUILD = '2026-10-23';
 
 const STATE = {
@@ -3812,6 +3812,8 @@ function renderShelf() {
 /* v5.23：整理紀錄 modal — 列出 / 刪除 / 重新展開 */
 function showManageRecordsModal() {
   const lives = loadPastLives();
+  // v6.02：按鈕的 data-i 指的是這份快照的位置，點擊時要靠 ts 找回現存位置。
+  const livesSnapshot = lives.slice();
   document.querySelector('#manageModal')?.remove();
   const isEn = LANG === 'en';
   const modal = document.createElement('div');
@@ -3843,9 +3845,25 @@ function showManageRecordsModal() {
   modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
   modal.querySelectorAll('button[data-act]').forEach(btn => {
     btn.addEventListener('click', () => {
-      const idx = +btn.dataset.i;
+      const renderIdx = +btn.dataset.i;
       const act = btn.dataset.act;
       const ls = loadPastLives();
+      // v6.02：原本直接用 data-i 當 loadPastLives() 的索引。問題是按鈕的索引是
+      // 「渲染當下」定下的，但 ls 是「點擊當下」才重新讀的。
+      // 只要兩者之間紀錄數量變了（例如在另一處刪掉、或用另一個分頁刪掉），
+      // idx 就會指向不存在的位置，ls[idx] 是 undefined，
+      // showLifeModal(undefined) 會丟 TypeError，按了什麼反應都沒有。
+      // 實測：渲染時 4 筆、點擊前剩 2 筆，按 data-i="3" → 無聲無息。
+      //
+      // 修法：用紀錄唯一的 ts 找回它在現存清單裡的位置，找不到就代表這筆已經被刪了。
+      const target = livesSnapshot[renderIdx];
+      let idx = target ? ls.findIndex(r => r.ts === target.ts) : -1;
+      if (!target || idx < 0) {
+        modal.remove();
+        renderShelf();
+        toast(isEn ? 'This record has already been deleted' : '這段紀錄已經被刪除了');
+        return;
+      }
       if (act === 'show') showLifeModal(ls[idx]);
       else if (act === 'del') {
         ls.splice(idx, 1);
