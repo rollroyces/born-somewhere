@@ -90,11 +90,11 @@ def _read(name):
 
 _html, _sw, _app = _read('index.html'), _read('sw.js'), _read('app.js')
 
-_m = _re2.search(r'class="footer-ver">v(5\.\d+)', _html)
+_m = _re2.search(r'class="footer-ver">v(\d+\.\d+)', _html)
 _html_v = _m.group(1) if _m else None
-_m = _re2.search(r"const APP_VERSION = '(5\.\d+\.\d+)'", _app)
+_m = _re2.search(r"const APP_VERSION = '(\d+\.\d+\.\d+)'", _app)
 _app_v = _m.group(1) if _m else None
-_m = _re2.search(r"CACHE_NAME = 'born-somewhere-v(5\.\d+)'", _sw)
+_m = _re2.search(r"CACHE_NAME = 'born-somewhere-v(\d+\.\d+)'", _sw)
 _sw_v = _m.group(1) if _m else None
 
 _versions = {'index.html footer': _html_v, 'app.js APP_VERSION': _app_v,

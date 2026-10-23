@@ -23,7 +23,7 @@ let CACHE = { countries: null, i18n: null };
    結果是：更新說明對外顯示 v5.19.0、匯出的出生卡寫 v5.12、匯出的生命證書寫 v5.2，
    而玩家用的其實是 v5.97。分享圖是別人會看到的東西，寫錯版本特別明顯。
    現在這兩張圖都改讀 APP_VERSION；`python3 i18n_audit.py` 第 6 項檢查會擋住以後再漂。 */
-const APP_VERSION = '5.99.0';
+const APP_VERSION = '6.00.0';
 const APP_BUILD = '2026-10-23';
 
 const STATE = {
@@ -4498,7 +4498,7 @@ function showLifeModal(rec) {
   modal.className = 'life-modal';
   modal.innerHTML = `
     <div class="life-modal-card">
-      <button class="lm-close" onclick="document.getElementById('lifeModal').remove()">×</button>
+      <button class="lm-close" type="button">×</button>
       <h2 class="lm-title">${c?.flag || ''} ${escapeHtml(life.name)}</h2>
       <div class="lm-meta">
         <span>${life.year || ''} → ${life.year + life.yearOffset || ''}</span>
@@ -4517,6 +4517,8 @@ function showLifeModal(rec) {
     </div>
   `;
   document.body.appendChild(modal);
+  // v6.00：× 移除「自己」這個 modal，不依賴 getElementById 的文件順序
+  modal.querySelector('.lm-close')?.addEventListener('click', () => modal.remove());
   modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
   // 渲染該生命的 tree（如果 family 存在）
   if (life.family) {
@@ -4600,6 +4602,14 @@ function renderMiniTree(container, rootId, maxGen, people, edges) {
 }
 
 function renderPanorama(lives) {
+  // v6.00：先移除既有的 lifeModal。
+  // 舊碼直接 append，沒有這一行 —— 玩家每按一次「家族全景圖」就多疊一層視窗，
+  // 兩個視窗 z-index 相同、完全重疊。更糟的是 × 鈕寫的是
+  // document.getElementById('lifeModal').remove()，getElementById 回傳的是
+  // 文件順序裡「第一個」，也就是被压在下面那個 ——
+  // 實測：按兩次全景圖後點 ×，底下那個被移除、眼前這個還在，× 鈕看起來沒反應。
+  // showLifeModal() 本來就有這行移除，這裡是漏掉的。
+  document.querySelector('#lifeModal')?.remove();
   // 合併多段人生的 family，找出共同祖先
   // 合併邏輯：同一個人以 name+birthYear+deathYear 為 key
   const allPeople = {};
@@ -4669,7 +4679,7 @@ function renderPanorama(lives) {
   modal.className = 'life-modal';
   modal.innerHTML = `
     <div class="life-modal-card life-modal-wide">
-      <button class="lm-close" onclick="document.getElementById('lifeModal').remove()">×</button>
+      <button class="lm-close" type="button">×</button>
       <h2 class="lm-title">🌐 ${t('shelf.panorama') || '家族全景圖'}</h2>
       <p class="muted">${t('shelf.panoramaSub') || '合併 ' + lives.length + ' 段人生的族譜。共同祖先以紅框標示。'}</p>
       ${commonAncestors.length ? `<div class="panorama-common"><b>${t('shelf.commonAncestors') || '共同親屬'}：</b> ${commonAncestors.map(c => escapeHtml(c.name)).join('、')}</div>` : `<div class="panorama-common"><span class="muted">${t('shelf.noCommon') || '無共同親屬'}</span></div>`}
@@ -4677,6 +4687,8 @@ function renderPanorama(lives) {
     </div>
   `;
   document.body.appendChild(modal);
+  // v6.00：× 移除「自己」這個 modal，不依賴 getElementById 的文件順序
+  modal.querySelector('.lm-close')?.addEventListener('click', () => modal.remove());
   modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
   renderMiniTree($('#lifeTree'), selfNodes[0].id, 2, allPeople, allEdges);
   setTimeout(() => {
