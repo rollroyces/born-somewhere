@@ -1962,7 +1962,15 @@ function tick() {
       applyInvestmentReturn();                            // 投資照跑，不影響玩家資產
     } else {
       STATE.life.financeModalShown.push(STATE.life.age);
-      setTimeout(() => showFinanceModal(), 100);
+      // v5.93：排程時判斷 STATE.paused 是不夠的 —— 這裡到實際開窗之間隔了 100ms，
+      // 決策視窗正是在這 100ms 裡被 tryTriggerDecision 打開的（v5.84 註解已記錄這個時序）。
+      // 實測 43 條人生有 25 次「同一年先決策、再財務」連續兩次打斷。
+      // 所以真正開窗前再看一次：決策已經開著就放棄財務，這年不要再擠玩家。
+      setTimeout(() => {
+        const dm = document.getElementById('decisionModal');
+        if (dm && !dm.hasAttribute('hidden')) return;
+        showFinanceModal();
+      }, 100);
     }
   }
   // v5.55：通用決策 — 在每年 tick 末尾試一個未觸發過的事件
