@@ -23,7 +23,7 @@ let CACHE = { countries: null, i18n: null };
    結果是：更新說明對外顯示 v5.19.0、匯出的出生卡寫 v5.12、匯出的生命證書寫 v5.2，
    而玩家用的其實是 v5.97。分享圖是別人會看到的東西，寫錯版本特別明顯。
    現在這兩張圖都改讀 APP_VERSION；`python3 i18n_audit.py` 第 6 項檢查會擋住以後再漂。 */
-const APP_VERSION = '6.07.0';
+const APP_VERSION = '6.08.0';
 const APP_BUILD = '2026-10-23';
 
 const STATE = {
@@ -2856,17 +2856,17 @@ function renderCountryCompare() {
       </tr></thead>
       <tbody>
         <tr>
-          <td class="cmp-k">${isEn ? 'Life expectancy' : '平均壽命'}</td>
+          <td class="cmp-k">${t('intro.bc.le')}</td>
           <td class="cmp-v">${meLe.toFixed(1)} ${isEn ? 'yrs' : '歲'}</td>
           <td class="cmp-v">${rLe.toFixed(1)} ${isEn ? 'yrs' : '歲'}</td>
         </tr>
         <tr>
-          <td class="cmp-k">${isEn ? 'Under-5 mortality' : '5 歲前死亡機率'}</td>
+          <td class="cmp-k">${t('intro.bc.u5')}</td>
           <td class="cmp-v">${fmtPct(meU5)}</td>
           <td class="cmp-v">${fmtPct(rU5)}</td>
         </tr>
         <tr>
-          <td class="cmp-k">${isEn ? 'GDP per capita (PPP)' : '人均 GDP（PPP）'}</td>
+          <td class="cmp-k">${t('intro.bc.ppp')}</td>
           <td class="cmp-v">${fmtMoney(mePpp)}</td>
           <td class="cmp-v">${fmtMoney(rPpp)}</td>
         </tr>
@@ -2879,7 +2879,6 @@ function renderCountryCompare() {
 /* v5.19：完整出生登記卡 — 1in8b.life 風格 */
 function buildBirthCertCard(c, life) {
   if (!c || !life) return '';
-  const isEn = LANG === 'en';
   const loc = localize(c);
   const fam = life.family || {};
   const father = fam.parents?.find(p => p.sex === 'M');
@@ -2890,42 +2889,42 @@ function buildBirthCertCard(c, life) {
   const housing = (() => {
     const isRural = (life.stats.birthPlaceType === 'rural');
     if (isRural) {
-      const typ = (c.agr || 30) > 50 ? (isEn ? 'Farm' : '農舍')
-                : (c.agr || 30) > 20 ? (isEn ? 'Village house' : '村莊平房')
-                : (isEn ? 'Suburban house' : '郊區住宅');
+      const typ = (c.agr || 30) > 50 ? t('intro.bc.housing.farm')
+                : (c.agr || 30) > 20 ? t('intro.bc.housing.village')
+                : t('intro.bc.housing.suburban');
       return typ;
     }
     // 城市
-    if ((c.ppp || 0) > 30000) return isEn ? 'Modern apartment' : '現代公寓';
-    if ((c.ppp || 0) > 10000) return isEn ? 'Apartment block' : '公寓大樓';
-    return isEn ? 'Slum / informal settlement' : '貧民窟／非正式住宅';
+    if ((c.ppp || 0) > 30000) return t('intro.bc.housing.modern');
+    if ((c.ppp || 0) > 10000) return t('intro.bc.housing.block');
+    return t('intro.bc.housing.slum');
   })();
   const sexLabel = life.sex === 'M' ? t('sex.male') : t('sex.female');
   const yr = life.year + life.yearOffset;
   const u5pct = ((c.u5 || 0) / 1000 * 100);
   return `
-    <div class="bc-stamp">${isEn ? 'OFFICIAL BIRTH REGISTRATION' : '出 生 登 記 證 明'}</div>
+    <div class="bc-stamp">${t('intro.bc.stamp')}</div>
     <div class="bc-header">
       <div class="bc-flag">${c.flag}</div>
       <div class="bc-name">${escapeHtml(loc.name)}</div>
       <div class="bc-iso">${c.id}</div>
     </div>
-    <div class="bc-reg">${isEn ? 'Reg. No.' : '登記編號'}：<b>${escapeHtml(life.regNumber || (c.id + '-' + yr + '-0000000'))}</b></div>
-    <div class="bc-reg">${isEn ? 'Date of Birth' : '出生日期'}：<b>${yr}-01-01</b></div>
+    <div class="bc-reg">${t('intro.bc.regNo')}：<b>${escapeHtml(life.regNumber || (c.id + '-' + yr + '-0000000'))}</b></div>
+    <div class="bc-reg">${t('intro.bc.dob')}：<b>${yr}-01-01</b></div>
     <table class="bc-table">
       <tbody>
-        <tr><td class="bc-k">${isEn ? 'Name' : '姓名'}</td><td class="bc-v">${escapeHtml(life.name.full || life.name.full_en || '—')}</td></tr>
-        <tr><td class="bc-k">${isEn ? 'Sex' : '性別'}</td><td class="bc-v">${sexLabel}</td></tr>
-        <tr><td class="bc-k">${isEn ? 'Country' : '出生國家'}</td><td class="bc-v">${c.flag} ${escapeHtml(loc.name)}</td></tr>
-        <tr><td class="bc-k">${isEn ? 'Place' : '出生地'}</td><td class="bc-v">${life.stats.birthPlaceType === 'rural' ? (isEn ? '🌾 Rural' : '🌾 鄉村') : (isEn ? '🏙️ Urban' : '🏙️ 城市')} · ${escapeHtml(loc.region_name || '')}</td></tr>
-        <tr><td class="bc-k">${isEn ? 'Household income' : '家境'}</td><td class="bc-v">${isEn ? 'Quartile' : '分位'} Q${life.stats.incomeQuartile || 2} / 4</td></tr>
-        <tr><td class="bc-k">${isEn ? "Father's age / job" : '父親年齡／工作'}</td><td class="bc-v">${father ? escapeHtml(father.name) : '—'}${fd.age ? ` · ${fd.age} ${isEn ? 'yrs' : '歲'}` : ''}${fd.job ? ` · ${escapeHtml(fd.job)}` : ''}</td></tr>
-        <tr><td class="bc-k">${isEn ? "Mother's age / job" : '母親年齡／工作'}</td><td class="bc-v">${mother ? escapeHtml(mother.name) : '—'}${md.age ? ` · ${md.age} ${isEn ? 'yrs' : '歲'}` : ''}${md.job ? ` · ${escapeHtml(md.job)}` : ''}</td></tr>
-        <tr><td class="bc-k">${isEn ? "Parents' housing" : '父母住房'}</td><td class="bc-v">${escapeHtml(housing)}</td></tr>
-        <tr><td class="bc-k">${isEn ? 'Religion' : '宗教'}</td><td class="bc-v">${escapeHtml(life.stats.religion || (isEn ? '—' : '未填'))}</td></tr>
-        <tr class="bc-stat"><td class="bc-k">${isEn ? 'Life expectancy' : '平均壽命'}</td><td class="bc-v">${c.le.toFixed(1)} ${isEn ? 'yrs' : '歲'}</td></tr>
-        <tr class="bc-stat"><td class="bc-k">${isEn ? 'Under-5 mortality' : '5 歲前死亡機率'}</td><td class="bc-v">${u5pct < 0.1 ? u5pct.toFixed(2) : u5pct.toFixed(1)}%</td></tr>
-        <tr class="bc-stat"><td class="bc-k">${isEn ? 'GDP per capita (PPP)' : '人均 GDP（PPP）'}</td><td class="bc-v">$${(c.ppp || 0).toLocaleString()}</td></tr>
+        <tr><td class="bc-k">${t('intro.bc.name')}</td><td class="bc-v">${escapeHtml(life.name.full || life.name.full_en || '—')}</td></tr>
+        <tr><td class="bc-k">${t('intro.bc.sex')}</td><td class="bc-v">${sexLabel}</td></tr>
+        <tr><td class="bc-k">${t('intro.bc.country')}</td><td class="bc-v">${c.flag} ${escapeHtml(loc.name)}</td></tr>
+        <tr><td class="bc-k">${t('intro.bc.place')}</td><td class="bc-v">${life.stats.birthPlaceType === 'rural' ? t('intro.bc.rural') : t('intro.bc.urban')} · ${escapeHtml(loc.region_name || '')}</td></tr>
+        <tr><td class="bc-k">${t('intro.bc.income')}</td><td class="bc-v">${t('intro.bc.quartile')} Q${life.stats.incomeQuartile || 2} / 4</td></tr>
+        <tr><td class="bc-k">${t('intro.bc.father')}</td><td class="bc-v">${father ? escapeHtml(father.name) : '—'}${fd.age ? ` · ${fd.age} ${t('unit.years')}` : ''}${fd.job ? ` · ${escapeHtml(fd.job)}` : ''}</td></tr>
+        <tr><td class="bc-k">${t('intro.bc.mother')}</td><td class="bc-v">${mother ? escapeHtml(mother.name) : '—'}${md.age ? ` · ${md.age} ${t('unit.years')}` : ''}${md.job ? ` · ${escapeHtml(md.job)}` : ''}</td></tr>
+        <tr><td class="bc-k">${t('intro.bc.housing')}</td><td class="bc-v">${escapeHtml(housing)}</td></tr>
+        <tr><td class="bc-k">${t('intro.bc.religion')}</td><td class="bc-v">${escapeHtml(life.stats.religion || '—')}</td></tr>
+        <tr class="bc-stat"><td class="bc-k">${t('intro.bc.le')}</td><td class="bc-v">${c.le.toFixed(1)} ${t('unit.years')}</td></tr>
+        <tr class="bc-stat"><td class="bc-k">${t('intro.bc.u5')}</td><td class="bc-v">${u5pct < 0.1 ? u5pct.toFixed(2) : u5pct.toFixed(1)}%</td></tr>
+        <tr class="bc-stat"><td class="bc-k">${t('intro.bc.ppp')}</td><td class="bc-v">$${(c.ppp || 0).toLocaleString()}</td></tr>
       </tbody>
     </table>
   `;
