@@ -23,7 +23,7 @@ let CACHE = { countries: null, i18n: null };
    結果是：更新說明對外顯示 v5.19.0、匯出的出生卡寫 v5.12、匯出的生命證書寫 v5.2，
    而玩家用的其實是 v5.97。分享圖是別人會看到的東西，寫錯版本特別明顯。
    現在這兩張圖都改讀 APP_VERSION；`python3 i18n_audit.py` 第 6 項檢查會擋住以後再漂。 */
-const APP_VERSION = '6.06.0';
+const APP_VERSION = '6.07.0';
 const APP_BUILD = '2026-10-23';
 
 const STATE = {
@@ -1434,10 +1434,38 @@ function pickReligion(c) {
     'na': ['Protestant', 'Catholic', 'Non-religious'],
   };
   const m = isEn ? mapEn : mapZh;
-  return pick(m[r] || (isEn ? ['Non-religious'] : ['無信仰']));
+  const regionFallback = m[r] || (isEn ? ['Non-religious'] : ['無信仰']);
+
+  // v6.07：改用該國真正的宗教分布 c.rel（172 國都有，每列加總 100）。
+  //
+  // 這裡原本只用地區清單「平均」抽，而且地區表根本沒有 'hi' 這個 key ——
+  // countries.json 的 region 欄位是混用的：開發中國家放地理區
+  // (sa/mena/ssa/lac/eap/eca)，已開發國家放收入級距 ('hi' = 高收入，38 國)。
+  // 結果美國、日本、德國、英國、法國、以色列、台灣、韓國… 全部落到
+  // fallback ['無信仰']，也就是說這 38 國出生的人生，宗教 100% 都是「無信仰」。
+  // 實測 TWN / ISR 抽 300 次都是 100% 無信仰，儘管資料裡 TWN 有 44% 佛教。
+  //
+  // 字母對照（以各國實況核對過）：
+  //   F 佛教  B 民間信仰  C 基督宗教  N 無信仰  O 其他
+  //   H 印度教  M 伊斯蘭  S 錫克教  J 猶太教
+  const REL_ZH = { F:'佛教', B:'民間信仰', C:'基督宗教', N:'無信仰', O:'其他',
+                   H:'印度教', M:'伊斯蘭', S:'錫克教', J:'猶太教' };
+  const REL_EN = { F:'Buddhist', B:'Folk religion', C:'Christian', N:'Non-religious', O:'Other',
+                   H:'Hindu', M:'Muslim', S:'Sikh', J:'Jewish' };
+  const relMap = isEn ? REL_EN : REL_ZH;
+  const rel = c.rel;
+  if (!rel) return pick(regionFallback);
+  const parts = String(rel).split(',')
+    .map(s => s.trim())
+    .map(s => ({ name: relMap[s[0]], pct: Number(s.slice(1)) }))
+    .filter(x => x.name && x.pct > 0);
+  if (!parts.length) return pick(regionFallback);
+  const total = parts.reduce((s, x) => s + x.pct, 0);
+  let r2 = Math.random() * total;
+  for (const p of parts) { r2 -= p.pct; if (r2 <= 0) return p.name; }
+  return parts[parts.length - 1].name;
 }
 function pickParentJob(c, sex) {
-  const r = c.region || 'eap';
   const isEn = LANG === 'en';
   const ruralMZh = ['農夫', '工人', '計程車司機', '建築工', '漁民', '牧民', '汽車維修技師', '技工', '小販', '搬運工', '保全'];
   const urbanMZh = ['工程師', '教師', '銀行員', '銷售員', '公務員'];
@@ -1445,8 +1473,11 @@ function pickParentJob(c, sex) {
   const ruralMEn = ['Farmer', 'Laborer', 'Taxi driver', 'Construction worker', 'Fisherman', 'Herder', 'Auto mechanic', 'Technician', 'Vendor', 'Porter', 'Security guard'];
   const urbanMEn = ['Engineer', 'Teacher', 'Bank clerk', 'Sales clerk', 'Civil servant'];
   const urbanFEn = ['Teacher', 'Nurse', 'Sales clerk', 'Civil servant', 'Service worker'];
-  // 55% 鄉村 → 農業；45% 城市 → 多元工作
-  const isRural = Math.random() < 0.55;
+  // v6.07：鄉村／城市改用該國真正的都市化率 c.urb（每 10 萬人的都市人口百分比，
+  // 全體中位數 63.5）。舊碼是一顆固定的 55% 骰子，
+  // 於是日本（92% 都市）和衣索比亞（23% 都市）的家長職業池長得一樣。
+  // 另外舊碼在這裡算了 `const r = c.region` 但從來沒用過，是死碼。
+  const isRural = Math.random() * 100 >= (c.urb ?? 55);
   if (isEn) {
     return isRural ? pick(ruralMEn) : pick(sex === 'M' ? urbanMEn : urbanFEn);
   }
