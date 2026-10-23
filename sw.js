@@ -1,9 +1,9 @@
-/* born-somewhere service worker v5.93
+/* born-somewhere service worker v5.94
  * Cache-first strategy for the static app shell + countries/i18n JSON.
  * Falls back to network when cache misses, then caches the response.
  */
-const CACHE_NAME = 'born-somewhere-v5.93';
-const APP_VERSION = '5.93.0';
+const CACHE_NAME = 'born-somewhere-v5.94';
+const APP_VERSION = '5.94.0';
 
 // Files we want in the offline shell. List both the entry HTML and the data
 // blob so the game can boot without network.
@@ -29,10 +29,17 @@ const APP_SHELL = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) =>
-      // Use addAll with individual fallbacks so a single 404 doesn't break install
+      // Use add with individual fallbacks so a single 404 doesn't break install.
+      //
+      // v5.94：這裡必須用 cache:'reload' 強制繞過 HTTP cache。
+      // 舊碼用 cache.add(url)，會走瀏覽器預設的 HTTP cache ——
+      // 於是就算 CACHE_NAME 剛剛升級，預存進新 cache 的仍可能是磁碟上的舊檔。
+      // 實測（改成 v5.94 之前的當下）：新的 born-somewhere-v5.93 cache 裡
+      // data/i18n.json 是舊值 "{} 生"，但 network 已經是新值 "{}"。
+      // 結果整個版本被釘死在舊內容，而且沒有任何錯誤訊息。
       Promise.all(
         APP_SHELL.map((url) =>
-          cache.add(url).catch((err) => {
+          cache.add(new Request(url, { cache: 'reload' })).catch((err) => {
             console.warn('[sw] failed to pre-cache', url, err);
           })
         )
@@ -62,8 +69,10 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) {
-        // Background refresh (stale-while-revalidate feel)
-        fetch(req).then((res) => {
+        // Background refresh (stale-while-revalidate feel).
+        // v5.94：這裡也要繞過 HTTP cache。否則「重新驗證」拿到的是磁碟上的舊副本，
+        // 再把它寫回 cache，等於永遠更新不了。
+        fetch(new Request(req, { cache: 'reload' })).then((res) => {
           if (res && res.ok) {
             caches.open(CACHE_NAME).then((cache) => cache.put(req, res.clone()));
           }
