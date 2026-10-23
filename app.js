@@ -429,12 +429,11 @@ const DECISIONS = [
                      // v5.59 設 < 55，但實測 25–70 歲的 happiness 每年取樣 4,537 筆：
                      //   p01=57.6  p05=60.9  p10=62.9  p50=65.2
                      // 55 低於 p01，等於這個事件永遠不會發生（實測 120 條人生 0 次）。
-                     // 改成 < 62（約落在底端 6–8%），配合 6% 擲骰，
-                     // 大約 15–20% 的人生會在某一年的某個時刻遇到一次低潮。
-                     // 註：happy 分布偏窄（57–65）是幸福回歸模型本身的特性，
-                     // 要拉寬分布得改那個模型，會連動淨資產／收入的數字，另行評估。
-                     life.stats.happiness < 62 &&
-                     Math.random() < 0.06,
+                     // v5.86：回歸速率放慢後分布整體上移，重新量一次：
+                     //   p01=64.4  p05=67.2  p10=68.8  p50=74.2（25–70 歲，4,064 個年度樣本）
+                     // 62 又低於 p01 了，所以跟著調到 67（約落在底端 5%）。
+                     life.stats.happiness < 67 &&
+                     Math.random() < 0.08,
     show: (life) => ({
       title: t('de.mental.title'),
       body: t('de.mental.body'),
@@ -1899,7 +1898,11 @@ function tick() {
       + (st.social - 60) * 0.12
       + (st.employment === 'employed' ? 8 : st.employment === 'university' ? 5 : st.employment === 'retired' ? 3 : -2)
       + (st.netAssets < 0 ? -8 : 0);
-    st.happiness += (baseline - st.happiness) * 0.06;
+    // v5.86：回歸速率 0.06 -> 0.018。
+    // 實測問題：永遠選第一個選項 平均幸福 68、永遠選最後一個 63 — 差了 5 分。
+    // 6%/年的回歸會在幾年內把玩家累積的選擇效果抹掉，決定變得沒有意義。
+    // 放慢到 1.8%／年（實測 0.011 與 0.018 的選擇影響都是 8 分，瓶頸在選項本身的增減幅度，不在回歸速度），讓一個選擇的好壞可以持續數十年（真實人生不會每年重置心情）。
+    st.happiness += (baseline - st.happiness) * 0.018;
     st.happiness = Math.max(0, Math.min(100, st.happiness));
   }
   // 事件
