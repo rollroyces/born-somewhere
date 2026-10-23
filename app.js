@@ -83,6 +83,15 @@ function dismissDecision(id, age) {
   life.lastDecisionAge = age ?? life.age;               // 也吃冷卻期，避免下一年就補一個
 }
 
+// v5.90：健康值必須夾在 0～100。
+// 決策選項的 apply() 有一批是 `health += 8` 這種沒夾的寫法，而 health 出生就是 100，
+// 於是抽到「戒菸」就直接變 108，畫面上印出不可能的數字（實測最高 116.7）。
+// 定義在這裡（DECISIONS 陣建構之前），讓下面所有 apply() 都能直接用。
+function bumpHealth(life, delta) {
+  if (!life || !life.stats) return;
+  life.stats.health = Math.max(0, Math.min(100, life.stats.health + delta));
+}
+
 function showDecision({ id, kind, age, title, body, fact, hint, choices, hasNote }) {
   const modal = $('#decisionModal');
   if (!modal) return false;
@@ -224,7 +233,7 @@ const DECISIONS = [
         { k: 'quit', icon: '🧘',
           label: t('de.health.quit'),
           sub: t('de.health.quit.sub'),
-          apply: (life) => { life.stats.health += 8; life.stats.happiness += 4; logLife(t('de.health.quit.log')); } },
+          apply: (life) => { bumpHealth(life, +8); life.stats.happiness += 4; logLife(t('de.health.quit.log')); } },
         { k: 'keep', icon: '🚬',
           label: t('de.health.keep'),
           sub: t('de.health.keep.sub'),
@@ -270,11 +279,11 @@ const DECISIONS = [
         { k: 'treat', icon: '💊',
           label: t('de.illness.treat'),
           sub: t('de.illness.treat.sub'),
-          apply: (life) => { life.stats.health += 5; life.stats.happiness += 3; life.stats.netAssets -= 4000; logLife(t('de.illness.treat.log')); } },
+          apply: (life) => { bumpHealth(life, +5); life.stats.happiness += 3; life.stats.netAssets -= 4000; logLife(t('de.illness.treat.log')); } },
         { k: 'wait', icon: '⏳',
           label: t('de.illness.wait'),
           sub: t('de.illness.wait.sub'),
-          apply: (life) => { life.stats.health -= 3; life.stats.happiness -= 5; logLife(t('de.illness.wait.log')); } },
+          apply: (life) => { bumpHealth(life, -3); life.stats.happiness -= 5; logLife(t('de.illness.wait.log')); } },
       ],
     }),
   },
@@ -377,12 +386,12 @@ const DECISIONS = [
         { k: 'volunteer', icon: '🪖',
           label: t('de.conscript.volunteer'),
           sub: t('de.conscript.volunteer.sub'),
-          apply: (life) => { life.stats.netAssets += 2000; life.stats.happiness += 1; life.stats.health -= 2; logLife(t('de.conscript.volunteer.log')); } },
+          apply: (life) => { life.stats.netAssets += 2000; life.stats.happiness += 1; bumpHealth(life, -2); logLife(t('de.conscript.volunteer.log')); } },
         { k: 'lottery', icon: '🎲',
           label: t('de.conscript.lottery'),
           sub: t('de.conscript.lottery.sub'),
           apply: (life) => {
-            if (Math.random() < 0.5) { life.stats.netAssets += 2000; life.stats.health -= 2; logLife(t('de.conscript.lottery.go')); }
+            if (Math.random() < 0.5) { life.stats.netAssets += 2000; bumpHealth(life, -2); logLife(t('de.conscript.lottery.go')); }
             else { logLife(t('de.conscript.lottery.skip')); }
           } },
         { k: 'object', icon: '✋',
@@ -519,7 +528,7 @@ const DECISIONS = [
         { k: 'take_it', icon: '🌴',
           label: t('de.sabbatical.take_it'),
           sub: t('de.sabbatical.take_it.sub'),
-          apply: (life) => { life.stats.happiness += 8; life.stats.health += 4; life.stats.netAssets -= 8000; logLife(t('de.sabbatical.take_it.log')); } },
+          apply: (life) => { life.stats.happiness += 8; bumpHealth(life, +4); life.stats.netAssets -= 8000; logLife(t('de.sabbatical.take_it.log')); } },
         { k: 'push', icon: '💼',
           label: t('de.sabbatical.push'),
           sub: t('de.sabbatical.push.sub'),
@@ -623,7 +632,7 @@ const DECISIONS = [
         { k: 'friends', icon: '🍻',
           label: t('sm.weekend.friends'),
           sub: t('sm.weekend.friends.sub'),
-          apply: (life) => { life.stats.social += 4; life.stats.happiness += 3; life.stats.health -= 1; logLife(t('sm.weekend.friends.log')); } },
+          apply: (life) => { life.stats.social += 4; life.stats.happiness += 3; bumpHealth(life, -1); logLife(t('sm.weekend.friends.log')); } },
         { k: 'family', icon: '🏡',
           label: t('sm.weekend.family'),
           sub: t('sm.weekend.family.sub'),
@@ -631,7 +640,7 @@ const DECISIONS = [
         { k: 'rest', icon: '🛌',
           label: t('sm.weekend.rest'),
           sub: t('sm.weekend.rest.sub'),
-          apply: (life) => { life.stats.health += 3; logLife(t('sm.weekend.rest.log')); } },
+          apply: (life) => { bumpHealth(life, +3); logLife(t('sm.weekend.rest.log')); } },
         { k: 'alone', icon: '🚶',
           label: t('sm.weekend.alone'),
           sub: t('sm.weekend.alone.sub'),
@@ -656,7 +665,7 @@ const DECISIONS = [
         { k: 'snack', icon: '🍡',
           label: t('sm.pocket.snack'),
           sub: t('sm.pocket.snack.sub'),
-          apply: (life) => { life.stats.happiness += 3; life.stats.health -= 1; logLife(t('sm.pocket.snack.log')); } },
+          apply: (life) => { life.stats.happiness += 3; bumpHealth(life, -1); logLife(t('sm.pocket.snack.log')); } },
         { k: 'gift', icon: '🎁',
           label: t('sm.pocket.gift'),
           sub: t('sm.pocket.gift.sub'),
@@ -727,7 +736,7 @@ const DECISIONS = [
         { k: 'buy', icon: '🍱',
           label: t('sm.cook.buy'),
           sub: t('sm.cook.buy.sub'),
-          apply: (life) => { life.stats.netAssets -= 200; life.stats.health -= 1; logLife(t('sm.cook.buy.log')); } },
+          apply: (life) => { life.stats.netAssets -= 200; bumpHealth(life, -1); logLife(t('sm.cook.buy.log')); } },
       ],
     }),
   },
@@ -765,11 +774,11 @@ const DECISIONS = [
         { k: 'walk', icon: '👟',
           label: t('sm.walk.walk'),
           sub: t('sm.walk.walk.sub'),
-          apply: (life) => { life.stats.health += 4; life.stats.happiness += 2; logLife(t('sm.walk.walk.log')); } },
+          apply: (life) => { bumpHealth(life, +4); life.stats.happiness += 2; logLife(t('sm.walk.walk.log')); } },
         { k: 'later', icon: '⏳',
           label: t('sm.walk.later'),
           sub: t('sm.walk.later.sub'),
-          apply: (life) => { life.stats.health -= 1; logLife(t('sm.walk.later.log')); } },
+          apply: (life) => { bumpHealth(life, -1); logLife(t('sm.walk.later.log')); } },
       ],
     }),
   },
@@ -1872,7 +1881,19 @@ function tick() {
     return;
   }
   // v5.8 新增：狀態自然衰減/成長
-  if (STATE.life.age > 60) STATE.life.stats.health = Math.max(0, STATE.life.stats.health - 0.3);
+  // v5.90：健康不再「出生就頂在 100、六十歲後才開始掉」。
+  // 舊版 newLife 給 health: 100，加上 60 歲後每年 −0.3，於是：
+  //   (1) 前三十多年健康條完全不動，玩家看不到任何回饋；
+  //   (2) 任何「+健康」的選擇都溢出（實測 64% 的人生結束時 health > 100，畫面直接顯示 108、112）。
+  // 改成「往該年齡的健康上限靠攏」：上限隨年齡下降，身體靠 5%/年慢慢回到上限，
+  // 所以選擇可以把健康推上去（好幾年才回來），也可以壓下來。
+  {
+    const hs = STATE.life.stats;
+    const ceil_ = Math.max(40, 100 - Math.max(0, STATE.life.age - 18) * 0.55);
+    hs.health += (ceil_ - hs.health) * 0.05;
+    if (STATE.life.age > 60) hs.health -= 0.3;
+    hs.health = Math.max(0, Math.min(100, hs.health));
+  }
   // v5.59：年收入 — 舊碼 annualIncome 永遠是 0，所以「在職」也存不到錢。
   // 基準對齊原作 incomeAt(c, pct) ≈ c.ppp * 0.9，再依教育、家境分位調整。
   // 生活開銷依「自己的收入」而非人均 GDP 計算（否則低教育的人生會被壓成負資產）；
@@ -3133,8 +3154,10 @@ function renderLifeStats() {
   const s = STATE.life.stats;
   const set = (valEl, barEl, v) => {
     if (!valEl || !barEl) return;
-    valEl.textContent = Math.round(v);
-    barEl.style.width = Math.max(0, Math.min(100, v)) + '%';
+    // v5.90：數字也要夾。舊版只夾長條、數字直接印原值，於是健康條滿格但旁邊寫「108」。
+    const c = Math.max(0, Math.min(100, v));
+    valEl.textContent = Math.round(c);
+    barEl.style.width = c + '%';
   };
   set($('#stateHealthVal'), $('#stateHealth'), s.health);
   set($('#stateHappyVal'), $('#stateHappy'), s.happiness);
@@ -3162,7 +3185,7 @@ function bindStateInfoButton() {
     const isEn = LANG === 'en';
     if (isHidden) {
       panel.innerHTML = `
-        <div class="si-row"><span class="si-k">${isEn ? 'Health' : '健康'}</span><span class="si-v">${isEn ? '100 − age × 0.5 (capped 0-100). Drops sharply after age 60.' : '100 − 年齡 × 0.5（最大 0、最小 100）。60 歲後下降加速。'}</span></div>
+        <div class="si-row"><span class="si-k">${isEn ? 'Health' : '健康'}</span><span class="si-v">${isEn ? 'Starts at 100, then eases each year toward an age-based ceiling (100 falling 0.55 a year from 18, floored at 40). Drops faster after 60. Health choices push it up or down.' : '出生時 100，之後每年往「該年齡的上限」靠（18 歲後每年降 0.55，最低 40）。60 歲後掉得更快。養生的選擇可以把它往上拉，也可以往下壓。'}</span></div>
         <div class="si-row"><span class="si-k">${isEn ? 'Knowledge' : '知識'}</span><span class="si-v">${isEn ? 'Education level + life experience. Self-study focus +3, secondary school +0.5/yr.' : '學歷 + 人生經歷。每年自我進修 +3、升上國中 +0.5。'}</span></div>
         <div class="si-row"><span class="si-k">${isEn ? 'Happiness' : '幸福'}</span><span class="si-v">${isEn ? '70 + random life events. Marriage/children +10, illness −15, health focus +3.' : '70 + 隨機事件。結婚生子 +10、生病 −15、養生焦點 +3。'}</span></div>
         <div class="si-row"><span class="si-k">${isEn ? 'Social' : '人際'}</span><span class="si-v">${isEn ? '60 + partner (married +10) + each child (+4) + working years (+2).' : '60 + 伴侶（已婚 +10）+ 每位子女（+4）+ 工作年資（+2）。'}</span></div>
