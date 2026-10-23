@@ -23,7 +23,7 @@ let CACHE = { countries: null, i18n: null };
    結果是：更新說明對外顯示 v5.19.0、匯出的出生卡寫 v5.12、匯出的生命證書寫 v5.2，
    而玩家用的其實是 v5.97。分享圖是別人會看到的東西，寫錯版本特別明顯。
    現在這兩張圖都改讀 APP_VERSION；`python3 i18n_audit.py` 第 6 項檢查會擋住以後再漂。 */
-const APP_VERSION = '6.04.0';
+const APP_VERSION = '6.05.0';
 const APP_BUILD = '2026-10-23';
 
 const STATE = {
@@ -4714,6 +4714,18 @@ function renderPanorama(lives) {
     return;
   }
   const commonAncestors = findCommonAncestors(selfNodes, allEdges, allPeople);
+  // v6.05：樹原本固定以 selfNodes[0] 為根。
+  // 問題是「第一段人生」常常是孤兒（實測 20 條人生裡約 5% 沒有父母），
+  // 那時整張樹只有自己一個節點，玩家看到「合併 4 段人生」下面只有一個人，
+  // 會以為合併失敗。
+  // 改成挑「往上最多代」的那一段人生當根 —— 有親屬的才畫得出東西。
+  const ancestorCount = (id) => allEdges.filter(e => e.childId === id).length;
+  let rootSelf = selfNodes[0];
+  let best = ancestorCount(rootSelf.id);
+  for (const s of selfNodes) {
+    const c = ancestorCount(s.id);
+    if (c > best) { best = c; rootSelf = s; }
+  }
   const modal = document.createElement('div');
   modal.id = 'lifeModal';
   modal.className = 'life-modal';
@@ -4723,6 +4735,9 @@ function renderPanorama(lives) {
       <h2 class="lm-title">🌐 ${t('shelf.panorama') || '家族全景圖'}</h2>
       <p class="muted">${t('shelf.panoramaSub') || '合併 ' + lives.length + ' 段人生的族譜。共同祖先以紅框標示。'}</p>
       ${commonAncestors.length ? `<div class="panorama-common"><b>${t('shelf.commonAncestors') || '共同親屬'}：</b> ${commonAncestors.map(c => escapeHtml(c.name)).join('、')}</div>` : `<div class="panorama-common"><span class="muted">${t('shelf.noCommon') || '無共同親屬'}</span></div>`}
+      <div class="panorama-root muted">${LANG === 'en'
+        ? `Tree shown from <b>${escapeHtml(rootSelf.name || '—')}</b>, two generations up.`
+        : `下方的樹以 <b>${escapeHtml(rootSelf.name || '—')}</b> 為中心，往上兩代。`}</div>
       <div id="lifeTree" class="life-tree"></div>
     </div>
   `;
@@ -4730,7 +4745,7 @@ function renderPanorama(lives) {
   // v6.00：× 移除「自己」這個 modal，不依賴 getElementById 的文件順序
   modal.querySelector('.lm-close')?.addEventListener('click', () => modal.remove());
   modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
-  renderMiniTree($('#lifeTree'), selfNodes[0].id, 2, allPeople, allEdges);
+  renderMiniTree($('#lifeTree'), rootSelf.id, 2, allPeople, allEdges);
   setTimeout(() => {
     document.querySelectorAll('#lifeTree .tree-node').forEach(n => {
       const name = n.querySelector('.node-name')?.textContent;

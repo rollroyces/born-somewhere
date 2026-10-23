@@ -831,6 +831,8 @@ body.theme-dark input[type="date"]::-webkit-calendar-picker-indicator { filter: 
 .lm-title { margin: 0 0 8px; font-size: 20px; color: var(--accent); }
 .lm-meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 13px; color: var(--ink-2); margin-bottom: 14px; }
 .life-tree { background: var(--bg); border-radius: 8px; padding: 10px; overflow-x: auto; }
+/* v6.05：說明這張樹是以哪一段人生為中心畫的 */
+.panorama-root { font-size: 12px; margin-top: 8px; }
 .panorama-common { padding: 10px; background: var(--bad-soft, #fef0f0); border: 1px solid var(--bad); border-radius: 6px; font-size: 13px; margin-bottom: 12px; }
 
 /* Lab family stats grid */
