@@ -23,7 +23,7 @@ let CACHE = { countries: null, i18n: null };
    結果是：更新說明對外顯示 v5.19.0、匯出的出生卡寫 v5.12、匯出的生命證書寫 v5.2，
    而玩家用的其實是 v5.97。分享圖是別人會看到的東西，寫錯版本特別明顯。
    現在這兩張圖都改讀 APP_VERSION；`python3 i18n_audit.py` 第 6 項檢查會擋住以後再漂。 */
-const APP_VERSION = '6.08.0';
+const APP_VERSION = '6.09.0';
 const APP_BUILD = '2026-10-23';
 
 const STATE = {
@@ -1855,7 +1855,7 @@ function replayLastMoments() {
   const lastEvents = (life.log || []).slice(-5);  // 最後 5 條
   const list = $('#endLastMomentsList');
   if (!list) return;
-  list.innerHTML = lastEvents.map(e => `<div class="elm-row"><span class="elm-age">${e.age} ${isEn?'yo':'歲'}</span><span class="elm-icon">${e.icon || '·'}</span><span class="elm-text">${escapeHtml(e.text || '')}</span></div>`).join('') || `<span class="muted">${isEn?'No events':'無事件'}</span>`;
+  list.innerHTML = lastEvents.map(e => `<div class="elm-row"><span class="elm-age">${e.age} ${t('unit.years')}</span><span class="elm-icon">${e.icon || '·'}</span><span class="elm-text">${escapeHtml(e.text || '')}</span></div>`).join('') || `<span class="muted">${isEn?'No events':'無事件'}</span>`;
   $('#endLastMoments')?.removeAttribute('hidden');
 }
 
@@ -2589,7 +2589,7 @@ function renderLifeEventsFeed() {
   </div>`;
   el.innerHTML = headerHtml + log.slice(-shown).reverse().map((e, i) => `
     <div class="lef-row kind-${e.kind || 'log'}">
-      <span class="lef-age">${e.age ?? '?'} ${isEn?'yo':'歲'}</span>
+      <span class="lef-age">${e.age ?? '?'} ${t('unit.years')}</span>
       <span class="lef-icon">${e.icon || '·'}</span>
       <span class="lef-text">${linkifyCountries(escapeHtml(e.text || ''))}</span>
       <span class="lef-star" data-i="${e._i = (e._i ?? (log.length - 1 - i))}" title="${isEn?'Star this moment':'加星此時刻'}">${e.starred ? '★' : '☆'}</span>
@@ -2857,8 +2857,8 @@ function renderCountryCompare() {
       <tbody>
         <tr>
           <td class="cmp-k">${t('intro.bc.le')}</td>
-          <td class="cmp-v">${meLe.toFixed(1)} ${isEn ? 'yrs' : '歲'}</td>
-          <td class="cmp-v">${rLe.toFixed(1)} ${isEn ? 'yrs' : '歲'}</td>
+          <td class="cmp-v">${meLe.toFixed(1)} ${t('unit.years')}</td>
+          <td class="cmp-v">${rLe.toFixed(1)} ${t('unit.years')}</td>
         </tr>
         <tr>
           <td class="cmp-k">${t('intro.bc.u5')}</td>
@@ -3093,7 +3093,7 @@ function renderLifeMap() {
       <rect x="0" y="0" width="${W}" height="${H}" fill="#faf7f0"/>
       ${cells}
     </svg>
-    <p class="muted">${isEn?'Outer box = average life expectancy in this country':'外框格 = '+c.flag+(isEn?c.name_en:c.name_zh)+' 平均壽命 '+(c.le||70)+(isEn?' yrs':'歲')}</p>
+    <p class="muted">${isEn?'Outer box = average life expectancy in this country':'外框格 = '+c.flag+(isEn?c.name_en:c.name_zh)+' 平均壽命 '+(c.le||70)+t('unit.years')}</p>
   `;
 }
 
@@ -3306,7 +3306,7 @@ function renderLifeFamilyDetail() {
     </div>
     ${life.family?.siblings?.length ? `<div class="fd-sib"><strong>${isEn ? 'Siblings' : '兄弟姊妹'}：</strong> ${life.family.siblings.map(s => {
       const sAge = life.age - (s.birth?.year || life.year);
-      return `${s.name}（${sAge}${isEn?'yo':'歲'}）`;
+      return `${s.name}（${sAge}${t('unit.years')}）`;
     }).join('、')}</div>` : ''}
   `;
 }
@@ -3349,7 +3349,7 @@ function renderLifeCompanions() {
       <div class="lc-cell">
         <div class="lc-flag">${c.flag}</div>
         <div class="lc-name">${c.name}</div>
-        <div class="lc-meta">${c.countryData?.name_zh || c.country} · ${c.sex === 'M' ? (isEn?'♂':'男') : (isEn?'♀':'女')} · ${c.lifeExpectancy ? c.lifeExpectancy + (isEn?' yrs':'歲') : ''}</div>
+        <div class="lc-meta">${c.countryData?.name_zh || c.country} · ${c.sex === 'M' ? (isEn?'♂':'男') : (isEn?'♀':'女')} · ${c.lifeExpectancy ? c.lifeExpectancy + t('unit.years') : ''}</div>
         <div class="lc-bg">
           <div class="lc-bg-row"><span class="lc-bg-k">${isEn ? 'Father' : '父'}</span><span class="lc-bg-v">${c.parentJobFather || '—'}</span></div>
           <div class="lc-bg-row"><span class="lc-bg-k">${isEn ? 'Mother' : '母'}</span><span class="lc-bg-v">${c.parentJobMother || '—'}</span></div>
@@ -3373,7 +3373,7 @@ function renderActualVsRandom() {
   const random = c;
   if (!real) return;
   const rows = [
-    { key: 'le',   labelZh: '平均壽命',      labelEn: 'Life expectancy', fmt: v => (v ? (v + ' ' + (isEn ? 'yrs' : '歲')) : '—'), realVal: real.le, randVal: random.le },
+    { key: 'le',   labelZh: '平均壽命',      labelEn: 'Life expectancy', fmt: v => (v ? (v + ' ' + t('unit.years')) : '—'), realVal: real.le, randVal: random.le },
     { key: 'u5',   labelZh: '5 歲前死亡機率', labelEn: 'Under-5 mortality', fmt: v => v != null ? ((v / 1000) * 100).toFixed(2) + '%' : '—', realVal: real.u5, randVal: random.u5 },
     { key: 'ppp',  labelZh: '人均 GDP (PPP)', labelEn: 'GDP per capita (PPP)', fmt: v => v != null ? ('$' + Math.round(v).toLocaleString()) : '—', realVal: real.ppp, randVal: random.ppp },
     { key: 'eys',  labelZh: '預期受教育年數',  labelEn: 'Expected school years', fmt: v => v != null ? (v.toFixed(1) + ' ' + (isEn ? 'yrs' : '年')) : '—', realVal: real.eys, randVal: random.eys },
@@ -3438,7 +3438,7 @@ function renderCountryStats() {
 // 舊碼除以 1,000,000，於是台灣顯示「0.0 百萬人」、印度「1.4 百萬人」（實際 1438.1）。
 // 另外預設值 5000000 也跟錯單位，應該是 5000（千人）。
 [isEn?'Population':'人口', ((c.pop || 5000)/1000).toFixed(1) + (isEn?'M people':'百萬人')],
-    [isEn?'Life expectancy F/M':'平均壽命 女/男', ((c.le || 70) + (isEn?'/':'/') + Math.max(0,(c.le||70) - 4)) + (isEn?' yrs':'歲')],
+    [isEn?'Life expectancy F/M':'平均壽命 女/男', ((c.le || 70) + (isEn?'/':'/') + Math.max(0,(c.le||70) - 4)) + t('unit.years')],
     [isEn?'Under-5 mortality':'5歲以下死亡率', ((c.u5 || 25) / 1000 * 100).toFixed(1) + '%'],
     [isEn?'GDP per capita (PPP)':'人均GDP（PPP）', '$' + Math.round(c.ppp || 10000).toLocaleString()],
     [isEn?'Gini coefficient':'所得吉尼係數', (c.gi || 0.35).toFixed(2)],
@@ -3538,7 +3538,7 @@ function renderSurvivalCurve() {
         <text x="${W-105}" y="31">🌐 ${isEn?'World avg':'世界平均'}</text>
       </g>
     </svg>
-    <p class="muted">${isEn?'Outer box = average life expectancy in this country':'外框格 = '+c.flag+(isEn?c.name_en:c.name_zh)+' 平均壽命 '+lifeExp+(isEn?' yrs':'歲')}</p>
+    <p class="muted">${isEn?'Outer box = average life expectancy in this country':'外框格 = '+c.flag+(isEn?c.name_en:c.name_zh)+' 平均壽命 '+lifeExp+t('unit.years')}</p>
   `;
 }
 
@@ -3871,7 +3871,7 @@ function showManageRecordsModal() {
           <div class="manage-row">
             <div class="manage-info">
               <strong>${l.name || '—'}</strong>
-              <span class="muted">${l.year || '?'} – ${l.year + l.yearOffset} · ${l.age}${isEn?'yo':'歲'} · ${l.cause || ''}</span>
+              <span class="muted">${l.year || '?'} – ${l.year + l.yearOffset} · ${l.age}${t('unit.years')} · ${l.cause || ''}</span>
             </div>
             <div class="manage-actions">
               <button class="ghost" data-act="show" data-i="${i}">${isEn?'Show':'檢視'}</button>
@@ -3981,7 +3981,7 @@ function renderShelfWorldMap(lives) {
     // 主圓點：依去過次數調整大小
     const r = 4 + Math.min(stat.count * 2, 12);
     const circle = svgEl('circle', { cx: x, cy: y, r, fill: 'var(--accent)', stroke: 'white', 'stroke-width': 1, opacity: 0.85 }, svg);
-    circle.addEventListener('mouseenter', e => showMapTooltip(e, `${flag} ${c?.name_zh || iso}<br>${LANG==='en'?'Lived':'活過'} ${stat.count} ${LANG==='en'?'lives':'次'}, ${LANG==='en'?'avg':'平均'} ${avgAge} ${LANG==='en'?'yrs':'歲'}`));
+    circle.addEventListener('mouseenter', e => showMapTooltip(e, `${flag} ${c?.name_zh || iso}<br>${LANG==='en'?'Lived':'活過'} ${stat.count} ${LANG==='en'?'lives':'次'}, ${LANG==='en'?'avg':'平均'} ${avgAge} ${t('unit.years')}`));
     circle.addEventListener('mouseleave', hideMapTooltip);
     // 國旗 emoji 標記
     const flagText = svgEl('text', { x: x, y: y - r - 4, 'font-size': 12, 'text-anchor': 'middle' }, svg);
@@ -4054,7 +4054,7 @@ function getLifeStory(life) {
   for (const a of ages) {
     const q = (quotes[a] || '').trim();
     if (q && q !== '（自動抉擇）' && q !== '（隱蔽）') {
-      lines.push(`【${a}${LANG==='en'?'':'歲'}】${q}`);
+      lines.push(`【${a}${t('unit.years')}】${q}`);
     }
   }
   if (lines.length === 0) {
@@ -4092,7 +4092,7 @@ function renderMemorialWall(lives) {
     <div class="memorial-card-content">
       <div class="memorial-flag">${flag}</div>
       <div class="memorial-name">${escapeHtml(life.name || '—')}</div>
-      <div class="memorial-years">${life.year || ''} → ${(life.year || 0) + (life.yearOffset || 0)} · ${life.age || '?'} ${LANG==='en'?'yrs':'歲'}</div>
+      <div class="memorial-years">${life.year || ''} → ${(life.year || 0) + (life.yearOffset || 0)} · ${life.age || '?'} ${t('unit.years')}</div>
       <div class="memorial-country">${escapeHtml(loc?.name || life.country || '?')}</div>
       <div class="memorial-summary">${escapeHtml(summary)}</div>
     </div>
@@ -4194,7 +4194,7 @@ function renderSharedLives(lives) {
         <span class="shared-flag">${flag}</span>
         <div>
           <div class="shared-name">${escapeHtml(life.name || '—')}</div>
-          <div class="shared-meta">${escapeHtml(loc?.name || life.country || '?')} · ${sexLabel} · ${life.age || '?'} ${LANG==='en'?'yrs':'歲'}</div>
+          <div class="shared-meta">${escapeHtml(loc?.name || life.country || '?')} · ${sexLabel} · ${life.age || '?'} ${t('unit.years')}</div>
         </div>
       </div>
       <div class="shared-quote ${oneLine ? '' : 'shared-empty'}">${oneLine ? escapeHtml(oneLine) : (LANG==='en'?'(no words left behind)':'（沒有留下任何話）')}</div>
@@ -4594,7 +4594,7 @@ function showLifeModal(rec) {
       <div id="lifeTree" class="life-tree"></div>
       <div class="life-quotes">
         <h4>${isEn ? 'Memorable moments' : '☆ 值得記住的時刻'}</h4>
-        <div class="lq-list">${Object.entries(life.quotes || {}).map(([age, q]) => `<div class="ql-row"><span class="ql-age">${age} ${isEn?'yo':'歲'}</span><span class="ql-text">${escapeHtml(q)}</span></div>`).join('') || '<span class="muted">—</span>'}</div>
+        <div class="lq-list">${Object.entries(life.quotes || {}).map(([age, q]) => `<div class="ql-row"><span class="ql-age">${age} ${t('unit.years')}</span><span class="ql-text">${escapeHtml(q)}</span></div>`).join('') || '<span class="muted">—</span>'}</div>
       </div>
     </div>
   `;
@@ -6491,9 +6491,9 @@ function downloadLifeCertPNG() {
     svgParts.push(`<text x="${W/2}" y="186" font-size="14" fill="#7a6a5a" text-anchor="middle" font-style="italic">${escapeHtml(life.name.full_en)}</text>`);
   }
   // 大字歲數
-  svgParts.push(`<text x="${W/2}" y="250" font-size="48" fill="#1a1a1a" text-anchor="middle" font-weight="bold">${life.deathAge || life.age} ${LANG==='en'?'yrs':'歲'}</text>`);
+  svgParts.push(`<text x="${W/2}" y="250" font-size="48" fill="#1a1a1a" text-anchor="middle" font-weight="bold">${life.deathAge || life.age} ${t('unit.years')}</text>`);
   // 副標題
-  svgParts.push(`<text x="${W/2}" y="285" font-size="14" fill="#5a4a3a" text-anchor="middle">${LANG==='en'?'Life Expectancy':'預期壽命'} ${c?.le || '—'} ${LANG==='en'?'yrs':'歲'}</text>`);
+  svgParts.push(`<text x="${W/2}" y="285" font-size="14" fill="#5a4a3a" text-anchor="middle">${LANG==='en'?'Life Expectancy':'預期壽命'} ${c?.le || '—'} ${t('unit.years')}</text>`);
   // 詳情
   const rowY = 320;
   const rows = [
@@ -6576,17 +6576,17 @@ function downloadBirthCardPNG() {
     parts.push(`<text x="${W/2}" y="195" font-size="14" fill="#7a6a5a" text-anchor="middle" font-style="italic">${escapeHtml(life.name.full_en)}</text>`);
   }
   // 大字年齡
-  parts.push(`<text x="${W/2}" y="270" font-size="56" fill="#1a1a1a" text-anchor="middle" font-weight="bold">${life.age} ${isEn?'yrs':'歲'}</text>`);
+  parts.push(`<text x="${W/2}" y="270" font-size="56" fill="#1a1a1a" text-anchor="middle" font-weight="bold">${life.age} ${t('unit.years')}</text>`);
   // 副標題
-  parts.push(`<text x="${W/2}" y="305" font-size="14" fill="#5a4a3a" text-anchor="middle">${isEn?'Life expectancy':'預期壽命'} ${c.le} ${isEn?'yrs':'歲'} · ${isEn?'Born in':'出生於'} ${escapeHtml(loc.name)}</text>`);
+  parts.push(`<text x="${W/2}" y="305" font-size="14" fill="#5a4a3a" text-anchor="middle">${isEn?'Life expectancy':'預期壽命'} ${c.le} ${t('unit.years')} · ${isEn?'Born in':'出生於'} ${escapeHtml(loc.name)}</text>`);
   // 家庭背景
   const fd = life.fatherDetail || {};
   const md = life.motherDetail || {};
   parts.push(`<line x1="60" y1="335" x2="${W-60}" y2="335" stroke="#d8cdb8" stroke-width="1"/>`);
   parts.push(`<text x="${W/2}" y="362" font-size="13" fill="#8C1D3C" text-anchor="middle" font-weight="bold">${isEn?'👪 Family Background':'👪 出身家庭'}</text>`);
   const fRows = [
-    [isEn?'Father':'父親', `${(life.family?.parents||[]).find(p=>p.sex==='M')?.name || '—'} · ${fd.age ? fd.age + (isEn?' yo':'歲') : ''}${fd.job ? ' · ' + fd.job : ''}`],
-    [isEn?'Mother':'母親', `${(life.family?.parents||[]).find(p=>p.sex==='F')?.name || '—'} · ${md.age ? md.age + (isEn?' yo':'歲') : ''}${md.job ? ' · ' + md.job : ''}`],
+    [isEn?'Father':'父親', `${(life.family?.parents||[]).find(p=>p.sex==='M')?.name || '—'} · ${fd.age ? fd.age + t('unit.years') : ''}${fd.job ? ' · ' + fd.job : ''}`],
+    [isEn?'Mother':'母親', `${(life.family?.parents||[]).find(p=>p.sex==='F')?.name || '—'} · ${md.age ? md.age + t('unit.years') : ''}${md.job ? ' · ' + md.job : ''}`],
     [isEn?'Religion · Place':'宗教 · 出生地', `${life.stats.religion || '—'} · ${life.stats.birthPlaceType === 'rural' ? (isEn?'🌾 Rural':'🌾 鄉村') : (isEn?'🏙️ Urban':'🏙️ 城市')}`]
   ];
   fRows.forEach((r, i) => {
