@@ -23,7 +23,7 @@ let CACHE = { countries: null, i18n: null };
    結果是：更新說明對外顯示 v5.19.0、匯出的出生卡寫 v5.12、匯出的生命證書寫 v5.2，
    而玩家用的其實是 v5.97。分享圖是別人會看到的東西，寫錯版本特別明顯。
    現在這兩張圖都改讀 APP_VERSION；`python3 i18n_audit.py` 第 6 項檢查會擋住以後再漂。 */
-const APP_VERSION = '6.00.0';
+const APP_VERSION = '6.01.0';
 const APP_BUILD = '2026-10-23';
 
 const STATE = {
@@ -3857,11 +3857,11 @@ function showManageRecordsModal() {
     });
   });
   $('#manageClearAll')?.addEventListener('click', () => {
-    if (confirm(isEn ? 'Delete all past lives?' : '刪除所有過去的人生？')) {
+    if (confirm(LANG==='en' ? 'Delete all past lives?' : '刪除所有過去的人生？')) {
       localStorage.setItem(STORAGE_KEY + ':past', '[]');
       modal.remove();
       renderShelf();
-      toast(isEn ? 'All deleted' : '已全部刪除');
+      toast(LANG==='en' ? 'All deleted' : '已全部刪除');
     }
   });
 }
@@ -5142,7 +5142,7 @@ function wire() {
     const wrap = document.createElement('div');
     wrap.innerHTML = html || '<div class="muted">—</div>';
     document.querySelector('#endPastList')?.appendChild(wrap);
-    toast(isEn ? `Showing ${more.length} more` : `顯示 ${more.length} 段過去`);
+    toast(LANG==='en' ? `Showing ${more.length} more` : `顯示 ${more.length} 段過去`);
   });
   $('#endViewShelf')?.addEventListener('click', () => setView('shelf'));
   $('#endResumeLife')?.addEventListener('click', () => {
@@ -5153,17 +5153,17 @@ function wire() {
     STATE.paused = false;
     setView('life');
     startTicker();
-    toast(isEn ? 'Life resumed' : '已回到那一生');
+    toast(LANG==='en' ? 'Life resumed' : '已回到那一生');
   });
   $('#endOrganize')?.addEventListener('click', () => {
     setView('shelf');
     setTimeout(() => document.querySelector('#manageRecordsBtn')?.click(), 200);
   });
   $('#endDeleteAll')?.addEventListener('click', () => {
-    if (confirm(isEn ? 'Delete all past lives?' : '刪除所有過去的人生？')) {
+    if (confirm(LANG==='en' ? 'Delete all past lives?' : '刪除所有過去的人生？')) {
       localStorage.setItem(STORAGE_KEY + ':past', '[]');
       renderEnd();
-      toast(isEn ? 'All deleted' : '已全部刪除');
+      toast(LANG==='en' ? 'All deleted' : '已全部刪除');
     }
   });
   const feedbackSubmit = $('#feedbackSubmit');
