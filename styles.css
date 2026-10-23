@@ -2368,6 +2368,8 @@ body { overflow-x: hidden; }
 .ed-age { min-width: 2.4em; color: var(--ink-3); font-size: 11.5px; font-variant-numeric: tabular-nums; }
 .ed-icon { flex: none; }
 .ed-text { color: var(--ink); }
+/* v6.04：玩家在決策裡自己寫的一句話 */
+.ed-note { color: var(--ink-3); font-size: 12px; font-style: italic; }
 
 /* v5.80：書架「共享人生」逐批展開（34 條 = 7101px → 先顯示 8 張） */
 .shared-more-btn {

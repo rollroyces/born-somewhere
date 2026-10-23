@@ -23,7 +23,7 @@ let CACHE = { countries: null, i18n: null };
    結果是：更新說明對外顯示 v5.19.0、匯出的出生卡寫 v5.12、匯出的生命證書寫 v5.2，
    而玩家用的其實是 v5.97。分享圖是別人會看到的東西，寫錯版本特別明顯。
    現在這兩張圖都改讀 APP_VERSION；`python3 i18n_audit.py` 第 6 項檢查會擋住以後再漂。 */
-const APP_VERSION = '6.03.0';
+const APP_VERSION = '6.04.0';
 const APP_BUILD = '2026-10-23';
 
 const STATE = {
@@ -4395,10 +4395,18 @@ function renderEndDecisionsInner(wrap, life) {
     // label / icon 在作答當下就存進紀錄了；舊紀錄沒有就退回事件 id
     const label = r.label || r.id;
     const icon = r.icon || '✦';
+    // v6.04：把玩家自己寫的note顯示出來。
+    // 舊碼在作答當下把 note 存進 life.decisions[]（showDecision 第 160 行），
+    // 但整個檔案沒有任何地方讀它 —— 玩家被要求「寫下當時的想法」，
+    // 寫完之後那個字再也沒有出現在畫面上，等於白寫。
+    // （'（自動抉擇）'/'（隱蔽）' 是系統代填的，不是玩家寫的，不顯示。）
+    const noteText = (r.note || '').trim();
+    const showNote = noteText && noteText !== '（自動抉擇）' && noteText !== '（隱蔽）';
     return `<div class="ed-row">
       <span class="ed-age">${r.age ?? '?'}</span>
       <span class="ed-icon">${escapeHtml(icon)}</span>
       <span class="ed-text">${escapeHtml(label)}</span>
+      ${showNote ? `<span class="ed-note">「${escapeHtml(noteText)}」</span>` : ''}
     </div>`;
   }).join('');
 
