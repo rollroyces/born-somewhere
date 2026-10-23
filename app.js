@@ -98,6 +98,13 @@ function showDecision({ id, kind, age, title, body, fact, hint, choices, hasNote
   // 防止重複觸發（避免連續年度同 ID 觸發兩次）
   if (modal && !modal.hasAttribute('hidden')) return false;
   if (!choices || choices.length === 0) return false;
+  // v5.92：反思視窗還開著的時候不要再往上疊決策視窗。
+  // v5.84 已經處理過 pause+finance 疊在一起，但 decision+pause 漏了 ——
+  // 實測會同時看到「如果 15 歲的你…」和「這個週末怎麼過？」兩個視窗。
+  // 這裡選「讓位」而不是「擋住」：把反思視窗收掉再開決策，
+  // 這樣決策的出現率不受影響（若改成擋住，23/24 的決策可達性會掉下來）。
+  const pauseEl = document.getElementById('pauseModal');
+  if (pauseEl && !pauseEl.hasAttribute('hidden')) closeModal('pauseModal');
   STATE.pendingDecision = { kind: 'decision', id, age, options: choices.length };
   STATE.paused = true;
 
@@ -1990,6 +1997,12 @@ function showPauseQuestion() {
   if (!STATE.pendingDecision || STATE.pendingDecision.type !== 'pause') return;
   STATE.life.lastInterruptAge = STATE.life.age;   // v5.61
   const age = STATE.pendingDecision.age;
+  // v5.92：反思題的年齡存一份在自己的欄位，不要跟 pendingDecision 共用。
+  // 舊碼讓 savePauseQuote() 直接讀 STATE.pendingDecision?.age，而那個槽位
+  // showDecision() 也會寫。實測：15 歲的反思視窗還開著時，19 歲的 sm_weekend
+  // 決策觸發並把 pendingDecision 蓋掉，玩家照著「15 歲」題目打完字按儲存，
+  // 結果被寫成 life.quotes[19]，人生故事顯示【19歲】。
+  STATE.pauseQuestionAge = age;
   // v5.33：不再設 STATE.paused = true（讓生命繼續在背景跑；modal 顯示但可手動互動）
   const modal = $('#pauseModal');
   if (!modal) return;
@@ -2303,7 +2316,8 @@ function applyFinanceChoice(choices, idx, isEn) {
   renderLifeStats();
 }
 function savePauseQuote() {
-  const age = STATE.pendingDecision?.age;
+  // v5.92：優先用自己的年齡欄位；pendingDecision 只是相容舊存檔的退路。
+  const age = STATE.pauseQuestionAge ?? STATE.pendingDecision?.age;
   const input = $('#pauseInput');
   const txt = input?.value?.trim() || '';
   if (age != null) STATE.life.quotes[age] = txt || '（隱蔽）';
