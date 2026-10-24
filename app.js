@@ -23,7 +23,7 @@ let CACHE = { countries: null, i18n: null };
    結果是：更新說明對外顯示 v5.19.0、匯出的出生卡寫 v5.12、匯出的生命證書寫 v5.2，
    而玩家用的其實是 v5.97。分享圖是別人會看到的東西，寫錯版本特別明顯。
    現在這兩張圖都改讀 APP_VERSION；`python3 i18n_audit.py` 第 6 項檢查會擋住以後再漂。 */
-const APP_VERSION = '6.10.0';
+const APP_VERSION = '6.11.0';
 const APP_BUILD = '2026-10-23';
 
 const STATE = {
@@ -5697,6 +5697,16 @@ const CHANGELOG = [
     ] },
   { v: '5.89', date: '2026-10-23', items: [
       { tag: 'fix', icon: '🎲', key: 'cl.5.89.eventCooldown' },
+    ] },
+  { v: '5.20 – 5.88', date: '2026-10-23', items: [
+      { tag: 'feat', icon: '💰', key: 'cl.5.20.finance' },
+      { tag: 'feat', icon: '📖', key: 'cl.5.22.resume' },
+      { tag: 'feat', icon: '📋', key: 'cl.5.23.shelf' },
+      { tag: 'feat', icon: '🎬', key: 'cl.5.24.replay' },
+      { tag: 'feat', icon: '⏱️', key: 'cl.5.25.duration' },
+      { tag: 'feat', icon: '✦', key: 'cl.5.55.decisions' },
+      { tag: 'feat', icon: '🔧', key: 'cl.5.59.deadValues' },
+      { tag: 'feat', icon: '📊', key: 'cl.5.85.calibration' },
     ] },
   { v: '5.19', date: '2026-10-18', items: [
       { tag: 'new',    icon: '📲', key: 'cl.5.19.pwa' },

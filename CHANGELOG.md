@@ -5,7 +5,19 @@
 > **v5.89 → v6.09 的 21 個修正合併報告**：[`evidence/CONSOLIDATED-v5.89-v6.09.md`](evidence/CONSOLIDATED-v5.89-v6.09.md)
 > （每個缺陷的完整推導、原始數據與量測腳本都留有個別證據檔，連結如下）
 
-## v6.09 — 2026-10-24（目前）
+## v6.11 — 2026-10-24（目前）
+
+**改進**
+- 📜 遊戲內更新說明補上 v5.20 – v5.88 的分組章節（先前只有 `CHANGELOG.md` 有，遊戲裡是斷的），九種語言齊全。
+- 🧭 合併報告索引：21 份逐版證據檔合併成一份（`evidence/CONSOLIDATED-v5.89-v6.09.md`）。
+
+## v6.10 — 2026-10-24
+
+**改進**
+- 📜 更新說明合併：v5.89 → v6.09 的 21 個修正補進遊戲內更新說明與 `CHANGELOG.md`，每則連到個別證據檔。
+- 📖 README 從 v5.25 更新到最新，並列出三個待辦。
+
+## v6.09 — 2026-10-24
 
 **修正**
 - 🌐 **年齡單位改用 `unit.years`**：原本 `${isEn?'yo':'歲'}` 讓英文以外一律顯示中文「歲」，現在 en/ko/ja/fr/th 各自正確（22 處）。→ [證據](evidence/v6.09-age-unit-localisation.md)
@@ -121,7 +133,7 @@
 - **v5.85** 決策事件可達性：600 人生實測 23/24 觸發（`de_conscription` 依設計不觸發）。→ [證據](evidence/v5.85-decision-reachability.md)
 - **v5.88** 172 國全人口經濟校準。→ [證據](evidence/v5.88-full-population-calibration.md)
 
-## v5.19 — 2026-10-18（目前）
+## v5.19 — 2026-10-18
 
 **新增**
 - 📲 **PWA 安裝**：`manifest.json` + service worker，可「加入主畫面」、離線遊玩（cache-first）。
