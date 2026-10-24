@@ -89,6 +89,7 @@ def _read(name):
         return f.read()
 
 _html, _sw, _app = _read('index.html'), _read('sw.js'), _read('app.js')
+_readme = _read('README.md')
 
 _m = _re2.search(r'class="footer-ver">v(\d+\.\d+)', _html)
 _html_v = _m.group(1) if _m else None
@@ -97,8 +98,14 @@ _app_v = _m.group(1) if _m else None
 _m = _re2.search(r"CACHE_NAME = 'born-somewhere-v(\d+\.\d+)'", _sw)
 _sw_v = _m.group(1) if _m else None
 
+# v6.12：README 的版號也要跟著走。
+# 這是 v5.98「五份版本字串全漂移」的同一個病，只是換了個檔案：
+# v6.11 合併文件時把 README 留在 v6.10，應用程式卻是 v6.11。
+_m = _re2.search(r'# born-somewhere v(5\.\d+|6\.\d+)', _readme)
+_readme_v = _m.group(1) if _m else None
+
 _versions = {'index.html footer': _html_v, 'app.js APP_VERSION': _app_v,
-             'sw.js CACHE_NAME': _sw_v}
+             'sw.js CACHE_NAME': _sw_v, 'README.md title': _readme_v}
 for where, val in _versions.items():
     if val is None:
         issues.append(('VERSION', where, '', 'not found', ''))
@@ -106,6 +113,8 @@ if _app_v and _html_v and _app_v.rsplit('.', 1)[0] != _html_v:
     issues.append(('VERSION', 'app.js APP_VERSION', '', f'!= index.html v{_html_v}', _app_v))
 if _html_v and _sw_v and _html_v != _sw_v:
     issues.append(('VERSION', 'sw.js CACHE_NAME', '', f'!= index.html v{_html_v}', _sw_v))
+if _readme_v and _html_v and _readme_v != _html_v:
+    issues.append(('VERSION', 'README.md', '', f'!= index.html v{_html_v}', _readme_v))
 # 匯出圖的頁尾不得再出現硬編碼版本。
 # 只看含「真實統計 / Real statistics」的那幾行（兩張匯出圖的頁尾）——
 # 檔頭註解裡的 "born-somewhere v2" 是 localStorage 的 schema 版本，另一套編號，
@@ -126,4 +135,4 @@ total = sum(len(v) for v in d.values())
 print(f'clean — {len(d)} languages, {total} values, '
       f'{len([r for r in refs if not r.endswith(".")])} referenced keys all resolve, '
       f'key sets identical, 0 U+FFFD, 0 Han-in-Korean, 0 empty/placeholder, '
-      f'version {_html_v} consistent across index.html / app.js / sw.js')
+      f'version {_html_v} consistent across index.html / app.js / sw.js / README.md')
